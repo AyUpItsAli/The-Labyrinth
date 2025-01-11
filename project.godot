@@ -1,0 +1,40 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="The Labyrinth"
+config/version="0.2.5"
+run/main_scene="res://scenes/menu/lobby.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://globals/global.gd"
+Utils="*res://globals/utils.gd"
+Network="*res://globals/network.gd"
+GameState="*res://globals/game_state.gd"
+Logging="*res://globals/logging.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
+gdscript/warnings/untyped_declaration=2
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
