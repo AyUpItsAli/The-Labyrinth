@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="The Labyrinth"
-config/version="0.2.6"
+config/version="0.2.7"
 run/main_scene="res://scenes/menu/lobby.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"

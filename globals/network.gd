@@ -6,15 +6,18 @@ var peer: MultiplayerPeer = OfflineMultiplayerPeer.new()
 var lobby_id: int
 
 signal connection_successful
+signal player_connected(player: Player)
+signal player_disconnected(player: Player)
 signal connection_closed
 
 func _ready() -> void:
+	Global.game_closed.connect(_on_game_closed)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.network_connection_status_changed.connect(_on_connection_status_changed)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
-	Global.game_closed.connect(_on_game_closed)
 
 func get_lobby_data(key: String, default: String = "") -> String:
 	var data: String = Steam.getLobbyData(lobby_id, key)
@@ -44,6 +47,7 @@ func create_lobby(lobby_name: String) -> void:
 				Logging.log_error("Error creating lobby: %s" % response)
 				return
 			Steam.setLobbyData(new_lobby_id, "game_name", Global.GAME_NAME)
+			# TODO: Game version should go here
 			Steam.setLobbyData(new_lobby_id, "name", lobby_name)
 			Logging.log_info("Lobby created: %s" % new_lobby_id)
 	)
@@ -60,13 +64,6 @@ func join_lobby(id: int) -> void:
 		return
 	Logging.log_start("Joining lobby: %s" % id)
 	Steam.joinLobby(id)
-
-func leave_server() -> void:
-	if get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
-		Logging.log_error("Error leaving server: You are not currently connected to a server")
-		return
-	Logging.log_start("Leaving server")
-	close_connection()
 
 func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> void:
 	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
@@ -98,10 +95,11 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 	Logging.log_info("Joined lobby: %s" % lobby_id)
 	create_peer()
 	if multiplayer.is_server():
+		GameState.register_player(GameState.player)
 		Logging.log_complete("Server created")
 		connection_successful.emit()
-		return
-	Logging.log_start("Connecting to server")
+	else:
+		Logging.log_start("Connecting to server")
 
 func create_peer() -> void:
 	peer = SteamMultiplayerPeer.new()
@@ -111,15 +109,46 @@ func create_peer() -> void:
 	else:
 		peer.create_client(host_id, 0)
 	multiplayer.set_multiplayer_peer(peer)
+	GameState.player.id = multiplayer.get_unique_id()
+
+func _on_connected_to_server() -> void:
+	Logging.log_info("Connected to server")
+	peer_connected.rpc_id(1, GameState.player.serialised())
+
+@rpc("any_peer", "call_remote", "reliable")
+func peer_connected(player_data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+	var player := Player.deserialised(player_data)
+	GameState.register_player(player)
+	confirm_connection.rpc_id(player.id)
+	Logging.log_complete("%s connected" % player.name)
+	player_connected.emit(player)
+
+@rpc("authority", "call_remote", "reliable")
+func confirm_connection() -> void:
+	Logging.log_complete("Connection confirmed")
+	connection_successful.emit()
+
+func _on_peer_disconnected(id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var player: Player = GameState.get_player(id)
+	GameState.unregister_player(player)
+	Logging.log_end("%s disconnected" % player.name)
+	player_disconnected.emit(player)
+
+func leave_server() -> void:
+	if get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
+		Logging.log_error("Error leaving server: You are not currently connected to a server")
+		return
+	Logging.log_start("Leaving server")
+	close_connection()
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
 	if connection.end_reason == Steam.NetworkingConnectionEnd.CONNECTION_END_MISC_TIMEOUT:
 		Logging.log_error(connection.end_debug)
 		close_connection()
-
-func _on_connected_to_server() -> void:
-	Logging.log_complete("Connected to server")
-	connection_successful.emit()
 
 func _on_connection_failed() -> void:
 	Logging.log_error("Error connecting to server")
@@ -139,5 +168,6 @@ func close_connection() -> void:
 	multiplayer.set_multiplayer_peer(peer)
 	Steam.leaveLobby(lobby_id)
 	lobby_id = 0
+	GameState.reset()
 	Logging.log_end("Connection closed")
 	connection_closed.emit()

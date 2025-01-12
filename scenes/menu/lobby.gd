@@ -20,10 +20,10 @@ extends Control
 func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	Network.connection_successful.connect(_on_connection_successful)
+	Network.player_connected.connect(_on_player_connected)
+	Network.player_disconnected.connect(_on_player_disconnected)
 	Network.connection_closed.connect(_on_connection_closed)
-	GameState.players_changed.connect(_on_players_changed)
-	GameState.player_joined.connect(_on_player_joined)
-	GameState.player_left.connect(_on_player_left)
+	GameState.players_updated.connect(_on_players_updated)
 	player_name_edit.set_text(GameState.player.name)
 	switch_to_host_or_join()
 
@@ -50,6 +50,7 @@ func switch_to_lobby() -> void:
 	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
 	start_btn.set_disabled(not multiplayer.is_server())
 	lobby.show()
+	message_edit.grab_focus()
 
 func _on_host_btn_pressed() -> void:
 	if player_name_edit.text.is_empty():
@@ -108,9 +109,8 @@ func _on_lobby_btn_pressed(lobby_id: int) -> void:
 
 func _on_connection_successful() -> void:
 	switch_to_lobby()
-	message_edit.grab_focus()
 
-func _on_players_changed() -> void:
+func _on_players_updated() -> void:
 	player_list.clear()
 	for player: Player in GameState.get_players_sorted():
 		player_list.add_item(player.name, player.icon)
@@ -130,13 +130,13 @@ func send_chat_message(message: String) -> void:
 	chat_box.text += "[color=white]%s:[/color] %s\n" % [player.name, message]
 	update_chat.rpc(chat_box.text)
 
-func _on_player_joined(player: Player) -> void:
+func _on_player_connected(player: Player) -> void:
 	if not multiplayer.is_server():
 		return
 	chat_box.text += "[color=green]%s joined[/color]\n" % player.name
 	update_chat.rpc(chat_box.text)
 
-func _on_player_left(player: Player) -> void:
+func _on_player_disconnected(player: Player) -> void:
 	if not multiplayer.is_server():
 		return
 	chat_box.text += "[color=red]%s left[/color]\n" % player.name
