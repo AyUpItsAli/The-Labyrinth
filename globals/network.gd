@@ -19,11 +19,14 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
-func get_lobby_data(key: String, default: String = "") -> String:
-	var data: String = Steam.getLobbyData(lobby_id, key)
+func get_lobby_data_by_id(id: int, key: String, default: String = "") -> String:
+	var data: String = Steam.getLobbyData(id, key)
 	if data.is_empty():
 		return default
 	return data
+
+func get_lobby_data(key: String, default: String = "") -> String:
+	return get_lobby_data_by_id(lobby_id, key, default)
 
 func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 	if peer is OfflineMultiplayerPeer:
@@ -46,15 +49,19 @@ func create_lobby(lobby_name: String) -> void:
 			if response != Steam.RESULT_OK:
 				Logging.log_error("Error creating lobby: %s" % response)
 				return
-			Steam.setLobbyData(new_lobby_id, "game_name", Global.GAME_NAME)
-			# TODO: Game version should go here
+			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
+			Steam.setLobbyData(new_lobby_id, "app_version", Global.app_version)
 			Steam.setLobbyData(new_lobby_id, "name", lobby_name)
 			Logging.log_info("Lobby created: %s" % new_lobby_id)
 	)
 
 func join_lobby(id: int) -> void:
-	if Steam.getLobbyData(id, "game_name") != Global.GAME_NAME:
-		Logging.log_error("Error joining lobby: Incompatible lobby")
+	if get_lobby_data_by_id(id, "app_name") != Global.app_name:
+		Logging.log_error("Error joining lobby: Lobby is not compatible with this application")
+		return
+	var app_version: String = get_lobby_data_by_id(id, "app_version", "???")
+	if Global.app_version != app_version:
+		Logging.log_error("Error joining lobby: Your game version (%s) is not compatible with the host's game version (%s)" % [Global.app_version, app_version])
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		Logging.log_error("Error joining lobby: You are already connecting to a server")

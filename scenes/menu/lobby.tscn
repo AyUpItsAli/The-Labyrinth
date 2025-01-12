@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dy6vaukbm2mk4"]
 
-[ext_resource type="Script" path="res://scenes/menu/lobby.gd" id="1_p8hil"]
+[ext_resource type="Script" path="res://scenes/menu/lobby.gd" id="1_gt3n5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_koiyu"]
 
@@ -17,7 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_p8hil")
+script = ExtResource("1_gt3n5")
 player_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/PlayerNameEdit")
 host_or_join = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin")
 lobby_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin/LobbyNameEdit")

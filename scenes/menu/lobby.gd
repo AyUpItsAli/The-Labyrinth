@@ -80,9 +80,9 @@ func refresh_lobbies() -> void:
 
 func _on_lobby_match_list(lobbies: Array) -> void:
 	for lobby_id: int in lobbies:
-		if Steam.getLobbyData(lobby_id, "game_name") != Global.GAME_NAME:
+		if Network.get_lobby_data_by_id(lobby_id, "app_name") != Global.app_name:
 			continue
-		var lobby_name: String = Steam.getLobbyData(lobby_id, "name")
+		var lobby_name: String = Network.get_lobby_data_by_id(lobby_id, "name")
 		if lobby_name.is_empty():
 			continue
 		var search: String = lobby_search_edit.text.to_lower()

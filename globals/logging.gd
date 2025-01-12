@@ -1,5 +1,7 @@
 extends Node
 
+# TODO: Better logging colors
+
 func log_start(message: String) -> void:
 	print_rich("[color=yellow]%s[/color]" % message)
 

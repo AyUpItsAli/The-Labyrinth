@@ -1,7 +1,9 @@
 extends Node
 
 const APP_ID = 480
-const GAME_NAME = "Labyrinth"
+
+var app_name: String
+var app_version: String
 
 var steam_active: bool
 var is_owned: bool
@@ -13,6 +15,8 @@ signal game_closed
 func _init() -> void:
 	OS.set_environment("SteamAppId", str(APP_ID))
 	OS.set_environment("SteamGameId", str(APP_ID))
+	app_name = ProjectSettings.get_setting("application/config/name")
+	app_version = ProjectSettings.get_setting("application/config/version")
 
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
