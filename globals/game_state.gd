@@ -42,7 +42,11 @@ func register_player(new_player: Player) -> void:
 
 func unregister_player(old_player: Player) -> void:
 	players.erase(old_player.id)
-	# TODO: Update player indexes
+	# Ensure all players have the correct index (now that one player has been removed)
+	var index: int = 0
+	for plr: Player in get_players_sorted():
+		plr.index = index
+		index += 1
 	Logging.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
 	update_player_data.rpc(get_players_serialised())
 	players_updated.emit()
