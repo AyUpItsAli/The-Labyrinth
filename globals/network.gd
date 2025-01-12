@@ -41,6 +41,7 @@ func create_lobby(lobby_name: String) -> void:
 		Logging.log_error("Error creating lobby: You are already connected to a server")
 		return
 	Logging.log_start("Creating lobby: %s" % lobby_name)
+	await LoadingScreen.display_message("Creating lobby")
 	Steam.createLobby(LobbyAccess.PUBLIC, 4) # TODO: Lobby settings
 	for connection: Dictionary in Steam.lobby_created.get_connections():
 		Steam.lobby_created.disconnect(connection.callable)
@@ -70,6 +71,7 @@ func join_lobby(id: int) -> void:
 		Logging.log_error("Error joining lobby: You are already connected to a server")
 		return
 	Logging.log_start("Joining lobby: %s" % id)
+	await LoadingScreen.display_message("Joining lobby")
 	Steam.joinLobby(id)
 
 func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> void:
@@ -107,6 +109,7 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 		connection_successful.emit()
 	else:
 		Logging.log_start("Connecting to server")
+		await LoadingScreen.display_message("Connecting to server")
 
 func create_peer() -> void:
 	peer = SteamMultiplayerPeer.new()
@@ -150,6 +153,7 @@ func leave_server() -> void:
 		Logging.log_error("Error leaving server: You are not currently connected to a server")
 		return
 	Logging.log_start("Leaving server")
+	await LoadingScreen.display_message("Leaving server")
 	close_connection()
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:

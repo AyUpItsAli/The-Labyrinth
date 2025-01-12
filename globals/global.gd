@@ -31,6 +31,7 @@ func _notification(what: int) -> void:
 		quit_game()
 
 func quit_game() -> void:
+	await LoadingScreen.begin()
 	game_closed.emit()
 	get_tree().quit()
 

@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="The Labyrinth"
-config/version="0.2.8"
-run/main_scene="res://scenes/menu/lobby.tscn"
+config/version="0.3.0"
+run/main_scene="res://scenes/screens/menu/menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -20,9 +20,10 @@ config/icon="res://icon.svg"
 
 Global="*res://globals/global.gd"
 Utils="*res://globals/utils.gd"
+Logging="*res://globals/logging.gd"
 Network="*res://globals/network.gd"
 GameState="*res://globals/game_state.gd"
-Logging="*res://globals/logging.gd"
+LoadingScreen="*res://globals/loading_screen/loading_screen.tscn"
 
 [debug]
 
