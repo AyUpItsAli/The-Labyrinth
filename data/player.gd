@@ -2,7 +2,8 @@ class_name Player extends Object
 
 const MAX_ICON_SIZE = 128
 
-var id: int
+var id: int # Peer id (host id = 1)
+var index: int # Register order (host index = 0)
 var steam_id: int
 var name: String
 var icon: ImageTexture
@@ -16,6 +17,7 @@ func load_icon(size: int, bytes: PackedByteArray) -> void:
 func serialised() -> Dictionary:
 	var data: Dictionary
 	data["id"] = id
+	data["index"] = index
 	data["steam_id"] = steam_id
 	data["name"] = name
 	data["icon_size"] = icon.get_image().get_size().x
@@ -25,6 +27,7 @@ func serialised() -> Dictionary:
 static func deserialised(data: Dictionary) -> Player:
 	var player := Player.new()
 	player.id = data["id"]
+	player.index = data["index"]
 	player.steam_id = data["steam_id"]
 	player.name = data["name"]
 	player.load_icon(data["icon_size"], data["icon_bytes"])

@@ -234,6 +234,8 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.439216, 0.439216, 0.439216, 1)
+bbcode_enabled = true
+scroll_following = true
 
 [node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat"]
 layout_mode = 2

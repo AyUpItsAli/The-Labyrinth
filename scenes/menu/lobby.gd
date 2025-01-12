@@ -22,7 +22,8 @@ func _ready() -> void:
 	Network.connection_successful.connect(_on_connection_successful)
 	Network.connection_closed.connect(_on_connection_closed)
 	GameState.players_changed.connect(_on_players_changed)
-	
+	GameState.player_joined.connect(_on_player_joined)
+	GameState.player_left.connect(_on_player_left)
 	player_name_edit.set_text(GameState.player.name)
 	switch_to_host_or_join()
 
@@ -107,10 +108,11 @@ func _on_lobby_btn_pressed(lobby_id: int) -> void:
 
 func _on_connection_successful() -> void:
 	switch_to_lobby()
+	message_edit.grab_focus()
 
 func _on_players_changed() -> void:
 	player_list.clear()
-	for player: Player in GameState.get_players():
+	for player: Player in GameState.get_players_sorted():
 		player_list.add_item(player.name, player.icon)
 
 func _on_message_edit_text_submitted(message: String) -> void:
@@ -125,7 +127,19 @@ func send_chat_message(message: String) -> void:
 		return
 	var id: int = multiplayer.get_remote_sender_id()
 	var player: Player = GameState.get_player(id)
-	chat_box.text += "%s: %s\n" % [player.name, message]
+	chat_box.text += "[color=white]%s:[/color] %s\n" % [player.name, message]
+	update_chat.rpc(chat_box.text)
+
+func _on_player_joined(player: Player) -> void:
+	if not multiplayer.is_server():
+		return
+	chat_box.text += "[color=green]%s joined[/color]\n" % player.name
+	update_chat.rpc(chat_box.text)
+
+func _on_player_left(player: Player) -> void:
+	if not multiplayer.is_server():
+		return
+	chat_box.text += "[color=red]%s left[/color]\n" % player.name
 	update_chat.rpc(chat_box.text)
 
 @rpc("authority", "call_remote", "reliable")
@@ -137,3 +151,5 @@ func _on_leave_btn_pressed() -> void:
 
 func _on_connection_closed() -> void:
 	switch_to_host_or_join()
+	player_list.clear()
+	chat_box.text = ""
