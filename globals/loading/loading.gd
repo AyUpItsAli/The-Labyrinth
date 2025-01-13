@@ -20,8 +20,7 @@ const SCENE_PATHS: Dictionary = {
 signal scene_loaded
 
 func _ready() -> void:
-	if visible:
-		finish()
+	finish()
 
 func start() -> void:
 	if visible:

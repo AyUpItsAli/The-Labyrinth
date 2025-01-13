@@ -68,6 +68,3 @@ func _on_lobby_btn_pressed(lobby_id: int) -> void:
 func _on_lobbies_back_btn_pressed() -> void:
 	host_or_join.show()
 	lobby_browser.hide()
-
-func _on_quit_btn_pressed() -> void:
-	Global.quit_game()

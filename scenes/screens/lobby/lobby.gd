@@ -67,6 +67,3 @@ func update_chat(text: String) -> void:
 
 func _on_leave_btn_pressed() -> void:
 	Network.leave_server()
-
-func _on_quit_btn_pressed() -> void:
-	Global.quit_game()

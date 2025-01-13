@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6f0m28ov66hv"]
+
+[ext_resource type="Script" path="res://scenes/ui/banner/banner.gd" id="1_3aiun"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3gku6"]
+font_size = 12
+font_color = Color(0.564706, 0.564706, 0.564706, 1)
+
+[node name="Banner" type="HBoxContainer" node_paths=PackedStringArray("version_lbl")]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+size_flags_vertical = 0
+script = ExtResource("1_3aiun")
+version_lbl = NodePath("VersionLbl")
+
+[node name="VersionLbl" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_3gku6")
+
+[node name="QuitBtn" type="Button" parent="."]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+focus_mode = 0
+text = "Quit"
+
+[connection signal="pressed" from="QuitBtn" to="." method="_on_quit_btn_pressed"]

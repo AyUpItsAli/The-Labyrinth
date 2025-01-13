@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dy6vaukbm2mk4"]
+[gd_scene load_steps=5 format=3 uid="uid://dy6vaukbm2mk4"]
 
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
+[ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_koiyu"]
 
@@ -43,16 +44,8 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
+[node name="Banner" parent="Panel/MarginContainer" instance=ExtResource("2_keu0g")]
 layout_mode = 2
-size_flags_vertical = 0
-alignment = 2
-
-[node name="QuitBtn" type="Button" parent="Panel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-focus_mode = 0
-text = "Quit"
 
 [node name="CenterContainer" type="CenterContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
@@ -146,7 +139,6 @@ size_flags_horizontal = 0
 focus_mode = 0
 text = "Back"
 
-[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/QuitBtn" to="." method="_on_quit_btn_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin/HostBtn" to="." method="_on_host_btn_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin/JoinBtn" to="." method="_on_join_btn_pressed"]
 [connection signal="text_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer/LobbySearchEdit" to="." method="_on_lobby_search_edit_text_changed"]
