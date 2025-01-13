@@ -1,17 +1,15 @@
 extends Node
 
-# TODO: Better logging colors
-
 func log_start(message: String) -> void:
 	log_message(message, "yellow")
 
 func log_info(message: String) -> void:
 	log_message(message, "cyan")
 
-func log_complete(message: String) -> void:
+func log_success(message: String) -> void:
 	log_message(message, "green")
 
-func log_end(message: String) -> void:
+func log_closure(message: String) -> void:
 	log_message(message, "red")
 
 func log_message(message: String, color: String) -> void:

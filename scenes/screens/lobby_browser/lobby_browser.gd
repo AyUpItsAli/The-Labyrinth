@@ -7,16 +7,11 @@ extends Control
 
 func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
-	Network.connection_successful.connect(_on_connection_successful)
-	Network.connection_closed.connect(_on_connection_closed)
 	player_name_edit.set_text(GameState.player.name)
 	refresh_lobbies()
 
-func _on_quit_btn_pressed() -> void:
-	Global.quit_game()
-
 func _on_lobbies_back_btn_pressed() -> void:
-	LoadingScreen.load_scene("res://scenes/screens/menu/menu.tscn")
+	Loading.load_scene(Loading.Scene.MENU)
 
 func _on_lobby_search_edit_text_changed(_new_text: String) -> void:
 	refresh_lobbies()
@@ -60,8 +55,5 @@ func _on_lobby_btn_pressed(lobby_id: int) -> void:
 	GameState.player.name = player_name_edit.text
 	Network.join_lobby(lobby_id)
 
-func _on_connection_successful() -> void:
-	LoadingScreen.load_scene("res://scenes/screens/lobby/lobby.tscn")
-
-func _on_connection_closed() -> void:
-	LoadingScreen.load_scene("res://scenes/screens/menu/menu.tscn")
+func _on_quit_btn_pressed() -> void:
+	Global.quit_game()

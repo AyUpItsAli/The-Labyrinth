@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dllbb5d3nijjj"]
 
-[ext_resource type="Script" path="res://globals/loading_screen/loading_screen.gd" id="1_c2htv"]
+[ext_resource type="Script" path="res://globals/loading/loading.gd" id="1_geuuq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_emus4"]
 font_size = 24
@@ -46,34 +46,6 @@ tracks/1/keys = {
 "values": [true]
 }
 
-[sub_resource type="Animation" id="Animation_5dqid"]
-resource_name = "fade_out"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Background:color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-
 [sub_resource type="Animation" id="Animation_5wm2p"]
 resource_name = "fade_in"
 length = 0.4
@@ -102,6 +74,34 @@ tracks/1/keys = {
 "values": [true]
 }
 
+[sub_resource type="Animation" id="Animation_5dqid"]
+resource_name = "fade_out"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yjkbk"]
 _data = {
 "RESET": SubResource("Animation_age75"),
@@ -109,11 +109,12 @@ _data = {
 "fade_out": SubResource("Animation_5dqid")
 }
 
-[node name="LoadingScreen" type="CanvasLayer" node_paths=PackedStringArray("message_lbl", "progress_bar", "anim_player")]
-script = ExtResource("1_c2htv")
+[node name="Loading" type="CanvasLayer" node_paths=PackedStringArray("message_lbl", "progress_bar", "anim_player", "progress_timer")]
+script = ExtResource("1_geuuq")
 message_lbl = NodePath("CenterContainer/VBoxContainer/MessageLbl")
 progress_bar = NodePath("CenterContainer/VBoxContainer/ProgressBar")
 anim_player = NodePath("AnimationPlayer")
+progress_timer = NodePath("ProgressTimer")
 
 [node name="Background" type="ColorRect" parent="."]
 anchors_preset = 15
@@ -147,9 +148,11 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 theme_override_styles/background = SubResource("StyleBoxFlat_bscfp")
 theme_override_styles/fill = SubResource("StyleBoxFlat_meli4")
-value = 50.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_yjkbk")
 }
+
+[node name="ProgressTimer" type="Timer" parent="."]
+wait_time = 0.1
