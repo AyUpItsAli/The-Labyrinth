@@ -10,17 +10,14 @@ func _ready() -> void:
 	Network.connection_successful.connect(_on_connection_successful)
 	Network.player_connected.connect(_on_player_connected)
 	Network.player_disconnected.connect(_on_player_disconnected)
-	GameState.players_updated.connect(update_player_list)
+	GameState.players_updated.connect(_on_players_updated)
 	message_edit.grab_focus()
 
 func _on_connection_successful() -> void:
 	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
 	start_btn.set_disabled(not multiplayer.is_server())
-	update_player_list()
-	if not multiplayer.is_server():
-		request_chat_update.rpc_id(1)
 
-func update_player_list() -> void:
+func _on_players_updated() -> void:
 	player_list.clear()
 	for player: Player in GameState.get_players_sorted():
 		player_list.add_item(player.name, player.icon)
@@ -53,13 +50,6 @@ func _on_player_disconnected(player: Player) -> void:
 		return
 	chat_box.text += "[color=red]%s left[/color]\n" % player.name
 	update_chat.rpc(chat_box.text)
-
-@rpc("any_peer", "call_remote", "reliable")
-func request_chat_update() -> void:
-	if not multiplayer.is_server():
-		return
-	var requested_by: int = multiplayer.get_remote_sender_id()
-	update_chat.rpc_id(requested_by, chat_box.text)
 
 @rpc("authority", "call_remote", "reliable")
 func update_chat(text: String) -> void:
