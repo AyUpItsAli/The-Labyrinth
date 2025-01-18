@@ -49,7 +49,7 @@ func create_lobby(lobby_name: String) -> void:
 	Steam.lobby_created.connect(
 		func(response: int, new_lobby_id: int) -> void:
 			if response != Steam.RESULT_OK:
-				Feedback.display_error("Error creating lobby: %s" % response)
+				Feedback.display_error("Error creating lobby: %s" % response, true)
 				Loading.finish()
 				return
 			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
@@ -100,7 +100,7 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 				reason = "A user in the lobby has blocked you from joining"
 			Steam.CHAT_ROOM_ENTER_RESPONSE_YOU_BLOCKED_MEMBER:
 				reason = "A user you have blocked is in the lobby"
-		Feedback.display_error("Error joining lobby: %s" % reason)
+		Feedback.display_error("Error joining lobby: %s" % reason, true)
 		Loading.finish()
 		return
 	lobby_id = id
@@ -159,11 +159,11 @@ func _on_connection_successful() -> void:
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
 	if connection.end_reason == Steam.NetworkingConnectionEnd.CONNECTION_END_MISC_TIMEOUT:
-		Feedback.display_error(connection.end_debug)
+		Feedback.display_error(connection.end_debug, true)
 		close_connection()
 
 func _on_connection_failed() -> void:
-	Feedback.display_error("Error connecting to server")
+	Feedback.display_error("Error connecting to server", true)
 	close_connection()
 
 func leave_server() -> void:
