@@ -17,7 +17,7 @@ const SCENE_PATHS: Dictionary = {
 @export var anim_player: AnimationPlayer
 @export var progress_timer: Timer
 
-signal scene_loaded
+signal loading_complete
 
 func _ready() -> void:
 	finish()
@@ -44,31 +44,36 @@ func display_message(message: String) -> void:
 	await get_tree().create_timer(MESSAGE_DISPLAY_TIME).timeout
 
 func load_scene(scene: Scene, finish_when_loaded: bool = true) -> void:
+	if not progress_timer.is_stopped():
+		Feedback.display_error("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene))
+		loading_complete.emit()
+		return
 	await start()
-	var scene_path: String = SCENE_PATHS[scene]
-	ResourceLoader.load_threaded_request(scene_path)
-	progress_timer.timeout.connect(_on_progress_timer_timeout.bind(scene_path))
+	ResourceLoader.load_threaded_request(SCENE_PATHS[scene])
+	progress_timer.timeout.connect(_on_progress_timer_timeout.bind(scene))
 	progress_timer.start()
-	await scene_loaded
+	await loading_complete
 	if finish_when_loaded:
 		await finish()
 
-func _on_progress_timer_timeout(scene_path: String) -> void:
+func _on_progress_timer_timeout(scene: Scene) -> void:
+	var path: String = SCENE_PATHS[scene]
 	var progress: Array = []
-	match ResourceLoader.load_threaded_get_status(scene_path, progress):
+	match ResourceLoader.load_threaded_get_status(path, progress):
 		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE, ResourceLoader.THREAD_LOAD_FAILED:
 			progress_timer.stop()
 			progress_timer.timeout.disconnect(_on_progress_timer_timeout)
-			Logging.log_error("Failed to load scene: %s" % scene_path)
+			Feedback.display_error("Error loading %s scene: Failed to load resource" % Scene.find_key(scene))
+			loading_complete.emit()
 		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			progress_bar.visible = true
 			progress_bar.value = progress[0] * 100
 		ResourceLoader.THREAD_LOAD_LOADED:
 			progress_timer.stop()
 			progress_timer.timeout.disconnect(_on_progress_timer_timeout)
-			var scene: Node = ResourceLoader.load_threaded_get(scene_path).instantiate()
+			var scene_node: Node = ResourceLoader.load_threaded_get(path).instantiate()
 			get_tree().current_scene.queue_free()
-			get_tree().root.add_child(scene)
-			get_tree().set_current_scene(scene)
+			get_tree().root.add_child(scene_node)
+			get_tree().set_current_scene(scene_node)
 			await get_tree().process_frame
-			scene_loaded.emit()
+			loading_complete.emit()

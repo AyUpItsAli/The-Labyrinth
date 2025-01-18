@@ -41,14 +41,14 @@ func initialise_steam() -> void:
 	
 	var response: Dictionary = Steam.steamInit()
 	if response["status"] != 1:
-		Logging.log_error("Failed to initialise Steam: %s" % str(response["verbal"]))
+		Feedback.display_error("Failed to initialise Steamworks API: %s" % str(response["verbal"]))
 		return
 	
 	steam_active = true
 	is_owned = Steam.isSubscribed()
 	
 	if not is_owned:
-		Logging.log_error("User does not own this application")
+		Feedback.display_error("Failed to initialise Steamworks API: You do not own this application")
 		return
 	
 	steam_id = Steam.getSteamID()

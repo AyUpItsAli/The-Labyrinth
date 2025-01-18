@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func _on_host_btn_pressed() -> void:
 	if player_name_edit.text.is_empty():
-		Logging.log_error("Player name must not be empty")
+		Feedback.display_error("Player name must not be empty")
 		return
 	GameState.player.name = player_name_edit.text
 	Network.create_lobby(GameState.player.name)
@@ -60,7 +60,7 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 
 func _on_lobby_btn_pressed(lobby_id: int) -> void:
 	if player_name_edit.text.is_empty():
-		Logging.log_error("Player name must not be empty")
+		Feedback.display_error("Player name must not be empty")
 		return
 	GameState.player.name = player_name_edit.text
 	Network.join_lobby(lobby_id)

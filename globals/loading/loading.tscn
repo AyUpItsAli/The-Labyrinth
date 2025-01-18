@@ -110,6 +110,7 @@ _data = {
 }
 
 [node name="Loading" type="CanvasLayer" node_paths=PackedStringArray("message_lbl", "progress_bar", "anim_player", "progress_timer")]
+layer = 3
 script = ExtResource("1_geuuq")
 message_lbl = NodePath("CenterContainer/VBoxContainer/MessageLbl")
 progress_bar = NodePath("CenterContainer/VBoxContainer/ProgressBar")
