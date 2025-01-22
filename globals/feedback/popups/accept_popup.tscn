@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://de57xwn4adqgt"]
+[gd_scene load_steps=5 format=3 uid="uid://de57xwn4adqgt"]
 
 [ext_resource type="Script" path="res://globals/feedback/popups/accept_popup.gd" id="1_sejta"]
 
@@ -13,6 +13,12 @@ corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
+
+[sub_resource type="InputEventAction" id="InputEventAction_xc3f6"]
+action = &"accept"
+
+[sub_resource type="Shortcut" id="Shortcut_s5ac8"]
+events = [SubResource("InputEventAction_xc3f6")]
 
 [node name="AcceptPopup" type="PanelContainer" node_paths=PackedStringArray("accept_btn", "message_lbl")]
 custom_minimum_size = Vector2(175, 140)
@@ -45,4 +51,5 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+shortcut = SubResource("Shortcut_s5ac8")
 text = "Ok"

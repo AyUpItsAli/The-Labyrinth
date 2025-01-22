@@ -5,6 +5,7 @@ enum LobbyAccess { INVITE, FRIENDS, PUBLIC, INVISIBLE }
 var peer: MultiplayerPeer = OfflineMultiplayerPeer.new()
 var lobby_id: int
 
+signal server_created
 signal connection_successful
 signal player_connected(player: Player)
 signal player_disconnected(player: Player)
@@ -18,7 +19,6 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
-	connection_successful.connect(_on_connection_successful)
 
 func get_lobby_data_by_id(id: int, key: String, default: String = "") -> String:
 	var data: String = Steam.getLobbyData(id, key)
@@ -33,6 +33,10 @@ func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 	if peer is OfflineMultiplayerPeer:
 		return MultiplayerPeer.ConnectionStatus.CONNECTION_DISCONNECTED
 	return peer.get_connection_status()
+
+# ----------------------------
+# CREATING / JOINING LOBBY
+# ----------------------------
 
 func create_lobby(lobby_name: String) -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
@@ -111,10 +115,16 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 	if multiplayer.is_server():
 		GameState.register_player(GameState.player)
 		Logging.log_success("Server created")
+		server_created.emit()
 		connection_successful.emit()
+		Loading.finish()
 	else:
 		Logging.log_start("Connecting to server")
 		await Loading.display_message("Connecting to server")
+
+# ------------------------
+# CONNECTING TO SERVER
+# ------------------------
 
 func create_peer() -> void:
 	peer = SteamMultiplayerPeer.new()
@@ -127,34 +137,32 @@ func create_peer() -> void:
 	GameState.player.id = multiplayer.get_unique_id()
 
 func _on_connected_to_server() -> void:
+	# Forward local player data to server
+	peer_connected.rpc_id(1, GameState.player.serialised())
+	# Wait for server to confirm connection
 	Logging.log_start("Waiting for server")
 	await Loading.display_message("Waiting for server")
-	peer_connected.rpc_id(1, GameState.player.serialised())
 
 @rpc("any_peer", "call_remote", "reliable")
 func peer_connected(player_data: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
 	var player := Player.deserialised(player_data)
+	# Register connected player
 	GameState.register_player(player)
-	confirm_connection.rpc_id(player.id)
+	# Confirm connection for connected player
+	confirm_connection.rpc_id(player.id, GameState.serialised())
+	# Player has connected
 	Logging.log_success("%s connected" % player.name)
 	player_connected.emit(player)
 
-func _on_peer_disconnected(id: int) -> void:
-	if not multiplayer.is_server():
-		return
-	var player: Player = GameState.get_player(id)
-	GameState.unregister_player(player)
-	Logging.log_closure("%s disconnected" % player.name)
-	player_disconnected.emit(player)
-
 @rpc("authority", "call_remote", "reliable")
-func confirm_connection() -> void:
+func confirm_connection(data: Dictionary) -> void:
+	# Update game state using data received from server
+	GameState.update(data)
+	# Connection was successful
 	Logging.log_success("Connection successful")
 	connection_successful.emit()
-
-func _on_connection_successful() -> void:
 	Loading.finish()
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
@@ -165,6 +173,10 @@ func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_st
 func _on_connection_failed() -> void:
 	Feedback.display_error("Error connecting to server", true)
 	close_connection()
+
+# -----------------------------
+# DISCONNECTING FROM SERVER
+# -----------------------------
 
 func leave_server() -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
@@ -195,3 +207,14 @@ func close_connection() -> void:
 	Logging.log_closure("Connection closed")
 	await Loading.load_scene(Loading.Scene.MENU)
 	connection_closed.emit()
+
+func _on_peer_disconnected(id: int) -> void:
+	# Server-side only
+	if not multiplayer.is_server():
+		return
+	var player: Player = GameState.get_player(id)
+	# Unregister player
+	GameState.unregister_player(player)
+	# Player has disconnected
+	Logging.log_closure("%s disconnected" % player.name)
+	player_disconnected.emit(player)
