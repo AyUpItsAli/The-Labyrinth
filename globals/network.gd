@@ -14,6 +14,7 @@ func _ready() -> void:
 	Global.game_closed.connect(_on_game_closed)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.network_connection_status_changed.connect(_on_connection_status_changed)
+	Steam.join_requested.connect(_on_lobby_join_requested)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
@@ -39,6 +40,9 @@ func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 # ----------------------------
 
 func create_lobby(lobby_name: String) -> void:
+	if not Global.steam_active:
+		Feedback.display_error("Error creating lobby: Steamworks API is not active")
+		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		Feedback.display_error("Error creating lobby: You are already connecting to a server")
 		return
@@ -63,6 +67,9 @@ func create_lobby(lobby_name: String) -> void:
 	)
 
 func join_lobby(id: int) -> void:
+	if not Global.steam_active:
+		Feedback.display_error("Error joining lobby: Steamworks API is not active")
+		return
 	if get_lobby_data_by_id(id, "app_name") != Global.app_name:
 		Feedback.display_error("Error joining lobby: Lobby is not compatible with this application")
 		return
@@ -79,6 +86,11 @@ func join_lobby(id: int) -> void:
 	Logging.log_start("Joining lobby: %s" % id)
 	await Loading.display_message("Joining lobby")
 	Steam.joinLobby(id)
+
+func _on_lobby_join_requested(id: int, _friend_id: int) -> void:
+	Steam.requestLobbyData(id)
+	await Steam.lobby_data_update
+	join_lobby(id)
 
 func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> void:
 	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
@@ -144,7 +156,6 @@ func peer_connected(player_data: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
 	var player := Player.deserialised(player_data)
-	# Register connected player
 	GameState.register_player(player)
 	# Confirm connection for connected player and forward our game data
 	confirm_connection.rpc_id(player.id, GameState.serialised())
@@ -210,8 +221,6 @@ func _on_peer_disconnected(id: int) -> void:
 	if not multiplayer.is_server():
 		return
 	var player: Player = GameState.get_player(id)
-	# Unregister player
 	GameState.unregister_player(player)
-	# Player has disconnected
 	Logging.log_closure("%s disconnected" % player.name)
 	player_disconnected.emit(player)
