@@ -18,7 +18,7 @@ signal chat_updated
 
 func _ready() -> void:
 	Steam.avatar_loaded.connect(_on_avatar_loaded)
-	Network.server_created.connect(_on_server_created)
+	Network.connection_successful.connect(_on_connection_successful)
 	Network.player_connected.connect(_on_player_connected)
 	Network.player_disconnected.connect(_on_player_disconnected)
 	reset()
@@ -50,6 +50,14 @@ func update(data: Dictionary) -> void:
 # PLAYERS
 # ---------
 
+func get_player(id: int) -> Player:
+	return players[id]
+
+func get_players_sorted() -> Array:
+	var sorted: Array = players.values()
+	sorted.sort_custom(func(plr1: Player, plr2: Player) -> bool: return plr1.index < plr2.index)
+	return sorted
+
 func get_players_serialised() -> Array[Dictionary]:
 	var player_data: Array[Dictionary] = []
 	for plr: Player in players.values():
@@ -66,14 +74,6 @@ func update_players(player_data: Array[Dictionary]) -> void:
 			player = new_player
 		players[new_player.id] = new_player
 	players_updated.emit()
-
-func get_player(id: int) -> Player:
-	return players[id]
-
-func get_players_sorted() -> Array:
-	var sorted: Array = players.values()
-	sorted.sort_custom(func(plr1: Player, plr2: Player) -> bool: return plr1.index < plr2.index)
-	return sorted
 
 func register_player(new_player: Player) -> void:
 	if multiplayer.is_server():
@@ -98,16 +98,16 @@ func unregister_player(old_player: Player) -> void:
 	for plr: Player in get_players_sorted():
 		plr.index = index
 		index += 1
-	Logging.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
-	players_updated.emit()
 	# Update clients
 	update_players.rpc(get_players_serialised())
+	Logging.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
+	players_updated.emit()
 
 # ------
 # CHAT
 # ------
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_remote", "reliable", Network.Channel.CHAT)
 func register_chat_message(msg: Dictionary) -> void:
 	if multiplayer.is_server():
 		# Timestamp and index determined by server
@@ -121,7 +121,7 @@ func register_chat_message(msg: Dictionary) -> void:
 		chat.pop_front()
 	chat_updated.emit()
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable", Network.Channel.CHAT)
 func receive_player_message(content: String) -> void:
 	if not multiplayer.is_server():
 		return
@@ -136,9 +136,13 @@ func send_player_message(content: String) -> void:
 	content = content.strip_edges()
 	if content.is_empty():
 		return
+	if Network.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		Feedback.display_error("Error sending chat message: You are not currently connected to a server")
+		return
 	receive_player_message.rpc_id(1, content)
 
 func send_server_message(content: String) -> void:
+	# Server-side only
 	if not multiplayer.is_server():
 		return
 	var msg: Dictionary = {}
@@ -146,7 +150,7 @@ func send_server_message(content: String) -> void:
 	msg["content"] = content
 	register_chat_message(msg)
 
-func _on_server_created() -> void:
+func _on_connection_successful() -> void:
 	send_server_message("[color=cyan]Server Created[/color]")
 
 func _on_player_connected(new_player: Player) -> void:

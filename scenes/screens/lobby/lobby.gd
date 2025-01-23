@@ -10,29 +10,22 @@ const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 @export var message_edit: LineEdit
 
 func _ready() -> void:
-	Network.connection_successful.connect(_on_connection_successful)
-	GameState.players_updated.connect(_on_players_updated)
-	GameState.chat_updated.connect(_on_chat_updated)
-	player_list.clear()
-	clear_chat()
+	GameState.players_updated.connect(update_player_list)
+	GameState.chat_updated.connect(update_chat)
+	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
+	update_player_list()
+	start_btn.set_disabled(not multiplayer.is_server())
+	update_chat()
 	message_edit.grab_focus()
 
-func _on_connection_successful() -> void:
-	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
-	start_btn.set_disabled(not multiplayer.is_server())
-	Loading.finish()
-
-func _on_players_updated() -> void:
+func update_player_list() -> void:
 	player_list.clear()
 	for player: Player in GameState.get_players_sorted():
 		player_list.add_item(player.name, player.icon)
 
-func clear_chat() -> void:
+func update_chat() -> void:
 	for child in message_container.get_children():
 		child.queue_free()
-
-func _on_chat_updated() -> void:
-	clear_chat()
 	for msg: Dictionary in GameState.chat:
 		var message: ChatMessage = CHAT_MESSAGE.instantiate()
 		match msg["type"]:

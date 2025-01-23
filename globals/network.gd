@@ -1,15 +1,14 @@
 extends Node
 
+enum Channel { DEFAULT, CHAT }
 enum LobbyAccess { INVITE, FRIENDS, PUBLIC, INVISIBLE }
 
 var peer: MultiplayerPeer = OfflineMultiplayerPeer.new()
 var lobby_id: int
 
-signal server_created
 signal connection_successful
 signal player_connected(player: Player)
 signal player_disconnected(player: Player)
-signal connection_closed
 
 func _ready() -> void:
 	Global.game_closed.connect(_on_game_closed)
@@ -19,6 +18,7 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	connection_successful.connect(_on_connection_successful)
 
 func get_lobby_data_by_id(id: int, key: String, default: String = "") -> String:
 	var data: String = Steam.getLobbyData(id, key)
@@ -109,13 +109,10 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 		return
 	lobby_id = id
 	Logging.log_info("Joined lobby: %s" % lobby_id)
-	await Loading.display_message("Loading lobby")
-	await Loading.load_scene(Loading.Scene.LOBBY, false)
 	create_peer()
 	if multiplayer.is_server():
 		GameState.register_player(GameState.player)
 		Logging.log_success("Server created")
-		server_created.emit()
 		connection_successful.emit()
 	else:
 		Logging.log_start("Connecting to server")
@@ -149,9 +146,8 @@ func peer_connected(player_data: Dictionary) -> void:
 	var player := Player.deserialised(player_data)
 	# Register connected player
 	GameState.register_player(player)
-	# Confirm connection for connected player
+	# Confirm connection for connected player and forward our game data
 	confirm_connection.rpc_id(player.id, GameState.serialised())
-	# Player has connected
 	Logging.log_success("%s connected" % player.name)
 	player_connected.emit(player)
 
@@ -159,9 +155,13 @@ func peer_connected(player_data: Dictionary) -> void:
 func confirm_connection(data: Dictionary) -> void:
 	# Update game state using data received from server
 	GameState.update(data)
-	# Connection was successful
 	Logging.log_success("Connection successful")
 	connection_successful.emit()
+
+func _on_connection_successful() -> void:
+	Logging.log_start("Loading lobby")
+	await Loading.display_message("Loading lobby")
+	Loading.load_scene(Loading.Scene.LOBBY)
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
 	if connection.end_reason == Steam.NetworkingConnectionEnd.CONNECTION_END_MISC_TIMEOUT:
@@ -203,8 +203,7 @@ func close_connection() -> void:
 	lobby_id = 0
 	GameState.reset()
 	Logging.log_closure("Connection closed")
-	await Loading.load_scene(Loading.Scene.MENU)
-	connection_closed.emit()
+	Loading.load_scene(Loading.Scene.MENU)
 
 func _on_peer_disconnected(id: int) -> void:
 	# Server-side only
