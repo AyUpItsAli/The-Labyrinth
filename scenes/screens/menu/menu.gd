@@ -1,28 +1,64 @@
 extends Control
 
 @export var player_name_edit: LineEdit
-@export var host_or_join: Control
-@export var lobby_browser: Control
+@export var landing_menu: Control
+# Host Menu
+@export var host_menu: Control
+@export var lobby_name_edit: LineEdit
+@export var lobby_type_btn: OptionButton
+@export var max_players_lbl: Label
+@export var max_players_slider: Slider
+# Join Menu
+@export var join_menu: Control
 @export var lobby_search_edit: LineEdit
 @export var lobbies_lbl: Label
 @export var lobbies_container: VBoxContainer
 
 func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
+	initialise_options()
+	landing_menu.show()
+	host_menu.hide()
+	join_menu.hide()
+
+func initialise_options() -> void:
+	# Player name
 	player_name_edit.set_text(GameState.player.name)
-	host_or_join.show()
-	lobby_browser.hide()
+	# Lobby type
+	for type: Steam.LobbyType in GameSettings.LOBBY_TYPES:
+		lobby_type_btn.add_item(GameSettings.LOBBY_TYPES[type], type)
+	lobby_type_btn.select(0)
+	# Max players
+	max_players_slider.min_value = GameSettings.MIN_PLAYERS
+	max_players_slider.max_value = GameSettings.MAX_PLAYERS
+	max_players_slider.value = GameSettings.MAX_PLAYERS
+	max_players_lbl.set_text(str(GameSettings.MAX_PLAYERS))
 
 func _on_host_btn_pressed() -> void:
+	landing_menu.hide()
+	host_menu.show()
+
+func _on_max_players_slider_value_changed(value: float) -> void:
+	max_players_lbl.set_text(str(int(value)))
+
+func _on_host_lobby_btn_pressed() -> void:
 	if player_name_edit.text.is_empty():
 		Feedback.display_error("Player name must not be empty")
 		return
 	GameState.player.name = player_name_edit.text
-	Network.create_lobby(GameState.player.name)
+	var settings := GameSettings.new()
+	settings.lobby_name = GameState.player.name if lobby_name_edit.text.is_empty() else lobby_name_edit.text
+	settings.lobby_type = lobby_type_btn.get_selected_id() as Steam.LobbyType
+	settings.max_players = int(max_players_slider.value)
+	Network.create_lobby(settings)
+
+func _on_host_back_btn_pressed() -> void:
+	landing_menu.show()
+	host_menu.hide()
 
 func _on_join_btn_pressed() -> void:
-	host_or_join.hide()
-	lobby_browser.show()
+	landing_menu.hide()
+	join_menu.show()
 	refresh_lobbies()
 
 func _on_lobby_search_edit_text_changed(_new_text: String) -> void:
@@ -47,24 +83,24 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 			continue
 		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
 		var max_members: int = Steam.getLobbyMemberLimit(lobby_id)
-		var lobby_btn := Button.new()
-		lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
-		lobby_btn.set_focus_mode(Control.FOCUS_NONE)
-		lobby_btn.set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT)
-		lobby_btn.pressed.connect(_on_lobby_btn_pressed.bind(lobby_id))
-		lobbies_container.add_child(lobby_btn)
+		var join_lobby_btn := Button.new()
+		join_lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
+		join_lobby_btn.set_focus_mode(Control.FOCUS_NONE)
+		join_lobby_btn.set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT)
+		join_lobby_btn.pressed.connect(_on_join_lobby_btn_pressed.bind(lobby_id))
+		lobbies_container.add_child(join_lobby_btn)
 	if lobbies_container.get_child_count() > 0:
 		lobbies_lbl.set_text("")
 	else:
 		lobbies_lbl.set_text("No available lobbies :(")
 
-func _on_lobby_btn_pressed(lobby_id: int) -> void:
+func _on_join_lobby_btn_pressed(lobby_id: int) -> void:
 	if player_name_edit.text.is_empty():
 		Feedback.display_error("Player name must not be empty")
 		return
 	GameState.player.name = player_name_edit.text
 	Network.join_lobby(lobby_id)
 
-func _on_lobbies_back_btn_pressed() -> void:
-	host_or_join.show()
-	lobby_browser.hide()
+func _on_join_back_btn_pressed() -> void:
+	landing_menu.show()
+	join_menu.hide()

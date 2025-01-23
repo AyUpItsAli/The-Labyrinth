@@ -14,7 +14,7 @@ func _ready() -> void:
 	GameState.chat_updated.connect(update_chat)
 	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
 	update_player_list()
-	start_btn.set_disabled(not multiplayer.is_server())
+	start_btn.set_visible(multiplayer.is_server())
 	update_chat()
 	message_edit.grab_focus()
 

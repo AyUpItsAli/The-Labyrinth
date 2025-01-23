@@ -1,11 +1,11 @@
 extends Node
 
 enum Channel { DEFAULT, CHAT }
-enum LobbyAccess { INVITE, FRIENDS, PUBLIC, INVISIBLE }
 
 var peer: MultiplayerPeer = OfflineMultiplayerPeer.new()
-var lobby_id: int
+var lobby_id: int = -1
 
+signal server_created
 signal connection_successful
 signal player_connected(player: Player)
 signal player_disconnected(player: Player)
@@ -39,7 +39,7 @@ func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 # CREATING / JOINING LOBBY
 # ----------------------------
 
-func create_lobby(lobby_name: String) -> void:
+func create_lobby(settings: GameSettings) -> void:
 	if not Global.steam_active:
 		Feedback.display_error("Error creating lobby: Steamworks API is not active")
 		return
@@ -49,9 +49,9 @@ func create_lobby(lobby_name: String) -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
 		Feedback.display_error("Error creating lobby: You are already connected to a server")
 		return
-	Logging.log_start("Creating lobby: %s" % lobby_name)
+	Logging.log_start("Creating lobby: %s" % settings.lobby_name)
 	await Loading.display_message("Creating lobby")
-	Steam.createLobby(LobbyAccess.PUBLIC, 4) # TODO: Lobby settings
+	Steam.createLobby(settings.lobby_type, settings.max_players)
 	for connection: Dictionary in Steam.lobby_created.get_connections():
 		Steam.lobby_created.disconnect(connection.callable)
 	Steam.lobby_created.connect(
@@ -62,7 +62,7 @@ func create_lobby(lobby_name: String) -> void:
 				return
 			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
 			Steam.setLobbyData(new_lobby_id, "app_version", Global.app_version)
-			Steam.setLobbyData(new_lobby_id, "name", lobby_name)
+			Steam.setLobbyData(new_lobby_id, "name", settings.lobby_name)
 			Logging.log_info("Lobby created: %s" % new_lobby_id)
 	)
 
@@ -125,6 +125,7 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 	if multiplayer.is_server():
 		GameState.register_player(GameState.player)
 		Logging.log_success("Server created")
+		server_created.emit()
 		connection_successful.emit()
 	else:
 		Logging.log_start("Connecting to server")
@@ -211,7 +212,7 @@ func close_connection() -> void:
 	peer = OfflineMultiplayerPeer.new()
 	multiplayer.set_multiplayer_peer(peer)
 	Steam.leaveLobby(lobby_id)
-	lobby_id = 0
+	lobby_id = -1
 	GameState.reset()
 	Logging.log_closure("Connection closed")
 	Loading.load_scene(Loading.Scene.MENU)

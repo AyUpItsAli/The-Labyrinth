@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dy6vaukbm2mk4"]
+[gd_scene load_steps=5 format=3 uid="uid://dy6vaukbm2mk4"]
 
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
 
-[node name="Menu" type="Control" node_paths=PackedStringArray("player_name_edit", "host_or_join", "lobby_browser", "lobby_search_edit", "lobbies_lbl", "lobbies_container")]
+[sub_resource type="LabelSettings" id="LabelSettings_7rlvq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_oxqse"]
+font_size = 32
+
+[node name="Menu" type="Control" node_paths=PackedStringArray("player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "lobbies_lbl", "lobbies_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,11 +17,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p8hil")
 player_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/PlayerNameEdit")
-host_or_join = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin")
-lobby_browser = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser")
-lobby_search_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer/LobbySearchEdit")
-lobbies_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer/LobbiesLbl")
-lobbies_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer/ScrollContainer/Lobbies")
+landing_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu")
+host_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu")
+lobby_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/LobbyNameEdit")
+lobby_type_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/LobbyType/LobbyTypeBtn")
+max_players_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers/MaxPlayersLbl")
+max_players_slider = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers/MaxPlayersSlider")
+join_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu")
+lobby_search_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/HBoxContainer/LobbySearchEdit")
+lobbies_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel/MarginContainer/LobbiesLbl")
+lobbies_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel/MarginContainer/ScrollContainer/Lobbies")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -58,50 +68,116 @@ size_flags_horizontal = 4
 placeholder_text = "Player name"
 alignment = 1
 
-[node name="HostOrJoin" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+[node name="LandingMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HostBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin"]
+[node name="HostBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
 text = "Host"
 
-[node name="JoinBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin"]
+[node name="JoinBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
 text = "Join"
 
-[node name="LobbyBrowser" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+[node name="HostMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LobbyNameEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+placeholder_text = "Lobby name (optional)"
+alignment = 1
+
+[node name="LobbyType" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/LobbyType"]
+layout_mode = 2
+text = "Lobby Type"
+
+[node name="LobbyTypeBtn" type="OptionButton" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/LobbyType"]
+custom_minimum_size = Vector2(130, 31)
+layout_mode = 2
+focus_mode = 0
+
+[node name="MaxPlayers" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers"]
+layout_mode = 2
+text = "Max Players"
+label_settings = SubResource("LabelSettings_7rlvq")
+horizontal_alignment = 1
+
+[node name="MaxPlayersLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_oxqse")
+horizontal_alignment = 1
+
+[node name="MaxPlayersSlider" type="HSlider" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HostLobbyBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/Buttons"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+focus_mode = 0
+text = "Create Lobby"
+
+[node name="HostBackBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/Buttons"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+focus_mode = 0
+text = "Back"
+
+[node name="JoinMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="LobbySearchEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer"]
+[node name="LobbySearchEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search"
 
-[node name="RefreshBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer"]
+[node name="RefreshBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/HBoxContainer"]
 custom_minimum_size = Vector2(78, 0)
 layout_mode = 2
 focus_mode = 0
 text = "Refresh"
 
-[node name="Panel" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser"]
+[node name="Panel" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu"]
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -113,29 +189,32 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="LobbiesLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer"]
+[node name="LobbiesLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel/MarginContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel/MarginContainer"]
 layout_mode = 2
 vertical_scroll_mode = 3
 
-[node name="Lobbies" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer/ScrollContainer"]
+[node name="Lobbies" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/Panel/MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="LobbiesBackBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser"]
+[node name="JoinBackBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 8
 focus_mode = 0
 text = "Back"
 
-[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin/HostBtn" to="." method="_on_host_btn_pressed"]
-[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostOrJoin/JoinBtn" to="." method="_on_join_btn_pressed"]
-[connection signal="text_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer/LobbySearchEdit" to="." method="_on_lobby_search_edit_text_changed"]
-[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/HBoxContainer/RefreshBtn" to="." method="refresh_lobbies"]
-[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/LobbiesBackBtn" to="." method="_on_lobbies_back_btn_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu/HostBtn" to="." method="_on_host_btn_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu/JoinBtn" to="." method="_on_join_btn_pressed"]
+[connection signal="value_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/MaxPlayers/MaxPlayersSlider" to="." method="_on_max_players_slider_value_changed"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/Buttons/HostLobbyBtn" to="." method="_on_host_lobby_btn_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/Buttons/HostBackBtn" to="." method="_on_host_back_btn_pressed"]
+[connection signal="text_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/HBoxContainer/LobbySearchEdit" to="." method="_on_lobby_search_edit_text_changed"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/HBoxContainer/RefreshBtn" to="." method="refresh_lobbies"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/JoinBackBtn" to="." method="_on_join_back_btn_pressed"]

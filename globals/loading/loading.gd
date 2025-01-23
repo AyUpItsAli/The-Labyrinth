@@ -2,10 +2,7 @@ extends CanvasLayer
 
 const MESSAGE_DISPLAY_TIME = 0.1
 
-enum Scene {
-	MENU,
-	LOBBY
-}
+enum Scene { MENU, LOBBY }
 
 const SCENE_PATHS: Dictionary = {
 	Scene.MENU: "res://scenes/screens/menu/menu.tscn",

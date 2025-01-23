@@ -3,11 +3,7 @@ extends Node
 const MAX_CHAT_MESSAGES = 100
 const HOST_COLOUR = "crimson"
 
-enum MessageType
-{
-	PLAYER,
-	SERVER
-}
+enum MessageType { PLAYER, SERVER }
 
 var player: Player
 var players: Dictionary
@@ -18,7 +14,7 @@ signal chat_updated
 
 func _ready() -> void:
 	Steam.avatar_loaded.connect(_on_avatar_loaded)
-	Network.connection_successful.connect(_on_connection_successful)
+	Network.server_created.connect(_on_server_created)
 	Network.player_connected.connect(_on_player_connected)
 	Network.player_disconnected.connect(_on_player_disconnected)
 	reset()
@@ -150,7 +146,7 @@ func send_server_message(content: String) -> void:
 	msg["content"] = content
 	register_chat_message(msg)
 
-func _on_connection_successful() -> void:
+func _on_server_created() -> void:
 	send_server_message("[color=cyan]Server Created[/color]")
 
 func _on_player_connected(new_player: Player) -> void:

@@ -86,14 +86,16 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 26
 text = "Start"
 
 [node name="LeaveBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer/HBoxContainer"]
 modulate = Color(1, 0.188235, 0.188235, 1)
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 18
 text = "Leave"
