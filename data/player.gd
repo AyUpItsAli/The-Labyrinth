@@ -8,6 +8,9 @@ var steam_id: int
 var name: String
 var icon: ImageTexture
 
+func is_host() -> bool:
+	return id == 1
+
 func load_icon(size: int, bytes: PackedByteArray) -> void:
 	var image := Image.create_from_data(size, size, false, Image.FORMAT_RGBA8, bytes)
 	if size > MAX_ICON_SIZE:

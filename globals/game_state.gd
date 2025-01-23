@@ -1,6 +1,7 @@
 extends Node
 
 const MAX_CHAT_MESSAGES = 100
+const HOST_COLOUR = "crimson"
 
 enum MessageType
 {
@@ -127,7 +128,8 @@ func receive_player_message(content: String) -> void:
 	var sender: Player = GameState.get_player(multiplayer.get_remote_sender_id())
 	var msg: Dictionary = {}
 	msg["type"] = MessageType.PLAYER
-	msg["content"] = "[color=white]%s:[/color] %s" % [sender.name, content]
+	var name_colour: String = HOST_COLOUR if sender.is_host() else "white"
+	msg["content"] = "[color=%s]%s:[/color] %s" % [name_colour, sender.name, content]
 	register_chat_message(msg)
 
 func send_player_message(content: String) -> void:
