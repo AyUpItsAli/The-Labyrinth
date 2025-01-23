@@ -52,4 +52,5 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 shortcut = SubResource("Shortcut_s5ac8")
+shortcut_in_tooltip = false
 text = "Ok"

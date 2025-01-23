@@ -1,5 +1,13 @@
 extends Node
 
+const MAX_CHAT_MESSAGES = 100
+
+enum MessageType
+{
+	PLAYER,
+	SERVER
+}
+
 var player: Player
 var players: Dictionary
 var chat: Array[Dictionary]
@@ -9,6 +17,7 @@ signal chat_updated
 
 func _ready() -> void:
 	Steam.avatar_loaded.connect(_on_avatar_loaded)
+	Network.server_created.connect(_on_server_created)
 	Network.player_connected.connect(_on_player_connected)
 	Network.player_disconnected.connect(_on_player_disconnected)
 	reset()
@@ -19,6 +28,7 @@ func reset() -> void:
 	player.name = Global.steam_username
 	Steam.getPlayerAvatar(Steam.AVATAR_LARGE)
 	players.clear()
+	chat.clear()
 
 func _on_avatar_loaded(_id: int, size: int, bytes: PackedByteArray) -> void:
 	player.load_icon(size, bytes)
@@ -30,6 +40,7 @@ func serialised() -> Dictionary:
 	return data
 
 func update(data: Dictionary) -> void:
+	Logging.log_info("Updating game state")
 	update_players(data["players"])
 	chat = data["chat"]
 	chat_updated.emit()
@@ -64,25 +75,21 @@ func get_players_sorted() -> Array:
 	return sorted
 
 func register_player(new_player: Player) -> void:
-	# Server-side setup for new players
 	if multiplayer.is_server():
-		new_player.index = players.size() # Set register order index
+		# Server-side setup for new players
+		new_player.index = players.size()
+		# Register for clients
+		register_player_serialised.rpc(new_player.serialised())
 	# Register player
 	players[new_player.id] = new_player
 	Logging.log_info("Registered player: ID = %s, Name: %s" % [new_player.id, new_player.name])
 	players_updated.emit()
-	# Register new player for clients
-	if multiplayer.is_server():
-		register_player_serialised.rpc(new_player.serialised())
 
 @rpc("authority", "call_remote", "reliable")
 func register_player_serialised(player_data: Dictionary) -> void:
 	register_player(Player.deserialised(player_data))
 
 func unregister_player(old_player: Player) -> void:
-	# Server-side only
-	if not multiplayer.is_server():
-		return
 	# Remove player
 	players.erase(old_player.id)
 	# Ensure remaining players have the correct index
@@ -99,30 +106,49 @@ func unregister_player(old_player: Player) -> void:
 # CHAT
 # ------
 
-func send_chat_message(message: String) -> void:
-	message = message.strip_edges()
-	if message.is_empty():
-		return
-	receive_player_message.rpc_id(1, message)
-
-func send_system_message(message: String) -> void:
-	if not multiplayer.is_server():
-		return
+@rpc("authority", "call_remote", "reliable")
+func register_chat_message(msg: Dictionary) -> void:
+	if multiplayer.is_server():
+		# Timestamp and index determined by server
+		msg["time"] = Time.get_unix_time_from_system()
+		msg["index"] = chat.size()
+		# Register for clients
+		register_chat_message.rpc(msg)
+	# Insert message
+	chat.insert(msg["index"], msg)
+	if chat.size() > MAX_CHAT_MESSAGES:
+		chat.pop_front()
+	chat_updated.emit()
 
 @rpc("any_peer", "call_local", "reliable")
-func receive_player_message(message: String) -> void:
+func receive_player_message(content: String) -> void:
 	if not multiplayer.is_server():
 		return
-	var sent_by: int = multiplayer.get_remote_sender_id()
-	var sender: Player = get_player(sent_by)
-	var content: String = "[color=white]%s:[/color] %s\n" % [sender.name, message]
+	var sender: Player = GameState.get_player(multiplayer.get_remote_sender_id())
+	var msg: Dictionary = {}
+	msg["type"] = MessageType.PLAYER
+	msg["content"] = "[color=white]%s:[/color] %s" % [sender.name, content]
+	register_chat_message(msg)
+
+func send_player_message(content: String) -> void:
+	content = content.strip_edges()
+	if content.is_empty():
+		return
+	receive_player_message.rpc_id(1, content)
+
+func send_server_message(content: String) -> void:
+	if not multiplayer.is_server():
+		return
+	var msg: Dictionary = {}
+	msg["type"] = MessageType.SERVER
+	msg["content"] = content
+	register_chat_message(msg)
+
+func _on_server_created() -> void:
+	send_server_message("[color=cyan]Server Created[/color]")
 
 func _on_player_connected(new_player: Player) -> void:
-	if not multiplayer.is_server():
-		return
-	var content: String = "[color=green]%s joined[/color]\n" % new_player.name
+	send_server_message("[color=green]%s joined[/color]" % new_player.name)
 
 func _on_player_disconnected(old_player: Player) -> void:
-	if not multiplayer.is_server():
-		return
-	var content: String = "[color=red]%s left[/color]\n" % old_player.name
+	send_server_message("[color=red]%s left[/color]" % old_player.name)

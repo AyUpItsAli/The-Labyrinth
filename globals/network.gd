@@ -117,7 +117,6 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 		Logging.log_success("Server created")
 		server_created.emit()
 		connection_successful.emit()
-		Loading.finish()
 	else:
 		Logging.log_start("Connecting to server")
 		await Loading.display_message("Connecting to server")
@@ -163,7 +162,6 @@ func confirm_connection(data: Dictionary) -> void:
 	# Connection was successful
 	Logging.log_success("Connection successful")
 	connection_successful.emit()
-	Loading.finish()
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
 	if connection.end_reason == Steam.NetworkingConnectionEnd.CONNECTION_END_MISC_TIMEOUT:
@@ -188,10 +186,10 @@ func leave_server() -> void:
 	Feedback.display_message("Left server")
 
 func _on_server_disconnected() -> void:
-	Logging.log_closure("Server closed")
+	Logging.log_closure("Server disconnected")
 	close_connection()
 	await Loading.loading_complete
-	Feedback.display_message("Server closed")
+	Feedback.display_error("Server disconnected")
 
 func _on_game_closed() -> void:
 	if get_connection_status() != MultiplayerPeer.CONNECTION_DISCONNECTED:

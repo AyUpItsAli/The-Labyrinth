@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0642d7fl5gft"]
+
+[ext_resource type="Script" path="res://scenes/ui/chat/chat_message.gd" id="1_4rxe4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qvh4x"]
+font_color = Color(0.313726, 0.313726, 0.313726, 1)
+
+[node name="ChatMessage" type="HBoxContainer" node_paths=PackedStringArray("content_lbl", "timestamp_lbl")]
+offset_right = 212.0
+offset_bottom = 23.0
+theme_override_constants/separation = 10
+script = ExtResource("1_4rxe4")
+content_lbl = NodePath("ContentLbl")
+timestamp_lbl = NodePath("TimestampLbl")
+
+[node name="ContentLbl" type="RichTextLabel" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.627451, 0.627451, 0.627451, 1)
+bbcode_enabled = true
+text = "[color=white]Player:[/color] Message"
+fit_content = true
+
+[node name="TimestampLbl" type="Label" parent="."]
+custom_minimum_size = Vector2(46, 0)
+layout_mode = 2
+size_flags_vertical = 0
+text = "12:00"
+label_settings = SubResource("LabelSettings_qvh4x")

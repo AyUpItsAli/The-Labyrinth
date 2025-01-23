@@ -13,7 +13,7 @@ func log_closure(message: String) -> void:
 	log_message(message, "red")
 
 func log_message(message: String, color: String) -> void:
-	print_rich("[color=%s]%s[/color]" % [color, message])
+	print_rich("[color=%s]%s[/color]" % [color, message.replace("[", "[lb]")])
 
 func log_error(message: String) -> void:
 	printerr(message)

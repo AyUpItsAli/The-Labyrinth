@@ -1,12 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://cg58svwp4447t"]
+[gd_scene load_steps=5 format=3 uid="uid://cg58svwp4447t"]
 
 [ext_resource type="Script" path="res://scenes/screens/lobby/lobby.gd" id="1_3ath0"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_caboo"]
+[ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="3_mt7cr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_v4fvi"]
 font_size = 24
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "player_list", "start_btn", "chat_box", "message_edit")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "player_list", "start_btn", "chat_container", "message_container", "message_edit")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +18,8 @@ script = ExtResource("1_3ath0")
 lobby_name_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer/LobbyNameLbl")
 player_list = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer/PlayerList")
 start_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer/HBoxContainer/StartBtn")
-chat_box = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer/ChatBox")
+chat_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer/ChatContainer")
+message_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer/ChatContainer/MessageContainer")
 message_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/MessageEdit")
 
 [node name="Panel" type="Panel" parent="."]
@@ -27,7 +29,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_mode = 2
+focus_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 1
@@ -63,7 +65,7 @@ theme_override_constants/separation = 10
 
 [node name="LobbyNameLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer"]
 layout_mode = 2
-text = "Lobby:"
+text = "Lobby: Lobby Name"
 label_settings = SubResource("LabelSettings_v4fvi")
 
 [node name="PlayerList" type="ItemList" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/VBoxContainer"]
@@ -101,7 +103,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Panel" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
@@ -118,12 +120,16 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="ChatBox" type="RichTextLabel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer"]
+[node name="ChatContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer"]
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/default_color = Color(0.439216, 0.439216, 0.439216, 1)
-bbcode_enabled = true
-scroll_following = true
+
+[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer/ChatContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="ChatMessage" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat/Panel/MarginContainer/ChatContainer/MessageContainer" instance=ExtResource("3_mt7cr")]
+layout_mode = 2
 
 [node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/LobbyChat"]
 layout_mode = 2

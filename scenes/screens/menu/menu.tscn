@@ -1,12 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dy6vaukbm2mk4"]
+[gd_scene load_steps=3 format=3 uid="uid://dy6vaukbm2mk4"]
 
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_koiyu"]
-
-[sub_resource type="Theme" id="Theme_2237b"]
-VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_koiyu")
 
 [node name="Menu" type="Control" node_paths=PackedStringArray("player_name_edit", "host_or_join", "lobby_browser", "lobby_search_edit", "lobbies_lbl", "lobbies_container")]
 layout_mode = 3
@@ -30,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_mode = 2
+focus_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 1
@@ -125,7 +120,7 @@ vertical_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer"]
 layout_mode = 2
-theme = SubResource("Theme_2237b")
+vertical_scroll_mode = 3
 
 [node name="Lobbies" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LobbyBrowser/Panel/MarginContainer/ScrollContainer"]
 layout_mode = 2
