@@ -42,7 +42,7 @@ func display_message(message: String) -> void:
 
 func load_scene(scene: Scene, finish_when_loaded: bool = true) -> void:
 	if not progress_timer.is_stopped():
-		Feedback.display_error("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene), true)
+		Dialog.display_error("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene), true)
 		loading_complete.emit()
 		return
 	await start()
@@ -60,7 +60,7 @@ func _on_progress_timer_timeout(scene: Scene) -> void:
 		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE, ResourceLoader.THREAD_LOAD_FAILED:
 			progress_timer.stop()
 			progress_timer.timeout.disconnect(_on_progress_timer_timeout)
-			Feedback.display_error("Error loading %s scene: Failed to load resource" % Scene.find_key(scene), true)
+			Dialog.display_error("Error loading %s scene: Failed to load resource" % Scene.find_key(scene), true)
 			loading_complete.emit()
 		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			progress_bar.visible = true

@@ -133,7 +133,7 @@ func send_player_message(content: String) -> void:
 	if content.is_empty():
 		return
 	if Network.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
-		Feedback.display_error("Error sending chat message: You are not currently connected to a server")
+		Dialog.display_error("Error sending chat message: You are not currently connected to a server")
 		return
 	receive_player_message.rpc_id(1, content)
 

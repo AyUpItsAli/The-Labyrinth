@@ -1,13 +1,13 @@
 extends CanvasLayer
 
-const ACCEPT_POPUP = preload("res://globals/feedback/popups/accept_popup.tscn")
+const ACCEPT_POPUP = preload("res://globals/dialog/popups/accept_popup.tscn")
 
 @export var popup_container: Container
 
 func _ready() -> void:
 	visible = popup_container.get_child_count() > 0
 
-func display_popup(popup: FeedbackPopup) -> void:
+func display_popup(popup: DialogPopup) -> void:
 	show()
 	popup.tree_exited.connect(_on_popup_closed)
 	popup_container.add_child(popup)

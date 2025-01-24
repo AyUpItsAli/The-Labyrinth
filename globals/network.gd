@@ -41,15 +41,15 @@ func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 
 func create_lobby(settings: GameSettings) -> void:
 	if not Global.steam_active:
-		Feedback.display_error("Error creating lobby: Steamworks API is not active")
+		Dialog.display_error("Error creating lobby: Steamworks API is not active")
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
-		Feedback.display_error("Error creating lobby: You are already connecting to a server")
+		Dialog.display_error("Error creating lobby: You are already connecting to a server")
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
-		Feedback.display_error("Error creating lobby: You are already connected to a server")
+		Dialog.display_error("Error creating lobby: You are already connected to a server")
 		return
-	Logging.log_start("Creating lobby: %s" % settings.lobby_name)
+	Logging.log_start("Creating lobby: Name = %s, Type = %s" % [settings.lobby_name, settings.lobby_type])
 	await Loading.display_message("Creating lobby")
 	Steam.createLobby(settings.lobby_type, settings.max_players)
 	for connection: Dictionary in Steam.lobby_created.get_connections():
@@ -57,7 +57,7 @@ func create_lobby(settings: GameSettings) -> void:
 	Steam.lobby_created.connect(
 		func(response: int, new_lobby_id: int) -> void:
 			if response != Steam.RESULT_OK:
-				Feedback.display_error("Error creating lobby: %s" % response, true)
+				Dialog.display_error("Error creating lobby: %s" % response, true)
 				Loading.finish()
 				return
 			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
@@ -68,20 +68,20 @@ func create_lobby(settings: GameSettings) -> void:
 
 func join_lobby(id: int) -> void:
 	if not Global.steam_active:
-		Feedback.display_error("Error joining lobby: Steamworks API is not active")
+		Dialog.display_error("Error joining lobby: Steamworks API is not active")
 		return
 	if get_lobby_data_by_id(id, "app_name") != Global.app_name:
-		Feedback.display_error("Error joining lobby: Lobby is not compatible with this application")
+		Dialog.display_error("Error joining lobby: Lobby is not compatible with this application")
 		return
 	var app_version: String = get_lobby_data_by_id(id, "app_version", "???")
 	if Global.app_version != app_version:
-		Feedback.display_error("Error joining lobby: Your game version (%s) is not compatible with the host's game version (%s)" % [Global.app_version, app_version])
+		Dialog.display_error("Error joining lobby: Your game version (%s) is not compatible with the host's game version (%s)" % [Global.app_version, app_version])
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
-		Feedback.display_error("Error joining lobby: You are already connecting to a server")
+		Dialog.display_error("Error joining lobby: You are already connecting to a server")
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
-		Feedback.display_error("Error joining lobby: You are already connected to a server")
+		Dialog.display_error("Error joining lobby: You are already connected to a server")
 		return
 	Logging.log_start("Joining lobby: %s" % id)
 	await Loading.display_message("Joining lobby")
@@ -116,7 +116,7 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 				reason = "A user in the lobby has blocked you from joining"
 			Steam.CHAT_ROOM_ENTER_RESPONSE_YOU_BLOCKED_MEMBER:
 				reason = "A user you have blocked is in the lobby"
-		Feedback.display_error("Error joining lobby: %s" % reason, true)
+		Dialog.display_error("Error joining lobby: %s" % reason, true)
 		Loading.finish()
 		return
 	lobby_id = id
@@ -177,11 +177,11 @@ func _on_connection_successful() -> void:
 
 func _on_connection_status_changed(_handle: int, connection: Dictionary, _old_state: int) -> void:
 	if connection.end_reason == Steam.NetworkingConnectionEnd.CONNECTION_END_MISC_TIMEOUT:
-		Feedback.display_error(connection.end_debug, true)
+		Dialog.display_error(connection.end_debug, true)
 		close_connection()
 
 func _on_connection_failed() -> void:
-	Feedback.display_error("Error connecting to server", true)
+	Dialog.display_error("Error connecting to server", true)
 	close_connection()
 
 # -----------------------------
@@ -190,18 +190,18 @@ func _on_connection_failed() -> void:
 
 func leave_server() -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
-		Feedback.display_error("Error leaving server: You are not currently connected to a server")
+		Dialog.display_error("Error leaving server: You are not currently connected to a server")
 		return
 	Logging.log_start("Leaving server")
 	close_connection()
 	await Loading.loading_complete
-	Feedback.display_message("Left server")
+	Dialog.display_message("Left server")
 
 func _on_server_disconnected() -> void:
 	Logging.log_closure("Server disconnected")
 	close_connection()
 	await Loading.loading_complete
-	Feedback.display_error("Server disconnected")
+	Dialog.display_error("Server disconnected")
 
 func _on_game_closed() -> void:
 	if get_connection_status() != MultiplayerPeer.CONNECTION_DISCONNECTED:

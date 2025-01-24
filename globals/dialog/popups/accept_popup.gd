@@ -1,4 +1,4 @@
-class_name AcceptPopup extends FeedbackPopup
+class_name AcceptPopup extends DialogPopup
 
 @export var accept_btn: Button
 

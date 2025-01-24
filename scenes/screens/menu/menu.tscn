@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
 
-[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "lobbies_lbl", "lobbies_container")]
+[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "friends_filter_btn", "lobbies_lbl", "lobbies_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,6 +21,7 @@ max_players_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/
 max_players_slider = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers/VBoxContainer/MaxPlayersSlider")
 join_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu")
 lobby_search_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/LobbySearchEdit")
+friends_filter_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/FriendsFilter/FriendsFilterBtn")
 lobbies_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/LobbiesLbl")
 lobbies_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer/LobbiesContainer")
 
@@ -188,12 +189,17 @@ alignment = 2
 [node name="LobbySearchEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Search"
+placeholder_text = "Search Lobbies"
 
-[node name="LobbyTypeFilter" type="OptionButton" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
-custom_minimum_size = Vector2(130, 31)
+[node name="FriendsFilter" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+
+[node name="FriendsFilterBtn" type="CheckBox" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/FriendsFilter"]
+layout_mode = 2
+size_flags_horizontal = 4
 focus_mode = 0
+text = "Friends"
 
 [node name="RefreshBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
 custom_minimum_size = Vector2(78, 0)
@@ -239,5 +245,6 @@ text = "Back"
 [connection signal="value_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers/VBoxContainer/MaxPlayersSlider" to="." method="_on_max_players_slider_value_changed"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/HostLobbyBtn" to="." method="_on_host_lobby_btn_pressed"]
 [connection signal="text_changed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/LobbySearchEdit" to="." method="_on_lobby_search_edit_text_changed"]
+[connection signal="toggled" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/FriendsFilter/FriendsFilterBtn" to="." method="_on_friends_filter_btn_toggled"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/RefreshBtn" to="." method="refresh_lobbies"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/BackBtn" to="." method="return_to_landing_menu"]

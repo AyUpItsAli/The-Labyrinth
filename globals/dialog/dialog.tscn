@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://c0sq7335d1pqn"]
 
-[ext_resource type="Script" path="res://globals/feedback/feedback.gd" id="1_iwvnl"]
+[ext_resource type="Script" path="res://globals/dialog/dialog.gd" id="1_iwvnl"]
 
-[node name="Feedback" type="CanvasLayer" node_paths=PackedStringArray("popup_container")]
+[node name="Dialog" type="CanvasLayer" node_paths=PackedStringArray("popup_container")]
 layer = 2
 script = ExtResource("1_iwvnl")
 popup_container = NodePath("Panel/PopupContainer")

@@ -12,6 +12,7 @@ extends Control
 # Join Menu
 @export var join_menu: Control
 @export var lobby_search_edit: LineEdit
+@export var friends_filter_btn: CheckBox
 @export var lobbies_lbl: Label
 @export var lobbies_container: VBoxContainer
 
@@ -41,7 +42,7 @@ func return_to_landing_menu() -> void:
 
 func set_player_name() -> bool:
 	if player_name_edit.text.is_empty():
-		Feedback.display_error("Player name is required")
+		Dialog.display_error("Player name is required")
 		return false
 	GameState.player.name = player_name_edit.text
 	return true
@@ -72,35 +73,58 @@ func _on_join_btn_pressed() -> void:
 func _on_lobby_search_edit_text_changed(_new_text: String) -> void:
 	refresh_lobbies()
 
+func _on_friends_filter_btn_toggled(_toggled_on: bool) -> void:
+	refresh_lobbies()
+
 func refresh_lobbies() -> void:
 	for child in lobbies_container.get_children():
 		child.queue_free()
 	lobbies_lbl.set_text("Searching for lobbies...")
-	# TODO: Lobby list filters
 	Steam.requestLobbyList()
 
 func _on_lobby_match_list(lobbies: Array) -> void:
-	for lobby_id: int in lobbies:
-		#if Network.get_lobby_data_by_id(lobby_id, "app_name") != Global.app_name:
-			#continue
-		var lobby_name: String = Network.get_lobby_data_by_id(lobby_id, "name")
-		if lobby_name.is_empty():
-			continue
-		var search: String = lobby_search_edit.text.to_lower()
-		if not search.is_empty() and not lobby_name.to_lower().begins_with(search):
-			continue
-		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
-		var max_members: int = Steam.getLobbyMemberLimit(lobby_id)
-		var join_lobby_btn := Button.new()
-		join_lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
-		join_lobby_btn.set_focus_mode(Control.FOCUS_NONE)
-		join_lobby_btn.set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT)
-		join_lobby_btn.pressed.connect(_on_join_lobby_btn_pressed.bind(lobby_id))
-		lobbies_container.add_child(join_lobby_btn)
+	if friends_filter_btn.button_pressed:
+		await request_friend_lobbies()
+	else:
+		for lobby_id: int in lobbies:
+			add_lobby(lobby_id)
 	if lobbies_container.get_child_count() > 0:
 		lobbies_lbl.set_text("")
 	else:
 		lobbies_lbl.set_text("No available lobbies :(")
+
+func request_friend_lobbies() -> void:
+	for i in Steam.getFriendCount():
+		var friend_id: int = Steam.getFriendByIndex(i, Steam.FRIEND_FLAG_IMMEDIATE)
+		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
+		if game_info.is_empty():
+			continue
+		if game_info["id"] != Global.APP_ID:
+			continue
+		var lobby_id: Variant = game_info["lobby"]
+		if lobby_id is String or lobby_id == 0:
+			continue
+		Steam.requestLobbyData(lobby_id)
+		await Steam.lobby_data_update
+		add_lobby(lobby_id)
+
+func add_lobby(lobby_id: int) -> void:
+	if Network.get_lobby_data_by_id(lobby_id, "app_name") != Global.app_name:
+		return
+	var lobby_name: String = Network.get_lobby_data_by_id(lobby_id, "name")
+	if lobby_name.is_empty():
+		return
+	var search: String = lobby_search_edit.text.to_lower()
+	if not search.is_empty() and not lobby_name.to_lower().begins_with(search):
+		return
+	var member_count: int = Steam.getNumLobbyMembers(lobby_id)
+	var max_members: int = Steam.getLobbyMemberLimit(lobby_id)
+	var join_lobby_btn := Button.new()
+	join_lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
+	join_lobby_btn.set_focus_mode(Control.FOCUS_NONE)
+	join_lobby_btn.set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT)
+	join_lobby_btn.pressed.connect(_on_join_lobby_btn_pressed.bind(lobby_id))
+	lobbies_container.add_child(join_lobby_btn)
 
 func _on_join_lobby_btn_pressed(lobby_id: int) -> void:
 	if not set_player_name():

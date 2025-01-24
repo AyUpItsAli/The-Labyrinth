@@ -1,4 +1,4 @@
-class_name FeedbackPopup extends Control
+class_name DialogPopup extends Control
 
 @export var message_lbl: Label
 
