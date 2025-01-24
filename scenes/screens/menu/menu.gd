@@ -1,5 +1,6 @@
 extends Control
 
+@export var back_btn: Button
 @export var player_name_edit: LineEdit
 @export var landing_menu: Control
 # Host Menu
@@ -17,9 +18,7 @@ extends Control
 func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	initialise_options()
-	landing_menu.show()
-	host_menu.hide()
-	join_menu.hide()
+	return_to_landing_menu()
 
 func initialise_options() -> void:
 	# Player name
@@ -34,7 +33,21 @@ func initialise_options() -> void:
 	max_players_slider.value = GameSettings.MAX_PLAYERS
 	max_players_lbl.set_text(str(GameSettings.MAX_PLAYERS))
 
+func return_to_landing_menu() -> void:
+	back_btn.hide()
+	landing_menu.show()
+	host_menu.hide()
+	join_menu.hide()
+
+func set_player_name() -> bool:
+	if player_name_edit.text.is_empty():
+		Feedback.display_error("Player name is required")
+		return false
+	GameState.player.name = player_name_edit.text
+	return true
+
 func _on_host_btn_pressed() -> void:
+	back_btn.show()
 	landing_menu.hide()
 	host_menu.show()
 
@@ -42,21 +55,16 @@ func _on_max_players_slider_value_changed(value: float) -> void:
 	max_players_lbl.set_text(str(int(value)))
 
 func _on_host_lobby_btn_pressed() -> void:
-	if player_name_edit.text.is_empty():
-		Feedback.display_error("Player name must not be empty")
+	if not set_player_name():
 		return
-	GameState.player.name = player_name_edit.text
 	var settings := GameSettings.new()
 	settings.lobby_name = GameState.player.name if lobby_name_edit.text.is_empty() else lobby_name_edit.text
 	settings.lobby_type = lobby_type_btn.get_selected_id() as Steam.LobbyType
 	settings.max_players = int(max_players_slider.value)
 	Network.create_lobby(settings)
 
-func _on_host_back_btn_pressed() -> void:
-	landing_menu.show()
-	host_menu.hide()
-
 func _on_join_btn_pressed() -> void:
+	back_btn.show()
 	landing_menu.hide()
 	join_menu.show()
 	refresh_lobbies()
@@ -73,8 +81,8 @@ func refresh_lobbies() -> void:
 
 func _on_lobby_match_list(lobbies: Array) -> void:
 	for lobby_id: int in lobbies:
-		if Network.get_lobby_data_by_id(lobby_id, "app_name") != Global.app_name:
-			continue
+		#if Network.get_lobby_data_by_id(lobby_id, "app_name") != Global.app_name:
+			#continue
 		var lobby_name: String = Network.get_lobby_data_by_id(lobby_id, "name")
 		if lobby_name.is_empty():
 			continue
@@ -95,12 +103,6 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 		lobbies_lbl.set_text("No available lobbies :(")
 
 func _on_join_lobby_btn_pressed(lobby_id: int) -> void:
-	if player_name_edit.text.is_empty():
-		Feedback.display_error("Player name must not be empty")
+	if not set_player_name():
 		return
-	GameState.player.name = player_name_edit.text
 	Network.join_lobby(lobby_id)
-
-func _on_join_back_btn_pressed() -> void:
-	landing_menu.show()
-	join_menu.hide()
