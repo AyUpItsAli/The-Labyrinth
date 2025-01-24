@@ -6,7 +6,7 @@
 font_color = Color(0.313726, 0.313726, 0.313726, 1)
 
 [node name="ChatMessage" type="HBoxContainer" node_paths=PackedStringArray("content_lbl", "timestamp_lbl")]
-offset_right = 212.0
+offset_right = 300.0
 offset_bottom = 23.0
 theme_override_constants/separation = 10
 script = ExtResource("1_4rxe4")

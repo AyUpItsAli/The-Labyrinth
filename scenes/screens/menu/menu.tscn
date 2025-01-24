@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dy6vaukbm2mk4"]
+[gd_scene load_steps=4 format=3 uid="uid://dy6vaukbm2mk4"]
 
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
+[ext_resource type="PackedScene" uid="uid://dleqrvftgujjn" path="res://scenes/screens/menu/lobby_list_item.tscn" id="3_m6jmd"]
 
-[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "friends_filter_btn", "lobbies_lbl", "lobbies_container")]
+[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "friends_filter_btn", "searching_lbl", "lobby_list")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,8 +23,8 @@ max_players_slider = NodePath("Panel/MarginContainer/CenterContainer/VBoxContain
 join_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu")
 lobby_search_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/LobbySearchEdit")
 friends_filter_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/FriendsFilter/FriendsFilterBtn")
-lobbies_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/LobbiesLbl")
-lobbies_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer/LobbiesContainer")
+searching_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/SearchingLbl")
+lobby_list = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer/LobbyList")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -219,7 +220,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="LobbiesLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer"]
+[node name="SearchingLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -228,10 +229,13 @@ vertical_alignment = 1
 layout_mode = 2
 vertical_scroll_mode = 3
 
-[node name="LobbiesContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer"]
+[node name="LobbyList" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
+
+[node name="LobbyListItem" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer/LobbyList" instance=ExtResource("3_m6jmd")]
+layout_mode = 2
 
 [node name="BackBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(150, 0)

@@ -7,7 +7,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_v4fvi"]
 font_size = 24
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_title_lbl", "invite_btn", "player_list", "start_btn", "chat_container", "message_container", "message_edit")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "invite_btn", "member_count_lbl", "chat_container", "message_container", "message_edit", "player_list", "start_btn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,13 +15,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3ath0")
-lobby_title_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/LobbyTitleLbl")
+lobby_name_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/LobbyNameLbl")
 invite_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/InviteBtn")
-player_list = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/PlayerList")
-start_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/HBoxContainer/StartBtn")
-chat_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat/MarginContainer/ChatContainer")
-message_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat/MarginContainer/ChatContainer/MessageContainer")
-message_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/MessageEdit")
+member_count_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/PanelContainer/MemberCountLbl")
+chat_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer")
+message_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer/MessageContainer")
+message_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/MessageEdit")
+player_list = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/PlayerList")
+start_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer/StartBtn")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -60,18 +61,29 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="LobbyTitleLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="LobbyNameLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Lobby: Name | 0/0"
+text = "Lobby: Name"
 label_settings = SubResource("LabelSettings_v4fvi")
 clip_text = true
+text_overrun_behavior = 3
 
 [node name="InviteBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 focus_mode = 0
 text = "Invite Players"
+
+[node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+
+[node name="MemberCountLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "0/0"
+label_settings = SubResource("LabelSettings_v4fvi")
+horizontal_alignment = 1
 
 [node name="Lobby" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
@@ -81,49 +93,13 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PlayerList" type="ItemList" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_vertical = 3
-focus_mode = 0
-theme_override_colors/guide_color = Color(0, 0, 0, 0)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/icon_margin = 5
-fixed_icon_size = Vector2i(40, 40)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="StartBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/HBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-focus_mode = 0
-theme_override_font_sizes/font_size = 26
-text = "Start Game"
-
-[node name="LeaveBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/HBoxContainer"]
-modulate = Color(1, 0.188235, 0.188235, 1)
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-theme_override_font_sizes/font_size = 18
-text = "Leave"
-
-[node name="Right" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Chat" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
+[node name="Chat" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
 custom_minimum_size = Vector2(350, 275)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -135,21 +111,57 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="ChatContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat/MarginContainer"]
+[node name="ChatContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer"]
 layout_mode = 2
 
-[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat/MarginContainer/ChatContainer"]
+[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="ChatMessage" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/Chat/MarginContainer/ChatContainer/MessageContainer" instance=ExtResource("3_mt7cr")]
+[node name="ChatMessage" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer/MessageContainer" instance=ExtResource("3_mt7cr")]
 layout_mode = 2
 
-[node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
+[node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
 layout_mode = 2
 placeholder_text = "Enter message"
 
+[node name="Right" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayerList" type="ItemList" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_colors/guide_color = Color(0, 0, 0, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_margin = 5
+fixed_icon_size = Vector2i(40, 40)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StartBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 26
+text = "Start Game"
+
+[node name="LeaveBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer"]
+modulate = Color(1, 0.188235, 0.188235, 1)
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+text = "Leave"
+
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/InviteBtn" to="." method="_on_invite_btn_pressed"]
-[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/HBoxContainer/LeaveBtn" to="." method="_on_leave_btn_pressed"]
-[connection signal="text_submitted" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/MessageEdit" to="." method="_on_message_edit_text_submitted"]
+[connection signal="text_submitted" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/MessageEdit" to="." method="_on_message_edit_text_submitted"]
+[connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer/LeaveBtn" to="." method="_on_leave_btn_pressed"]

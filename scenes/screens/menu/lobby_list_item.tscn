@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://dleqrvftgujjn"]
+
+[ext_resource type="Script" path="res://scenes/screens/menu/lobby_list_item.gd" id="1_qgcv3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2agan"]
+font_size = 18
+
+[node name="LobbyListItem" type="PanelContainer" node_paths=PackedStringArray("name_lbl", "member_count_lbl", "join_btn")]
+offset_right = 431.0
+offset_bottom = 41.0
+script = ExtResource("1_qgcv3")
+name_lbl = NodePath("MarginContainer/HBoxContainer/NameLbl")
+member_count_lbl = NodePath("MarginContainer/HBoxContainer/MemberCountLbl")
+join_btn = NodePath("MarginContainer/HBoxContainer/JoinBtn")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLbl" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lobby Name"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="MemberCountLbl" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0/0"
+label_settings = SubResource("LabelSettings_2agan")
+horizontal_alignment = 1
+
+[node name="JoinBtn" type="Button" parent="MarginContainer/HBoxContainer"]
+modulate = Color(0.35291, 0.990625, 0.536253, 1)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+text = "Join"

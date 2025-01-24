@@ -1,5 +1,7 @@
 extends Control
 
+const LOBBY_LIST_ITEM = preload("res://scenes/screens/menu/lobby_list_item.tscn")
+
 @export var back_btn: Button
 @export var player_name_edit: LineEdit
 @export var landing_menu: Control
@@ -13,8 +15,8 @@ extends Control
 @export var join_menu: Control
 @export var lobby_search_edit: LineEdit
 @export var friends_filter_btn: CheckBox
-@export var lobbies_lbl: Label
-@export var lobbies_container: VBoxContainer
+@export var searching_lbl: Label
+@export var lobby_list: VBoxContainer
 
 func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
@@ -77,9 +79,9 @@ func _on_friends_filter_btn_toggled(_toggled_on: bool) -> void:
 	refresh_lobbies()
 
 func refresh_lobbies() -> void:
-	for child in lobbies_container.get_children():
+	for child in lobby_list.get_children():
 		child.queue_free()
-	lobbies_lbl.set_text("Searching for lobbies...")
+	searching_lbl.set_text("Searching for lobbies...")
 	Steam.requestLobbyList()
 
 func _on_lobby_match_list(lobbies: Array) -> void:
@@ -88,10 +90,10 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 	else:
 		for lobby_id: int in lobbies:
 			add_lobby(lobby_id)
-	if lobbies_container.get_child_count() > 0:
-		lobbies_lbl.set_text("")
+	if lobby_list.get_child_count() > 0:
+		searching_lbl.set_text("")
 	else:
-		lobbies_lbl.set_text("No available lobbies :(")
+		searching_lbl.set_text("No available lobbies :(")
 
 func request_friend_lobbies() -> void:
 	for i in Steam.getFriendCount():
@@ -119,12 +121,11 @@ func add_lobby(lobby_id: int) -> void:
 		return
 	var member_count: int = Network.get_lobby_member_count(lobby_id)
 	var max_members: int = Network.get_lobby_max_members(lobby_id)
-	var join_lobby_btn := Button.new()
-	join_lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
-	join_lobby_btn.set_focus_mode(Control.FOCUS_NONE)
-	join_lobby_btn.set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT)
-	join_lobby_btn.pressed.connect(_on_join_lobby_btn_pressed.bind(lobby_id))
-	lobbies_container.add_child(join_lobby_btn)
+	var item: LobbyListItem = LOBBY_LIST_ITEM.instantiate()
+	item.name_lbl.set_text(lobby_name)
+	item.member_count_lbl.set_text("%s/%s" % [member_count, max_members])
+	item.join_btn.pressed.connect(_on_join_lobby_btn_pressed.bind(lobby_id))
+	lobby_list.add_child(item)
 
 func _on_join_lobby_btn_pressed(lobby_id: int) -> void:
 	if not set_player_name():
