@@ -14,19 +14,18 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[sub_resource type="InputEventAction" id="InputEventAction_xc3f6"]
+[sub_resource type="InputEventAction" id="InputEventAction_pyfwt"]
 action = &"accept"
 
-[sub_resource type="Shortcut" id="Shortcut_s5ac8"]
-events = [SubResource("InputEventAction_xc3f6")]
+[sub_resource type="Shortcut" id="Shortcut_tnrsk"]
+events = [SubResource("InputEventAction_pyfwt")]
 
-[node name="AcceptPopup" type="PanelContainer" node_paths=PackedStringArray("accept_btn", "message_lbl")]
+[node name="AcceptPopup" type="PanelContainer" node_paths=PackedStringArray("message_lbl")]
 custom_minimum_size = Vector2(175, 140)
 offset_right = 175.0
 offset_bottom = 149.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_u7bkx")
 script = ExtResource("1_sejta")
-accept_btn = NodePath("MarginContainer/VBoxContainer/AcceptBtn")
 message_lbl = NodePath("MarginContainer/VBoxContainer/MessageLbl")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -51,6 +50,9 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-shortcut = SubResource("Shortcut_s5ac8")
+focus_mode = 0
+shortcut = SubResource("Shortcut_tnrsk")
 shortcut_in_tooltip = false
 text = "Ok"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/AcceptBtn" to="." method="_on_accept_btn_pressed"]

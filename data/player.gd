@@ -11,12 +11,6 @@ var icon: ImageTexture
 func is_host() -> bool:
 	return id == 1
 
-func load_icon(size: int, bytes: PackedByteArray) -> void:
-	var image := Image.create_from_data(size, size, false, Image.FORMAT_RGBA8, bytes)
-	if size > MAX_ICON_SIZE:
-		image.resize(MAX_ICON_SIZE, MAX_ICON_SIZE, Image.INTERPOLATE_LANCZOS)
-	icon = ImageTexture.create_from_image(image)
-
 func serialised() -> Dictionary:
 	var data: Dictionary
 	data["id"] = id
@@ -33,5 +27,11 @@ static func deserialised(data: Dictionary) -> Player:
 	player.index = data["index"]
 	player.steam_id = data["steam_id"]
 	player.name = data["name"]
-	player.load_icon(data["icon_size"], data["icon_bytes"])
+	player.icon = Player.load_icon(data["icon_size"], data["icon_bytes"])
 	return player
+
+static func load_icon(size: int, bytes: PackedByteArray) -> ImageTexture:
+	var image := Image.create_from_data(size, size, false, Image.FORMAT_RGBA8, bytes)
+	if size > MAX_ICON_SIZE:
+		image.resize(MAX_ICON_SIZE, MAX_ICON_SIZE, Image.INTERPOLATE_LANCZOS)
+	return ImageTexture.create_from_image(image)

@@ -1,7 +1,5 @@
 class_name DialogPopup extends Control
 
-@export var message_lbl: Label
-
 var previous_focus_owner: Control
 
 func _ready() -> void:

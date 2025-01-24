@@ -2,7 +2,8 @@ extends Control
 
 const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 
-@export var lobby_name_lbl: Label
+@export var lobby_title_lbl: Label
+@export var invite_btn: Button
 @export var player_list: ItemList
 @export var start_btn: Button
 @export var chat_container: ScrollContainer
@@ -10,18 +11,25 @@ const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 @export var message_edit: LineEdit
 
 func _ready() -> void:
-	GameState.players_updated.connect(update_player_list)
+	GameState.players_updated.connect(update_players)
 	GameState.chat_updated.connect(update_chat)
-	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
-	update_player_list()
+	invite_btn.set_visible(multiplayer.is_server())
 	start_btn.set_visible(multiplayer.is_server())
-	update_chat()
 	message_edit.grab_focus()
+	update_players()
+	update_chat()
 
-func update_player_list() -> void:
+func update_players() -> void:
+	# Update lobby title with new player count
+	var lobby_name: String = Network.get_lobby_data("name", "???")
+	var member_count: int = Network.get_lobby_member_count()
+	var max_members: int = Network.get_lobby_max_members()
+	lobby_title_lbl.set_text("Lobby: %s | %s/%s" % [lobby_name, member_count, max_members])
+	# Update player list
 	player_list.clear()
 	for player: Player in GameState.get_players_sorted():
-		player_list.add_item(player.name, player.icon)
+		var i: int = player_list.add_item(player.name, player.icon, false)
+		player_list.set_item_tooltip_enabled(i, false)
 
 func update_chat() -> void:
 	for child in message_container.get_children():
@@ -42,6 +50,9 @@ func update_chat() -> void:
 	await get_tree().process_frame
 	# Scroll to end
 	chat_container.set_v_scroll(Vector2i.MAX.x)
+
+func _on_invite_btn_pressed() -> void:
+	Dialog.display_invite_popup()
 
 func _on_message_edit_text_submitted(content: String) -> void:
 	message_edit.clear()

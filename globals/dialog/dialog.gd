@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 const ACCEPT_POPUP = preload("res://globals/dialog/popups/accept_popup.tscn")
+const INVITE_POPUP = preload("res://globals/dialog/popups/invite_popup.tscn")
 
 @export var popup_container: Container
 
@@ -29,3 +30,6 @@ func display_error(message: String, log_error: bool = false) -> void:
 		popup.message_lbl.label_settings = LabelSettings.new()
 	popup.message_lbl.label_settings.font_color = Color("ff5c5c")
 	display_popup(popup)
+
+func display_invite_popup() -> void:
+	display_popup(INVITE_POPUP.instantiate())

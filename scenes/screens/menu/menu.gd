@@ -101,8 +101,8 @@ func request_friend_lobbies() -> void:
 			continue
 		if game_info["id"] != Global.APP_ID:
 			continue
-		var lobby_id: Variant = game_info["lobby"]
-		if lobby_id is String or lobby_id == 0:
+		var lobby_id: int = game_info["lobby"]
+		if lobby_id == 0:
 			continue
 		Steam.requestLobbyData(lobby_id)
 		await Steam.lobby_data_update
@@ -117,8 +117,8 @@ func add_lobby(lobby_id: int) -> void:
 	var search: String = lobby_search_edit.text.to_lower()
 	if not search.is_empty() and not lobby_name.to_lower().begins_with(search):
 		return
-	var member_count: int = Steam.getNumLobbyMembers(lobby_id)
-	var max_members: int = Steam.getLobbyMemberLimit(lobby_id)
+	var member_count: int = Network.get_lobby_member_count(lobby_id)
+	var max_members: int = Network.get_lobby_max_members(lobby_id)
 	var join_lobby_btn := Button.new()
 	join_lobby_btn.set_text("%s | %s/%s" % [lobby_name, member_count, max_members])
 	join_lobby_btn.set_focus_mode(Control.FOCUS_NONE)

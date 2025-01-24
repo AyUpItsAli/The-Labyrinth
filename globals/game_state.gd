@@ -27,8 +27,12 @@ func reset() -> void:
 	players.clear()
 	chat.clear()
 
-func _on_avatar_loaded(_id: int, size: int, bytes: PackedByteArray) -> void:
-	player.load_icon(size, bytes)
+func _on_avatar_loaded(id: int, icon_size: int, bytes: PackedByteArray) -> void:
+	if player.icon:
+		return
+	if id != player.steam_id:
+		return
+	player.icon = Player.load_icon(icon_size, bytes)
 
 func serialised() -> Dictionary:
 	var data: Dictionary = {}
