@@ -26,9 +26,7 @@ func display_error(message: String, log_error: bool = false) -> void:
 		Logging.log_error(message)
 	var popup: AcceptPopup = ACCEPT_POPUP.instantiate()
 	popup.message_lbl.text = message
-	if not popup.message_lbl.label_settings:
-		popup.message_lbl.label_settings = LabelSettings.new()
-	popup.message_lbl.label_settings.font_color = Color("ff5c5c")
+	popup.message_lbl.modulate = Color("ff5c5c")
 	display_popup(popup)
 
 func display_invite_popup() -> void:

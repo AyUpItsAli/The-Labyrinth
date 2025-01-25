@@ -22,7 +22,7 @@ func _ready() -> void:
 func start() -> void:
 	if visible:
 		return
-	message_lbl.text = ""
+	message_lbl.set_text("")
 	progress_bar.hide()
 	anim_player.play("fade_in")
 	await anim_player.animation_finished
@@ -30,14 +30,14 @@ func start() -> void:
 func finish() -> void:
 	if not visible:
 		return
-	message_lbl.text = ""
+	message_lbl.set_text("")
 	progress_bar.hide()
 	anim_player.play("fade_out")
 	await anim_player.animation_finished
 
 func display_message(message: String) -> void:
 	await start()
-	message_lbl.text = message
+	message_lbl.set_text(message)
 	await get_tree().create_timer(MESSAGE_DISPLAY_TIME).timeout
 
 func load_scene(scene: Scene, finish_when_loaded: bool = true) -> void:

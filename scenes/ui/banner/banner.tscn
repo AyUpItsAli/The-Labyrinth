@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/ui/banner/banner.gd" id="1_3aiun"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3gku6"]
-font_size = 12
+font_size = 18
 font_color = Color(0.564706, 0.564706, 0.564706, 1)
 
 [node name="Banner" type="HBoxContainer" node_paths=PackedStringArray("version_lbl")]
@@ -19,13 +19,15 @@ version_lbl = NodePath("VersionLbl")
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+text = "Build 0.0.0"
 label_settings = SubResource("LabelSettings_3gku6")
 
 [node name="QuitBtn" type="Button" parent="."]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(75, 45)
 layout_mode = 2
 size_flags_horizontal = 10
 focus_mode = 0
+theme_override_font_sizes/font_size = 24
 text = "Quit"
 
 [connection signal="pressed" from="QuitBtn" to="." method="_on_quit_btn_pressed"]

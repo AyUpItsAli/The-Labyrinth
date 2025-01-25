@@ -3,7 +3,7 @@ extends Control
 const LOBBY_LIST_ITEM = preload("res://scenes/screens/menu/lobby_list_item.tscn")
 
 @export var back_btn: Button
-@export var player_name_edit: LineEdit
+@export var display_name_edit: LineEdit
 @export var landing_menu: Control
 # Host Menu
 @export var host_menu: Control
@@ -24,8 +24,8 @@ func _ready() -> void:
 	return_to_landing_menu()
 
 func initialise_options() -> void:
-	# Player name
-	player_name_edit.set_text(GameState.player.name)
+	# Display name
+	display_name_edit.set_text(GameState.player.name)
 	# Lobby type
 	for type: Steam.LobbyType in GameSettings.LOBBY_TYPES:
 		lobby_type_btn.add_item(GameSettings.LOBBY_TYPES[type], type)
@@ -43,10 +43,10 @@ func return_to_landing_menu() -> void:
 	join_menu.hide()
 
 func set_player_name() -> bool:
-	if player_name_edit.text.is_empty():
-		Dialog.display_error("Player name is required")
+	if display_name_edit.text.is_empty():
+		Dialog.display_error("Display name is required")
 		return false
-	GameState.player.name = player_name_edit.text
+	GameState.player.name = display_name_edit.text
 	return true
 
 func _on_host_btn_pressed() -> void:

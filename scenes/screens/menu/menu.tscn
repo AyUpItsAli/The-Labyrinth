@@ -1,10 +1,31 @@
-[gd_scene load_steps=4 format=3 uid="uid://dy6vaukbm2mk4"]
+[gd_scene load_steps=11 format=3 uid="uid://dy6vaukbm2mk4"]
 
 [ext_resource type="Script" path="res://scenes/screens/menu/menu.gd" id="1_p8hil"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_keu0g"]
 [ext_resource type="PackedScene" uid="uid://dleqrvftgujjn" path="res://scenes/screens/menu/lobby_list_item.tscn" id="3_m6jmd"]
 
-[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "player_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "friends_filter_btn", "searching_lbl", "lobby_list")]
+[sub_resource type="LabelSettings" id="LabelSettings_mk3bl"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_l40nu"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_io6l0"]
+font_size = 24
+
+[sub_resource type="Theme" id="Theme_olw0r"]
+PopupMenu/font_sizes/font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_naarq"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_w2ina"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_kl5wu"]
+font_size = 24
+
+[node name="Menu" type="Control" node_paths=PackedStringArray("back_btn", "display_name_edit", "landing_menu", "host_menu", "lobby_name_edit", "lobby_type_btn", "max_players_lbl", "max_players_slider", "join_menu", "lobby_search_edit", "friends_filter_btn", "searching_lbl", "lobby_list")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +34,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p8hil")
 back_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/BackBtn")
-player_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/PlayerName/PlayerNameEdit")
+display_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/DisplayName/DisplayNameEdit")
 landing_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu")
 host_menu = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu")
 lobby_name_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/LobbyName/LobbyNameEdit")
@@ -42,10 +63,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="Banner" parent="Panel/MarginContainer" instance=ExtResource("2_keu0g")]
 layout_mode = 2
@@ -57,43 +78,45 @@ mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 40
 
-[node name="PlayerName" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
+[node name="DisplayName" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/PlayerName"]
+[node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/DisplayName"]
 layout_mode = 2
-text = "Player Name"
+text = "Display Name"
+label_settings = SubResource("LabelSettings_mk3bl")
 
-[node name="PlayerNameEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/PlayerName"]
-custom_minimum_size = Vector2(150, 0)
+[node name="DisplayNameEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/DisplayName"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 24
 placeholder_text = "Required"
 
 [node name="LandingMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
 [node name="HostBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu"]
-custom_minimum_size = Vector2(80, 40)
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 32
 text = "Host"
 
 [node name="JoinBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu"]
-custom_minimum_size = Vector2(80, 40)
+custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 32
 text = "Join"
 
 [node name="HostMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
@@ -103,15 +126,15 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 10
 
 [node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -124,11 +147,13 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/LobbyName"]
 layout_mode = 2
 text = "Lobby Name"
+label_settings = SubResource("LabelSettings_l40nu")
 
 [node name="LobbyNameEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/LobbyName"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 24
 placeholder_text = "Optional"
 
 [node name="LobbyType" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer"]
@@ -138,12 +163,15 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/LobbyType"]
 layout_mode = 2
 text = "Lobby Type"
+label_settings = SubResource("LabelSettings_io6l0")
 
 [node name="LobbyTypeBtn" type="OptionButton" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/LobbyType"]
-custom_minimum_size = Vector2(150, 31)
+custom_minimum_size = Vector2(200, 42)
 layout_mode = 2
 size_flags_horizontal = 10
 focus_mode = 0
+theme = SubResource("Theme_olw0r")
+theme_override_font_sizes/font_size = 24
 
 [node name="MaxPlayers" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -152,18 +180,20 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers"]
 layout_mode = 2
 text = "Max Players"
+label_settings = SubResource("LabelSettings_naarq")
 
 [node name="VBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="MaxPlayersLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers/VBoxContainer"]
-custom_minimum_size = Vector2(19, 0)
+custom_minimum_size = Vector2(27, 0)
 layout_mode = 2
-text = "4"
-horizontal_alignment = 2
+text = "0"
+label_settings = SubResource("LabelSettings_w2ina")
+horizontal_alignment = 1
 
 [node name="MaxPlayersSlider" type="HSlider" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer/MaxPlayers/VBoxContainer"]
 layout_mode = 2
@@ -172,9 +202,10 @@ size_flags_vertical = 4
 focus_mode = 0
 
 [node name="HostLobbyBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(130, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 24
 text = "Host Lobby"
 
 [node name="JoinMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
@@ -190,44 +221,48 @@ alignment = 2
 [node name="LobbySearchEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
 placeholder_text = "Search Lobbies"
 
 [node name="FriendsFilter" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 
 [node name="FriendsFilterBtn" type="CheckBox" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions/FriendsFilter"]
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
+theme_override_constants/h_separation = 10
+theme_override_font_sizes/font_size = 24
 text = "Friends"
 
 [node name="RefreshBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
-custom_minimum_size = Vector2(78, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 24
 text = "Refresh"
 
 [node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu"]
-custom_minimum_size = Vector2(450, 250)
+custom_minimum_size = Vector2(650, 400)
 layout_mode = 2
 mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="SearchingLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer"]
 layout_mode = 2
+label_settings = SubResource("LabelSettings_kl5wu")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer"]
 layout_mode = 2
-vertical_scroll_mode = 3
 
 [node name="LobbyList" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/PanelContainer/MarginContainer/ScrollContainer"]
 layout_mode = 2
@@ -238,10 +273,11 @@ theme_override_constants/separation = 5
 layout_mode = 2
 
 [node name="BackBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 0
+theme_override_font_sizes/font_size = 24
 text = "Back"
 
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/LandingMenu/HostBtn" to="." method="_on_host_btn_pressed"]

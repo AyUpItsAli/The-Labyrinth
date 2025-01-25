@@ -1,11 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://cg58svwp4447t"]
+[gd_scene load_steps=7 format=3 uid="uid://cg58svwp4447t"]
 
 [ext_resource type="Script" path="res://scenes/screens/lobby/lobby.gd" id="1_3ath0"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_caboo"]
 [ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="3_mt7cr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_v4fvi"]
-font_size = 24
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_bxnln"]
+font_size = 32
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dujtv"]
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "invite_btn", "member_count_lbl", "chat_container", "message_container", "message_edit", "player_list", "start_btn")]
 layout_mode = 3
@@ -40,10 +45,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
 [node name="Banner" parent="Panel/MarginContainer" instance=ExtResource("2_caboo")]
 layout_mode = 2
@@ -70,19 +75,20 @@ clip_text = true
 text_overrun_behavior = 3
 
 [node name="InviteBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(175, 0)
 layout_mode = 2
 focus_mode = 0
-text = "Invite Players"
+theme_override_font_sizes/font_size = 24
+text = "Invite Friends"
 
 [node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(45, 0)
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
 [node name="MemberCountLbl" type="Label" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 text = "0/0"
-label_settings = SubResource("LabelSettings_v4fvi")
+label_settings = SubResource("LabelSettings_bxnln")
 horizontal_alignment = 1
 
 [node name="Lobby" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
@@ -94,7 +100,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Chat" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
-custom_minimum_size = Vector2(350, 275)
+custom_minimum_size = Vector2(500, 400)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
@@ -106,10 +112,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="ChatContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer"]
 layout_mode = 2
@@ -117,13 +123,14 @@ layout_mode = 2
 [node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 5
+theme_override_constants/separation = 8
 
 [node name="ChatMessage" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer/MessageContainer" instance=ExtResource("3_mt7cr")]
 layout_mode = 2
 
 [node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 placeholder_text = "Enter message"
 
 [node name="Right" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby"]
@@ -131,35 +138,39 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="PlayerList" type="ItemList" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 theme_override_colors/guide_color = Color(0, 0, 0, 0)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/icon_margin = 5
-fixed_icon_size = Vector2i(40, 40)
+theme_override_constants/v_separation = 10
+theme_override_constants/h_separation = 10
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hovered = SubResource("StyleBoxEmpty_dujtv")
+fixed_icon_size = Vector2i(64, 64)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="StartBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 focus_mode = 0
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Start Game"
 
 [node name="LeaveBtn" type="Button" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer"]
 modulate = Color(1, 0.188235, 0.188235, 1)
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 28
 text = "Leave"
 
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/InviteBtn" to="." method="_on_invite_btn_pressed"]
