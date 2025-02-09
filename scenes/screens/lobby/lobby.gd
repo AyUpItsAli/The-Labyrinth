@@ -50,8 +50,8 @@ func _on_message_edit_text_submitted(content: String) -> void:
 
 func update_players() -> void:
 	# Update lobby title with new player count
-	var member_count: int = Network.get_lobby_member_count()
-	var max_members: int = Network.get_lobby_max_members()
+	var member_count: int = GameState.players.size()
+	var max_members: int = Steam.getLobbyMemberLimit(Network.lobby_id)
 	member_count_lbl.set_text("%s/%s" % [member_count, max_members])
 	# Update player list
 	player_list.clear()

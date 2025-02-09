@@ -30,12 +30,6 @@ func get_lobby_data_by_id(id: int, key: String, default: String = "") -> String:
 func get_lobby_data(key: String, default: String = "") -> String:
 	return get_lobby_data_by_id(lobby_id, key, default)
 
-func get_lobby_member_count(id: int = lobby_id) -> int:
-	return Steam.getNumLobbyMembers(id)
-
-func get_lobby_max_members(id: int = lobby_id) -> int:
-	return Steam.getLobbyMemberLimit(id)
-
 func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 	if peer is OfflineMultiplayerPeer:
 		return MultiplayerPeer.ConnectionStatus.CONNECTION_DISCONNECTED

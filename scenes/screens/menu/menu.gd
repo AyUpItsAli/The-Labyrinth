@@ -119,8 +119,8 @@ func add_lobby(lobby_id: int) -> void:
 	var search: String = lobby_search_edit.text.to_lower()
 	if not search.is_empty() and not lobby_name.to_lower().begins_with(search):
 		return
-	var member_count: int = Network.get_lobby_member_count(lobby_id)
-	var max_members: int = Network.get_lobby_max_members(lobby_id)
+	var member_count: int = Steam.getNumLobbyMembers(lobby_id)
+	var max_members: int = Steam.getLobbyMemberLimit(lobby_id)
 	var item: LobbyListItem = LOBBY_LIST_ITEM.instantiate()
 	item.name_lbl.set_text(lobby_name)
 	item.member_count_lbl.set_text("%s/%s" % [member_count, max_members])
