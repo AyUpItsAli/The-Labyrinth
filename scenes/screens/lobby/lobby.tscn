@@ -132,6 +132,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Enter message"
+keep_editing_on_text_submit = true
 
 [node name="Right" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby"]
 layout_mode = 2
@@ -144,8 +145,8 @@ size_flags_vertical = 3
 focus_mode = 0
 theme_override_colors/guide_color = Color(0, 0, 0, 0)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/icon_margin = 5
 theme_override_constants/v_separation = 10
+theme_override_constants/icon_margin = 5
 theme_override_constants/h_separation = 10
 theme_override_font_sizes/font_size = 24
 theme_override_styles/hovered = SubResource("StyleBoxEmpty_dujtv")
