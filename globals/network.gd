@@ -41,7 +41,7 @@ func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 
 func create_lobby(settings: GameSettings) -> void:
 	if not Global.steam_initialised:
-		Dialog.display_error("Error creating lobby: Steamworks API is not initialised")
+		Dialog.display_error("Error creating lobby: Steam is not initialised")
 		return
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		Dialog.display_error("Error creating lobby: You are already connecting to a server")
@@ -68,7 +68,7 @@ func create_lobby(settings: GameSettings) -> void:
 
 func join_lobby(id: int) -> void:
 	if not Global.steam_initialised:
-		Dialog.display_error("Error joining lobby: Steamworks API is not initialised")
+		Dialog.display_error("Error joining lobby: Steam is not initialised")
 		return
 	if get_lobby_data_by_id(id, "app_name") != Global.app_name:
 		Dialog.display_error("Error joining lobby: Lobby is not compatible with this application")
