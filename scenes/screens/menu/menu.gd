@@ -22,6 +22,7 @@ func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	initialise_options()
 	return_to_landing_menu()
+	Loading.finish()
 
 func initialise_options() -> void:
 	# Display name

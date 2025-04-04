@@ -2,11 +2,12 @@ extends CanvasLayer
 
 const MESSAGE_DISPLAY_TIME = 0.1
 
-enum Scene { MENU, LOBBY }
+enum Scene { MENU, LOBBY, LABYRINTH }
 
 const SCENE_PATHS: Dictionary = {
 	Scene.MENU: "res://scenes/screens/menu/menu.tscn",
-	Scene.LOBBY: "res://scenes/screens/lobby/lobby.tscn"
+	Scene.LOBBY: "res://scenes/screens/lobby/lobby.tscn",
+	Scene.LABYRINTH: "res://scenes/world/labyrinth.tscn"
 }
 
 @export var message_lbl: Label
@@ -15,9 +16,6 @@ const SCENE_PATHS: Dictionary = {
 @export var progress_timer: Timer
 
 signal loading_complete
-
-func _ready() -> void:
-	finish()
 
 func start() -> void:
 	if visible:
@@ -40,7 +38,7 @@ func display_message(message: String) -> void:
 	message_lbl.set_text(message)
 	await get_tree().create_timer(MESSAGE_DISPLAY_TIME).timeout
 
-func load_scene(scene: Scene, finish_when_loaded: bool = true) -> void:
+func load_scene(scene: Scene) -> void:
 	if not progress_timer.is_stopped():
 		Dialog.display_error("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene), true)
 		loading_complete.emit()
@@ -49,9 +47,6 @@ func load_scene(scene: Scene, finish_when_loaded: bool = true) -> void:
 	ResourceLoader.load_threaded_request(SCENE_PATHS[scene])
 	progress_timer.timeout.connect(_on_progress_timer_timeout.bind(scene))
 	progress_timer.start()
-	await loading_complete
-	if finish_when_loaded:
-		await finish()
 
 func _on_progress_timer_timeout(scene: Scene) -> void:
 	var path: String = SCENE_PATHS[scene]

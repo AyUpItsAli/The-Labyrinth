@@ -20,6 +20,7 @@ func _ready() -> void:
 	message_edit.grab_focus()
 	update_chat()
 	update_players()
+	Loading.finish()
 
 func _on_invite_btn_pressed() -> void:
 	Dialog.display_invite_popup()
@@ -61,3 +62,10 @@ func update_players() -> void:
 
 func _on_leave_btn_pressed() -> void:
 	Network.leave_server()
+
+func _on_start_btn_pressed() -> void:
+	start_game.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func start_game() -> void:
+	Loading.load_scene(Loading.Scene.LABYRINTH)
