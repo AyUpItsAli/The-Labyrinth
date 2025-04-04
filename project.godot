@@ -11,9 +11,9 @@ config_version=5
 [application]
 
 config/name="The Labyrinth"
-config/version="0.4.12"
+config/version="0.5.0"
 run/main_scene="res://scenes/screens/menu/menu.tscn"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -65,3 +65,8 @@ close={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[steam]
+
+initialization/app_id=480
+initialization/initialize_on_startup=true

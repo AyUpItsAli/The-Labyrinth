@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c0sq7335d1pqn"]
 
-[ext_resource type="Script" path="res://globals/dialog/dialog.gd" id="1_iwvnl"]
+[ext_resource type="Script" uid="uid://bahuar4mf0oe3" path="res://globals/dialog/dialog.gd" id="1_iwvnl"]
 
 [node name="Dialog" type="CanvasLayer" node_paths=PackedStringArray("popup_container")]
 layer = 2

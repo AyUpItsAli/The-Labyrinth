@@ -101,7 +101,7 @@ func request_friend_lobbies() -> void:
 		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
 		if game_info.is_empty():
 			continue
-		if game_info["id"] != Global.APP_ID:
+		if game_info["id"] != Steam.getAppID():
 			continue
 		var lobby_id: int = game_info["lobby"]
 		if lobby_id == 0:

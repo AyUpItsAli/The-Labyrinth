@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dllbb5d3nijjj"]
 
-[ext_resource type="Script" path="res://globals/loading/loading.gd" id="1_geuuq"]
+[ext_resource type="Script" uid="uid://d00rydqrsogk3" path="res://globals/loading/loading.gd" id="1_geuuq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_emus4"]
 font_size = 36
@@ -104,9 +104,9 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yjkbk"]
 _data = {
-"RESET": SubResource("Animation_age75"),
-"fade_in": SubResource("Animation_5wm2p"),
-"fade_out": SubResource("Animation_5dqid")
+&"RESET": SubResource("Animation_age75"),
+&"fade_in": SubResource("Animation_5wm2p"),
+&"fade_out": SubResource("Animation_5dqid")
 }
 
 [node name="Loading" type="CanvasLayer" node_paths=PackedStringArray("message_lbl", "progress_bar", "anim_player", "progress_timer")]
