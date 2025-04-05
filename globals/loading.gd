@@ -16,7 +16,7 @@ signal loading_complete
 
 func load_scene(scene: Scene) -> void:
 	if progress_timer and not progress_timer.is_stopped():
-		Overlay.display_error_popup("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene), true)
+		Overlay.display_error("Error loading %s scene: Another scene is already loading" % Scene.find_key(scene), true)
 		loading_complete.emit()
 		return
 	await Overlay.start_loading()
@@ -33,7 +33,7 @@ func _on_progress_timer_timeout(scene: Scene) -> void:
 	match ResourceLoader.load_threaded_get_status(path, progress):
 		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE, ResourceLoader.THREAD_LOAD_FAILED:
 			progress_timer.queue_free()
-			Overlay.display_error_popup("Error loading %s scene: Failed to load resource" % Scene.find_key(scene), true)
+			Overlay.display_error("Error loading %s scene: Failed to load resource" % Scene.find_key(scene), true)
 			loading_complete.emit()
 		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			Overlay.update_loading_progress(progress[0] * 100)

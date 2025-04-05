@@ -29,16 +29,16 @@ func display_popup(popup: OverlayPopup) -> void:
 	popup.tree_exited.connect(update_popup_panel)
 	popup_container.add_child(popup)
 
-func display_message_popup(message: String, text_color: Color = Color.WHITE) -> void:
+func display_message(message: String, text_color: Color = Color.WHITE) -> void:
 	var popup: MessagePopup = MESSAGE_POPUP.instantiate()
 	popup.message_lbl.set_text(message)
 	popup.message_lbl.set_modulate(text_color)
 	display_popup(popup)
 
-func display_error_popup(message: String, log_error: bool = false) -> void:
+func display_error(message: String, log_error: bool = false) -> void:
 	if log_error:
 		Logging.log_error(message)
-	display_message_popup(message, Color("ff5c5c"))
+	display_message(message, Color("ff5c5c"))
 
 func display_invite_popup() -> void:
 	display_popup(INVITE_POPUP.instantiate())
