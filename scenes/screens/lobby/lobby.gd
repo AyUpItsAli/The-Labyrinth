@@ -20,10 +20,10 @@ func _ready() -> void:
 	message_edit.grab_focus()
 	update_chat()
 	update_players()
-	Loading.finish()
+	Overlay.finish_loading()
 
 func _on_invite_btn_pressed() -> void:
-	Dialog.display_invite_popup()
+	Overlay.display_invite_popup()
 
 func update_chat() -> void:
 	for child in message_container.get_children():

@@ -22,8 +22,8 @@ Global="*res://globals/global.gd"
 Logging="*res://globals/logging.gd"
 Network="*res://globals/network.gd"
 GameState="*res://globals/game_state.gd"
-Loading="*res://globals/loading/loading.tscn"
-Dialog="*res://globals/dialog/dialog.tscn"
+Loading="*res://globals/loading.gd"
+Overlay="*res://globals/overlay/overlay.tscn"
 
 [debug]
 
@@ -42,7 +42,7 @@ window/stretch/aspect="expand"
 folder_colors={
 "res://data/": "orange",
 "res://globals/": "pink",
-"res://globals/dialog/popups/": "green",
+"res://globals/overlay/": "green",
 "res://scenes/": "blue",
 "res://scenes/screens/": "teal",
 "res://scenes/ui/": "green"

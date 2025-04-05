@@ -1,4 +1,4 @@
 extends Node3D
 
 func _ready() -> void:
-	Loading.finish()
+	Overlay.finish_loading()

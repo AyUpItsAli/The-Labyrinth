@@ -1,4 +1,4 @@
-class_name InvitePopup extends DialogPopup
+class_name InvitePopup extends OverlayPopup
 
 @export var friends_list: ItemList
 

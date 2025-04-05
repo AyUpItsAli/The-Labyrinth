@@ -1,18 +1,18 @@
-[gd_scene load_steps=9 format=3 uid="uid://dllbb5d3nijjj"]
+[gd_scene load_steps=9 format=3 uid="uid://c0sq7335d1pqn"]
 
-[ext_resource type="Script" uid="uid://d00rydqrsogk3" path="res://globals/loading/loading.gd" id="1_geuuq"]
+[ext_resource type="Script" uid="uid://bahuar4mf0oe3" path="res://globals/overlay/overlay.gd" id="1_iwvnl"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_emus4"]
+[sub_resource type="LabelSettings" id="LabelSettings_ynx6w"]
 font_size = 36
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bscfp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7asm7"]
 bg_color = Color(0.25098, 0.25098, 0.25098, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_meli4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wr0pm"]
 bg_color = Color(0.501961, 0.501961, 0.501961, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
@@ -24,7 +24,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Background:color")
+tracks/0/path = NodePath("LoadingScreen/Background:color")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -36,7 +36,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
+tracks/1/path = NodePath("LoadingScreen:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -52,7 +52,7 @@ length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Background:color")
+tracks/0/path = NodePath("LoadingScreen/Background:color")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -64,7 +64,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
+tracks/1/path = NodePath("LoadingScreen:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -80,7 +80,7 @@ length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Background:color")
+tracks/0/path = NodePath("LoadingScreen/Background:color")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -92,7 +92,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
+tracks/1/path = NodePath("LoadingScreen:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -109,15 +109,40 @@ _data = {
 &"fade_out": SubResource("Animation_5dqid")
 }
 
-[node name="Loading" type="CanvasLayer" node_paths=PackedStringArray("message_lbl", "progress_bar", "anim_player", "progress_timer")]
-layer = 3
-script = ExtResource("1_geuuq")
-message_lbl = NodePath("CenterContainer/VBoxContainer/MessageLbl")
-progress_bar = NodePath("CenterContainer/VBoxContainer/ProgressBar")
-anim_player = NodePath("AnimationPlayer")
-progress_timer = NodePath("ProgressTimer")
+[node name="Overlay" type="CanvasLayer" node_paths=PackedStringArray("popup_panel", "popup_container", "loading_screen", "message_lbl", "progress_bar", "anim_player")]
+script = ExtResource("1_iwvnl")
+popup_panel = NodePath("PopupPanel")
+popup_container = NodePath("PopupPanel/PopupContainer")
+loading_screen = NodePath("LoadingScreen")
+message_lbl = NodePath("LoadingScreen/CenterContainer/VBoxContainer/MessageLbl")
+progress_bar = NodePath("LoadingScreen/CenterContainer/VBoxContainer/ProgressBar")
+anim_player = NodePath("LoadingScreen/AnimationPlayer")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="PopupPanel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PopupContainer" type="CenterContainer" parent="PopupPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LoadingScreen" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="LoadingScreen"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -125,36 +150,35 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="LoadingScreen"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="LoadingScreen/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="MessageLbl" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="MessageLbl" type="Label" parent="LoadingScreen/CenterContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Loading..."
-label_settings = SubResource("LabelSettings_emus4")
+label_settings = SubResource("LabelSettings_ynx6w")
 
-[node name="ProgressBar" type="ProgressBar" parent="CenterContainer/VBoxContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="LoadingScreen/CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 24
-theme_override_styles/background = SubResource("StyleBoxFlat_bscfp")
-theme_override_styles/fill = SubResource("StyleBoxFlat_meli4")
+theme_override_styles/background = SubResource("StyleBoxFlat_7asm7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_wr0pm")
 value = 67.62
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="LoadingScreen"]
+root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_yjkbk")
+&"": SubResource("AnimationLibrary_yjkbk")
 }
-
-[node name="ProgressTimer" type="Timer" parent="."]
-wait_time = 0.1

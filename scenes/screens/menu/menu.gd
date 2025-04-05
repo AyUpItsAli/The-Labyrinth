@@ -22,7 +22,7 @@ func _ready() -> void:
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	initialise_options()
 	return_to_landing_menu()
-	Loading.finish()
+	Overlay.finish_loading()
 
 func initialise_options() -> void:
 	# Display name
@@ -45,7 +45,7 @@ func return_to_landing_menu() -> void:
 
 func set_player_name() -> bool:
 	if display_name_edit.text.is_empty():
-		Dialog.display_error("Display name is required")
+		Overlay.display_error_popup("Display name is required")
 		return false
 	GameState.player.name = display_name_edit.text
 	return true

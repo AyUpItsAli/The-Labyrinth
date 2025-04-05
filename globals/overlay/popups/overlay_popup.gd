@@ -1,4 +1,4 @@
-class_name DialogPopup extends Control
+class_name OverlayPopup extends Control
 
 var previous_focus_owner: Control
 

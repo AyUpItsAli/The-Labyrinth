@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://d2meyp7d6wawa"]
 
-[ext_resource type="Script" uid="uid://ca288v4xiwsch" path="res://globals/dialog/popups/invite_popup.gd" id="1_5id7h"]
+[ext_resource type="Script" uid="uid://ca288v4xiwsch" path="res://globals/overlay/popups/invite_popup.gd" id="1_5id7h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7bkx"]
 bg_color = Color(0.313726, 0.313726, 0.313726, 1)
