@@ -13,8 +13,15 @@ const INVITE_POPUP = preload("res://globals/overlay/popups/invite_popup.tscn")
 @export var message_lbl: Label
 @export var progress_bar: ProgressBar
 @export var anim_player: AnimationPlayer
+@export_group("Cursor")
+@export var arrow_texture: Texture
+@export var arrow_hotspot: Vector2
+@export var ibeam_texture: Texture
+@export var ibeam_hotspot: Vector2
 
 func _ready() -> void:
+	Input.set_custom_mouse_cursor(arrow_texture, Input.CURSOR_ARROW, arrow_hotspot)
+	Input.set_custom_mouse_cursor(ibeam_texture, Input.CURSOR_IBEAM, ibeam_hotspot)
 	update_popup_panel()
 
 # -------

@@ -96,6 +96,9 @@ layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Required"
+context_menu_enabled = false
+clear_button_enabled = true
+drag_and_drop_selection_enabled = false
 
 [node name="LandingMenu" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer"]
 visible = false
@@ -155,6 +158,9 @@ layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Optional"
+context_menu_enabled = false
+clear_button_enabled = true
+drag_and_drop_selection_enabled = false
 
 [node name="LobbyType" type="HBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/HostMenu/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -223,6 +229,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Search Lobbies"
+context_menu_enabled = false
+clear_button_enabled = true
+drag_and_drop_selection_enabled = false
 
 [node name="FriendsFilter" type="PanelContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/JoinMenu/FilterOptions"]
 custom_minimum_size = Vector2(130, 0)

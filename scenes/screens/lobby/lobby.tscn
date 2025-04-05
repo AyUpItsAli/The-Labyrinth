@@ -133,6 +133,8 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Enter message"
 keep_editing_on_text_submit = true
+context_menu_enabled = false
+drag_and_drop_selection_enabled = false
 
 [node name="Right" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby"]
 layout_mode = 2

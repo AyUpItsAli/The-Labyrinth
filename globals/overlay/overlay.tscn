@@ -1,6 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0sq7335d1pqn"]
+[gd_scene load_steps=11 format=3 uid="uid://c0sq7335d1pqn"]
 
 [ext_resource type="Script" uid="uid://bahuar4mf0oe3" path="res://globals/overlay/overlay.gd" id="1_iwvnl"]
+[ext_resource type="Texture2D" uid="uid://c6uu05orhy8jy" path="res://globals/overlay/cursor_arrow.png" id="2_wr0pm"]
+[ext_resource type="Texture2D" uid="uid://csyehb44l64x1" path="res://globals/overlay/cursor_ibeam.png" id="3_2klt3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ynx6w"]
 font_size = 36
@@ -117,6 +119,10 @@ loading_screen = NodePath("LoadingScreen")
 message_lbl = NodePath("LoadingScreen/CenterContainer/VBoxContainer/MessageLbl")
 progress_bar = NodePath("LoadingScreen/CenterContainer/VBoxContainer/ProgressBar")
 anim_player = NodePath("LoadingScreen/AnimationPlayer")
+arrow_texture = ExtResource("2_wr0pm")
+arrow_hotspot = Vector2(10, 10)
+ibeam_texture = ExtResource("3_2klt3")
+ibeam_hotspot = Vector2(24, 30)
 
 [node name="PopupPanel" type="Panel" parent="."]
 anchors_preset = 15
