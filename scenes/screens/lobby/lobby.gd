@@ -32,12 +32,12 @@ func update_chat() -> void:
 		var message: ChatMessage = CHAT_MESSAGE.instantiate()
 		match msg["type"]:
 			GameState.MessageType.SERVER:
-				message.content_lbl.text = "[center]%s[/center]" % msg["content"]
+				message.content_lbl.set_text("[center]%s[/center]" % msg["content"])
 				message.timestamp_lbl.hide()
 			_:
-				message.content_lbl.text = msg["content"]
+				message.content_lbl.set_text(msg["content"])
 				var time: Dictionary = Time.get_time_dict_from_unix_time(msg["time"])
-				message.timestamp_lbl.text = "%02d:%02d" % [time["hour"], time["minute"]]
+				message.timestamp_lbl.set_text("%02d:%02d" % [time["hour"], time["minute"]])
 		message_container.add_child(message)
 	# No idea why we need to wait 2 frames, instead of 1, before setting scroll
 	await get_tree().process_frame
