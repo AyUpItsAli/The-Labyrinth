@@ -43,7 +43,7 @@ func display_message(message: String, text_color: Color = Color.WHITE) -> void:
 
 func display_error(message: String, log_error: bool = false) -> void:
 	if log_error:
-		Logging.log_error(message)
+		Utils.log_error(message)
 	display_message(message, Color("ff5c5c"))
 
 func display_invite_popup() -> void:

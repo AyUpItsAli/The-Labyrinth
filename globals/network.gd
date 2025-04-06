@@ -49,7 +49,7 @@ func create_lobby(settings: GameSettings) -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
 		Overlay.display_error("Error creating lobby: You are already connected to a server")
 		return
-	Logging.log_start("Creating lobby: Name = %s, Type = %s" % [settings.lobby_name, settings.lobby_type])
+	Utils.log_start("Creating lobby: Name = %s, Type = %s" % [settings.lobby_name, settings.lobby_type])
 	await Overlay.display_loading_message("Creating lobby")
 	Steam.createLobby(settings.lobby_type, settings.max_players)
 	for connection: Dictionary in Steam.lobby_created.get_connections():
@@ -63,7 +63,7 @@ func create_lobby(settings: GameSettings) -> void:
 			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
 			Steam.setLobbyData(new_lobby_id, "app_version", Global.app_version)
 			Steam.setLobbyData(new_lobby_id, "name", settings.lobby_name)
-			Logging.log_info("Lobby created: %s" % new_lobby_id)
+			Utils.log_info("Lobby created: %s" % new_lobby_id)
 	)
 
 func join_lobby(id: int) -> void:
@@ -83,7 +83,7 @@ func join_lobby(id: int) -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
 		Overlay.display_error("Error joining lobby: You are already connected to a server")
 		return
-	Logging.log_start("Joining lobby: %s" % id)
+	Utils.log_start("Joining lobby: %s" % id)
 	await Overlay.display_loading_message("Joining lobby")
 	Steam.joinLobby(id)
 
@@ -120,15 +120,15 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 		Overlay.finish_loading()
 		return
 	lobby_id = id
-	Logging.log_info("Joined lobby: %s" % lobby_id)
+	Utils.log_info("Joined lobby: %s" % lobby_id)
 	create_peer()
 	if multiplayer.is_server():
 		GameState.register_player(GameState.player)
-		Logging.log_success("Server created")
+		Utils.log_success("Server created")
 		server_created.emit()
 		connection_successful.emit()
 	else:
-		Logging.log_start("Connecting to server")
+		Utils.log_start("Connecting to server")
 		await Overlay.display_loading_message("Connecting to server")
 
 # ------------------------
@@ -149,7 +149,7 @@ func _on_connected_to_server() -> void:
 	# Forward local player data to server
 	peer_connected.rpc_id(1, GameState.player.serialised())
 	# Wait for server to confirm connection
-	Logging.log_start("Waiting for server")
+	Utils.log_start("Waiting for server")
 	await Overlay.display_loading_message("Waiting for server")
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -160,18 +160,18 @@ func peer_connected(player_data: Dictionary) -> void:
 	GameState.register_player(player)
 	# Confirm connection for connected player and forward our game data
 	confirm_connection.rpc_id(player.id, GameState.serialised())
-	Logging.log_success("%s connected" % player.name)
+	Utils.log_success("%s connected" % player.name)
 	player_connected.emit(player)
 
 @rpc("authority", "call_remote", "reliable")
 func confirm_connection(data: Dictionary) -> void:
 	# Update game state using data received from server
 	GameState.update(data)
-	Logging.log_success("Connection successful")
+	Utils.log_success("Connection successful")
 	connection_successful.emit()
 
 func _on_connection_successful() -> void:
-	Logging.log_start("Loading lobby")
+	Utils.log_start("Loading lobby")
 	await Overlay.display_loading_message("Loading lobby")
 	Loading.load_scene(Loading.Scene.LOBBY)
 
@@ -192,13 +192,13 @@ func leave_server() -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		Overlay.display_error("Error leaving server: You are not currently connected to a server")
 		return
-	Logging.log_start("Leaving server")
+	Utils.log_start("Leaving server")
 	close_connection()
 	await Loading.loading_complete
 	Overlay.display_message("Left server")
 
 func _on_server_disconnected() -> void:
-	Logging.log_closure("Server disconnected")
+	Utils.log_closure("Server disconnected")
 	close_connection()
 	await Loading.loading_complete
 	Overlay.display_error("Server disconnected")
@@ -214,7 +214,7 @@ func close_connection() -> void:
 	Steam.leaveLobby(lobby_id)
 	lobby_id = -1
 	GameState.reset()
-	Logging.log_closure("Connection closed")
+	Utils.log_closure("Connection closed")
 	Loading.load_scene(Loading.Scene.MENU)
 
 func _on_peer_disconnected(id: int) -> void:
@@ -223,5 +223,5 @@ func _on_peer_disconnected(id: int) -> void:
 		return
 	var player: Player = GameState.get_player(id)
 	GameState.unregister_player(player)
-	Logging.log_closure("%s disconnected" % player.name)
+	Utils.log_closure("%s disconnected" % player.name)
 	player_disconnected.emit(player)

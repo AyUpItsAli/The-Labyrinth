@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfj3ng0co6cws"]
+
+[ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://models/floor_material.tres" id="1_vpswu"]
+[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://models/wall_material.tres" id="2_kq7p6"]
+
+[node name="BasicJunction" type="Node3D"]
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(4, 1, 4)
+material = ExtResource("1_vpswu")
+
+[node name="Wall1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, 0)
+size = Vector3(1, 2, 4)
+material = ExtResource("2_kq7p6")
+
+[node name="Wall2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, -1.5)
+size = Vector3(1, 2, 1)
+material = ExtResource("2_kq7p6")
+
+[node name="Wall3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, 1.5)
+size = Vector3(1, 2, 1)
+material = ExtResource("2_kq7p6")

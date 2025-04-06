@@ -41,7 +41,7 @@ func serialised() -> Dictionary:
 	return data
 
 func update(data: Dictionary) -> void:
-	Logging.log_info("Updating game state")
+	Utils.log_info("Updating game state")
 	update_players(data["players"])
 	chat = data["chat"]
 	chat_updated.emit()
@@ -66,7 +66,7 @@ func get_players_serialised() -> Array[Dictionary]:
 
 @rpc("authority", "call_remote", "reliable")
 func update_players(player_data: Array[Dictionary]) -> void:
-	Logging.log_info("Updating players")
+	Utils.log_info("Updating players")
 	players.clear()
 	for data: Dictionary in player_data:
 		var new_player := Player.deserialised(data)
@@ -83,7 +83,7 @@ func register_player(new_player: Player) -> void:
 		register_player_serialised.rpc(new_player.serialised())
 	# Register player
 	players[new_player.id] = new_player
-	Logging.log_info("Registered player: ID = %s, Name: %s" % [new_player.id, new_player.name])
+	Utils.log_info("Registered player: ID = %s, Name: %s" % [new_player.id, new_player.name])
 	players_updated.emit()
 
 @rpc("authority", "call_remote", "reliable")
@@ -100,7 +100,7 @@ func unregister_player(old_player: Player) -> void:
 		index += 1
 	# Update clients
 	update_players.rpc(get_players_serialised())
-	Logging.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
+	Utils.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
 	players_updated.emit()
 
 # ------

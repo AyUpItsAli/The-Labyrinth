@@ -1,5 +1,9 @@
 extends Node
 
+# --------
+# LOGGING
+# --------
+
 func log_start(message: String) -> void:
 	log_message(message, "yellow")
 
@@ -17,3 +21,12 @@ func log_message(message: String, color: String) -> void:
 
 func log_error(message: String) -> void:
 	printerr(message)
+
+# ---------------
+# MATHS FUNCTIONS
+# ----------------
+
+# Performs a bitwise rotation left by n bits
+func rotate_left(value: int, n: int, total_bits: int = 32) -> int:
+	var mask: int = (1<<total_bits) - 1
+	return ((value << n) & mask) | (value >> (total_bits - n))

@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://globals/global.gd"
-Logging="*res://globals/logging.gd"
+Utils="*res://globals/utils.gd"
 Network="*res://globals/network.gd"
 GameState="*res://globals/game_state.gd"
 Loading="*res://globals/loading.gd"
@@ -42,10 +42,12 @@ window/stretch/aspect="expand"
 folder_colors={
 "res://data/": "orange",
 "res://globals/": "pink",
-"res://globals/overlay/": "green",
+"res://globals/overlay/": "teal",
+"res://models/": "green",
+"res://objects/": "yellow",
 "res://scenes/": "blue",
 "res://scenes/screens/": "teal",
-"res://scenes/ui/": "green"
+"res://scenes/ui/": "teal"
 }
 
 [input]

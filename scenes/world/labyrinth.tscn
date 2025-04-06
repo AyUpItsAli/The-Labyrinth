@@ -1,6 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
+[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="2_fybye"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_odcy4"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -14,8 +15,6 @@ background_mode = 2
 sky = SubResource("Sky_nl04x")
 tonemap_mode = 2
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_odcy4"]
-
 [node name="Labyrinth" type="Node3D"]
 script = ExtResource("1_nl04x")
 
@@ -27,7 +26,6 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 1, 2)
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573577, 0, -0.573577, 0.819152, 0, 20, 20)
 
-[node name="Plane" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_odcy4")
+[node name="BasicTile" parent="." instance=ExtResource("2_fybye")]
