@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1okdacpg1uyl"]
+[gd_scene load_steps=7 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
-[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="2_fybye"]
+[ext_resource type="Script" uid="uid://dibkw4rqc0d22" path="res://scenes/world/free_cam.gd" id="3_mqbfw"]
+[ext_resource type="Script" uid="uid://crrftayphhfnv" path="res://scenes/world/board.gd" id="3_v8ra0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_odcy4"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -25,7 +26,13 @@ environment = SubResource("Environment_fybye")
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573577, 0, -0.573577, 0.819152, 0, 20, 20)
+[node name="Board" type="Node3D" parent="." node_paths=PackedStringArray("tile_container")]
+script = ExtResource("3_v8ra0")
+tile_container = NodePath("Tiles")
 
-[node name="BasicTile" parent="." instance=ExtResource("2_fybye")]
+[node name="Tiles" type="Node3D" parent="Board"]
+
+[node name="FreeCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 20, 20)
+script = ExtResource("3_mqbfw")
+metadata/_custom_type_script = "uid://dibkw4rqc0d22"
