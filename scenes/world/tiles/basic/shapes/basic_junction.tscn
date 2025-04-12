@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bfj3ng0co6cws"]
 
-[ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://models/floor_material.tres" id="1_vpswu"]
-[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://models/wall_material.tres" id="2_kq7p6"]
+[ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://graphics/models/floor_material.tres" id="1_vpswu"]
+[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://graphics/models/wall_material.tres" id="2_kq7p6"]
 
 [node name="BasicJunction" type="Node3D"]
 

@@ -10,7 +10,6 @@
 script = ExtResource("1_3c8l4")
 graphics_parent = NodePath("GraphicsParent")
 shapes = Dictionary[int, PackedScene]({
-3: ExtResource("2_q27t5"),
 5: ExtResource("3_ijuth"),
 7: ExtResource("4_hkloe"),
 15: ExtResource("5_nlxp2")

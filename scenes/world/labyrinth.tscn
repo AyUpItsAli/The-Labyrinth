@@ -1,30 +1,32 @@
-[gd_scene load_steps=8 format=3 uid="uid://d1okdacpg1uyl"]
+[gd_scene load_steps=9 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
+[ext_resource type="Texture2D" uid="uid://d37qtsur6xgf8" path="res://graphics/hdri/autumn_field_puresky_4k.exr" id="2_0m3lf"]
 [ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="3_0m3lf"]
 [ext_resource type="Script" uid="uid://dibkw4rqc0d22" path="res://scenes/world/free_cam.gd" id="3_mqbfw"]
 [ext_resource type="Script" uid="uid://crrftayphhfnv" path="res://scenes/world/board.gd" id="3_v8ra0"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_odcy4"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_axwc4"]
+panorama = ExtResource("2_0m3lf")
 
-[sub_resource type="Sky" id="Sky_nl04x"]
-sky_material = SubResource("ProceduralSkyMaterial_odcy4")
+[sub_resource type="Sky" id="Sky_axwc4"]
+sky_material = SubResource("PanoramaSkyMaterial_axwc4")
 
-[sub_resource type="Environment" id="Environment_fybye"]
+[sub_resource type="Environment" id="Environment_p7p6a"]
 background_mode = 2
-sky = SubResource("Sky_nl04x")
-tonemap_mode = 2
+background_energy_multiplier = 0.5
+sky = SubResource("Sky_axwc4")
+sky_rotation = Vector3(0, 3.14159, 0)
 
 [node name="Labyrinth" type="Node3D"]
 script = ExtResource("1_nl04x")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_fybye")
+environment = SubResource("Environment_p7p6a")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(-0.819152, -0.496732, 0.286788, 0, 0.5, 0.866025, -0.573576, 0.709406, -0.409576, 0, 10, 0)
+light_color = Color(1, 0.992157, 0.964706, 1)
 shadow_enabled = true
 
 [node name="Board" type="Node3D" parent="." node_paths=PackedStringArray("tile_container")]

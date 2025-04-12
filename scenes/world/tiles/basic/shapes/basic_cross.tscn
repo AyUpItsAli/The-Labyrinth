@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cwnp8llqnfoo2"]
 
-[ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://models/floor_material.tres" id="1_c0ivb"]
-[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://models/wall_material.tres" id="2_0ss6s"]
+[ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://graphics/models/floor_material.tres" id="1_c0ivb"]
+[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://graphics/models/wall_material.tres" id="2_0ss6s"]
 
 [node name="BasicCross" type="Node3D"]
 

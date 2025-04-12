@@ -6,11 +6,15 @@ class_name FreeCam extends Camera3D
 
 var velocity: Vector3
 var angles: Vector2
+var enabled: bool = true
 
 func _ready() -> void:
 	angles = Vector2(rotation.y, rotation.x)
 
 func _physics_process(delta: float) -> void:
+	if not enabled:
+		return
+	
 	angles.y = clamp(angles.y, PI / -2.0, PI / 2.0)
 	rotation = Vector3(angles.y, angles.x, 0)
 	
@@ -25,5 +29,7 @@ func _physics_process(delta: float) -> void:
 	translate(velocity * delta)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if enabled and event is InputEventMouseMotion:
 		angles -= event.relative / look_speed
+	elif event.is_action_pressed("toggle_free_cam"):
+		enabled = not enabled
