@@ -4,7 +4,7 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 
 @export var tile_container: Node3D
 @export_group("Settings")
-@export_range(3, 20) var size: int = 7
+@export_range(3, 20, 1, "suffix:tiles") var size: int = 7
 
 func _ready() -> void:
 	generate_board()
