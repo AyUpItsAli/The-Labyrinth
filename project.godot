@@ -24,6 +24,7 @@ Network="*res://globals/network.gd"
 GameState="*res://globals/game_state.gd"
 Loading="*res://globals/loading.gd"
 Overlay="*res://globals/overlay/overlay.tscn"
+Data="*res://globals/data.gd"
 
 [debug]
 
@@ -37,6 +38,10 @@ window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg")
+
 [file_customization]
 
 folder_colors={
@@ -49,6 +54,10 @@ folder_colors={
 "res://scenes/screens/": "teal",
 "res://scenes/ui/": "teal"
 }
+
+[godot_resource_groups]
+
+auto_rebuild=true
 
 [input]
 

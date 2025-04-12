@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="TileType" load_steps=3 format=3 uid="uid://c35kp6py2gg4g"]
-
-[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="1_lvc8u"]
-[ext_resource type="Script" uid="uid://duug7sq1ta1v5" path="res://objects/world/tile_type.gd" id="1_pmohh"]
-
-[resource]
-script = ExtResource("1_pmohh")
-scene = ExtResource("1_lvc8u")
-metadata/_custom_type_script = "uid://duug7sq1ta1v5"

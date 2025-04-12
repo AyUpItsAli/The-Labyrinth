@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://d1okdacpg1uyl"]
+[gd_scene load_steps=8 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
+[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="3_0m3lf"]
 [ext_resource type="Script" uid="uid://dibkw4rqc0d22" path="res://scenes/world/free_cam.gd" id="3_mqbfw"]
 [ext_resource type="Script" uid="uid://crrftayphhfnv" path="res://scenes/world/board.gd" id="3_v8ra0"]
 
@@ -31,6 +32,8 @@ script = ExtResource("3_v8ra0")
 tile_container = NodePath("Tiles")
 
 [node name="Tiles" type="Node3D" parent="Board"]
+
+[node name="BasicTile" parent="Board/Tiles" instance=ExtResource("3_0m3lf")]
 
 [node name="FreeCam" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 20, 20)
