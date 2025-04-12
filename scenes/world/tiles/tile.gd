@@ -1,7 +1,7 @@
 class_name Tile extends Node3D
 
 ## Size of a tile in meters
-const SIZE = 4
+const SIZE = 12
 ## Maximum number of times a time can be rotated
 const MAX_ROTATIONS = 3
 

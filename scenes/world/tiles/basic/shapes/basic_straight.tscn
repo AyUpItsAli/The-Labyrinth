@@ -1,21 +1,63 @@
-[gd_scene load_steps=3 format=3 uid="uid://f0sj2be0pl3h"]
+[gd_scene load_steps=5 format=3 uid="uid://f0sj2be0pl3h"]
 
 [ext_resource type="Material" uid="uid://dpdx12bklntb5" path="res://graphics/models/floor_material.tres" id="1_nvo7x"]
-[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://graphics/models/wall_material.tres" id="2_ajbrn"]
+[ext_resource type="Material" uid="uid://lbt2paql15ej" path="res://graphics/models/outer_wall_material.tres" id="2_ajbrn"]
+[ext_resource type="Material" uid="uid://bjs7t7wo282bf" path="res://graphics/models/inner_wall_material.tres" id="3_ajbrn"]
+[ext_resource type="Material" uid="uid://d0qjy2m8lom1t" path="res://graphics/models/wall_material.tres" id="3_igxab"]
 
 [node name="BasicStraight" type="Node3D"]
 
 [node name="Floor" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-size = Vector3(4, 1, 4)
+size = Vector3(12, 1, 12)
 material = ExtResource("1_nvo7x")
 
+[node name="InnerWall1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 3, 0)
+size = Vector3(0.5, 6, 12)
+material = ExtResource("3_ajbrn")
+
+[node name="InnerWall2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 3, 0)
+size = Vector3(0.5, 6, 12)
+material = ExtResource("3_ajbrn")
+
 [node name="Wall1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, 0)
-size = Vector3(1, 2, 4)
-material = ExtResource("2_ajbrn")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 0)
+size = Vector3(3, 6, 11)
+material = ExtResource("3_igxab")
 
 [node name="Wall2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, 0)
-size = Vector3(1, 2, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, 0)
+size = Vector3(3, 6, 11)
+material = ExtResource("3_igxab")
+
+[node name="OuterWall1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.75, 3, 0)
+size = Vector3(0.5, 6, 12)
+material = ExtResource("2_ajbrn")
+
+[node name="OuterWall2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, -5.75)
+size = Vector3(3, 6, 0.5)
+material = ExtResource("2_ajbrn")
+
+[node name="OuterWall3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 5.75)
+size = Vector3(3, 6, 0.5)
+material = ExtResource("2_ajbrn")
+
+[node name="OuterWall4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 3, 0)
+size = Vector3(0.5, 6, 12)
+material = ExtResource("2_ajbrn")
+
+[node name="OuterWall5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, -5.75)
+size = Vector3(3, 6, 0.5)
+material = ExtResource("2_ajbrn")
+
+[node name="OuterWall6" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, 5.75)
+size = Vector3(3, 6, 0.5)
 material = ExtResource("2_ajbrn")

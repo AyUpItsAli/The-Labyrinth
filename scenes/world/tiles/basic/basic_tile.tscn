@@ -1,18 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://bnl87t7y8df7p"]
+[gd_scene load_steps=5 format=3 uid="uid://bnl87t7y8df7p"]
 
 [ext_resource type="Script" uid="uid://dmov4pg8nbsg1" path="res://scenes/world/tiles/basic/basic_tile.gd" id="1_3c8l4"]
 [ext_resource type="PackedScene" uid="uid://hb82o7b8ojjs" path="res://scenes/world/tiles/basic/shapes/basic_corner.tscn" id="2_q27t5"]
 [ext_resource type="PackedScene" uid="uid://f0sj2be0pl3h" path="res://scenes/world/tiles/basic/shapes/basic_straight.tscn" id="3_ijuth"]
 [ext_resource type="PackedScene" uid="uid://bfj3ng0co6cws" path="res://scenes/world/tiles/basic/shapes/basic_junction.tscn" id="4_hkloe"]
-[ext_resource type="PackedScene" uid="uid://cwnp8llqnfoo2" path="res://scenes/world/tiles/basic/shapes/basic_cross.tscn" id="5_nlxp2"]
 
 [node name="BasicTile" type="Node3D" node_paths=PackedStringArray("graphics_parent")]
 script = ExtResource("1_3c8l4")
 graphics_parent = NodePath("GraphicsParent")
 shapes = Dictionary[int, PackedScene]({
+3: ExtResource("2_q27t5"),
 5: ExtResource("3_ijuth"),
-7: ExtResource("4_hkloe"),
-15: ExtResource("5_nlxp2")
+7: ExtResource("4_hkloe")
 })
 
 [node name="GraphicsParent" type="Node3D" parent="."]

@@ -1,12 +1,12 @@
 class_name FreeCam extends Camera3D
 
-@export var max_speed: float = 10
-@export var acceleration: float = 25
-@export var look_speed: float = 300
+@export var max_speed: float = 30
+@export var acceleration: float = 50
+@export var look_speed: float = 400
 
 var velocity: Vector3
 var angles: Vector2
-var enabled: bool = true
+var enabled: bool
 
 func _ready() -> void:
 	angles = Vector2(rotation.y, rotation.x)

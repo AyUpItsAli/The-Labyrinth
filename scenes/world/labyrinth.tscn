@@ -38,6 +38,7 @@ tile_container = NodePath("Tiles")
 [node name="BasicTile" parent="Board/Tiles" instance=ExtResource("3_0m3lf")]
 
 [node name="FreeCam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 20, 20)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 60, 60)
+size = 108.0
 script = ExtResource("3_mqbfw")
 metadata/_custom_type_script = "uid://dibkw4rqc0d22"
