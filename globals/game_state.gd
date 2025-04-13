@@ -36,14 +36,14 @@ func _on_avatar_loaded(id: int, icon_size: int, bytes: PackedByteArray) -> void:
 
 func serialised() -> Dictionary:
 	var data: Dictionary = {}
-	data["players"] = get_players_serialised()
-	data["chat"] = chat
+	data.set("players", get_players_serialised())
+	data.set("chat", chat)
 	return data
 
 func update(data: Dictionary) -> void:
 	Utils.log_info("Updating game state")
-	update_players(data["players"])
-	chat = data["chat"]
+	update_players(data.get("players"))
+	chat = data.get("chat")
 	chat_updated.emit()
 
 # ---------
@@ -111,12 +111,12 @@ func unregister_player(old_player: Player) -> void:
 func register_chat_message(msg: Dictionary) -> void:
 	if multiplayer.is_server():
 		# Timestamp and index determined by server
-		msg["time"] = Time.get_unix_time_from_system()
-		msg["index"] = chat.size()
+		msg.set("time", Time.get_unix_time_from_system())
+		msg.set("index", chat.size())
 		# Register for clients
 		register_chat_message.rpc(msg)
 	# Insert message
-	chat.insert(msg["index"], msg)
+	chat.insert(msg.get("index"), msg)
 	if chat.size() > MAX_CHAT_MESSAGES:
 		chat.pop_front()
 	chat_updated.emit()
@@ -127,9 +127,9 @@ func receive_player_message(content: String) -> void:
 		return
 	var sender: Player = GameState.get_player(multiplayer.get_remote_sender_id())
 	var msg: Dictionary = {}
-	msg["type"] = MessageType.PLAYER
+	msg.set("type", MessageType.PLAYER)
 	var name_colour: String = HOST_COLOUR if sender.is_host() else "white"
-	msg["content"] = "[color=%s]%s:[/color] %s" % [name_colour, sender.name, content]
+	msg.set("content", "[color=%s]%s:[/color] %s" % [name_colour, sender.name, content])
 	register_chat_message(msg)
 
 func send_player_message(content: String) -> void:
@@ -146,8 +146,8 @@ func send_server_message(content: String) -> void:
 	if not multiplayer.is_server():
 		return
 	var msg: Dictionary = {}
-	msg["type"] = MessageType.SERVER
-	msg["content"] = content
+	msg.set("type", MessageType.SERVER)
+	msg.set("content", content)
 	register_chat_message(msg)
 
 func _on_server_created() -> void:

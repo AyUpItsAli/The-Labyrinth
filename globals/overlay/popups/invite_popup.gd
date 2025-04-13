@@ -13,9 +13,9 @@ func _ready() -> void:
 		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
 		if game_info.is_empty():
 			continue
-		if game_info["id"] != Steam.getAppID():
+		if game_info.get("id") != Steam.getAppID():
 			continue
-		if game_info["lobby"] != 0:
+		if game_info.get("lobby") != 0:
 			continue
 		Steam.getPlayerAvatar(Steam.AVATAR_LARGE, friend_id)
 

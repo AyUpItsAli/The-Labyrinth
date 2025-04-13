@@ -49,7 +49,7 @@ func create_lobby(settings: GameSettings) -> void:
 	if get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
 		Overlay.display_error("Error creating lobby: You are already connected to a server")
 		return
-	Utils.log_start("Creating lobby: Name = %s, Type = %s" % [settings.lobby_name, GameSettings.LOBBY_TYPES[settings.lobby_type]])
+	Utils.log_start("Creating lobby: Name = %s, Type = %s" % [settings.lobby_name, GameSettings.LOBBY_TYPES.get(settings.lobby_type)])
 	await Overlay.display_loading_message("Creating lobby")
 	Steam.createLobby(settings.lobby_type, settings.max_players)
 	for connection: Dictionary in Steam.lobby_created.get_connections():

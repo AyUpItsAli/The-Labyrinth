@@ -20,8 +20,8 @@ func _ready() -> void:
 
 func initialise_steam() -> void:
 	var response: Dictionary = Steam.get_steam_init_result()
-	if not response or response["status"] != 0:
-		var reason: String = str(response["verbal"]) if response else "No init response"
+	if not response or response.get("status") != 0:
+		var reason: String = str(response.get("verbal")) if response else "No init response"
 		Overlay.display_error("Failed to initialise Steam: %s" % reason, true)
 		return
 	

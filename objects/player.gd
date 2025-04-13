@@ -13,21 +13,22 @@ func is_host() -> bool:
 
 func serialised() -> Dictionary:
 	var data: Dictionary
-	data["id"] = id
-	data["index"] = index
-	data["steam_id"] = steam_id
-	data["name"] = name
-	data["icon_size"] = icon.get_image().get_size().x
-	data["icon_bytes"] = icon.get_image().get_data()
+	data.set("id", id)
+	data.set("index", index)
+	data.set("steam_id", steam_id)
+	data.set("name", name)
+	var image: Image = icon.get_image()
+	data.set("icon_size", image.get_size().x)
+	data.set("icon_bytes", image.get_data())
 	return data
 
 static func deserialised(data: Dictionary) -> Player:
 	var player := Player.new()
-	player.id = data["id"]
-	player.index = data["index"]
-	player.steam_id = data["steam_id"]
-	player.name = data["name"]
-	player.icon = Player.load_icon(data["icon_size"], data["icon_bytes"])
+	player.id = data.get("id")
+	player.index = data.get("index")
+	player.steam_id = data.get("steam_id")
+	player.name = data.get("name")
+	player.icon = Player.load_icon(data.get("icon_size"), data.get("icon_bytes"))
 	return player
 
 static func load_icon(size: int, bytes: PackedByteArray) -> ImageTexture:

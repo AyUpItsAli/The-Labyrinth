@@ -6,31 +6,55 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 @export_group("Settings")
 @export_range(3, 20, 1, "suffix:tiles") var size: int = 7
 
-func _ready() -> void:
-	generate_board()
+var tiles: Dictionary[Vector2i, Tile]
 
-func clear_board() -> void:
+## Converts 2D board position into 3D world position local to the board
+func board_to_world_pos(pos: Vector2i) -> Vector3:
+	return Vector3(pos.x * Tile.SIZE, 0, pos.y * Tile.SIZE)
+
+func clear() -> void:
 	for tile: Tile in tile_container.get_children():
 		tile_container.remove_child(tile)
 		tile.queue_free()
+	tiles.clear()
 
-## Converts 2D board position into 3D world position local to the board
-func board_to_world_pos(board_pos: Vector2i) -> Vector3:
-	return Vector3(board_pos.x * Tile.SIZE, 0, board_pos.y * Tile.SIZE)
-
-func place_tile(type: TileType, board_pos: Vector2i) -> void:
+func generate_tile() -> Tile:
+	var type: TileType = Data.Tiles.get_types().pick_random()
 	var tile: Tile = type.scene.instantiate()
-	tile.name = "Tile (%s,%s)" % [board_pos.x, board_pos.y]
+	tile.type = type
 	tile.shape = tile.shapes.keys().pick_random()
 	tile.rotations = randi_range(0, Tile.MAX_ROTATIONS)
-	tile.position = board_to_world_pos(board_pos)
-	tile_container.add_child(tile)
+	return tile
 
-func generate_board() -> void:
-	clear_board()
+func add_tile(tile: Tile, pos: Vector2i) -> void:
+	tile.pos = pos
+	tile.position = board_to_world_pos(pos)
+	tile_container.add_child(tile)
+	tiles.set(pos, tile)
+
+func generate() -> void:
+	# TODO: Generate in another thread
+	clear()
 	var end := int(size / 2.0)
 	var start: int = -end
 	for x in range(start, end + 1):
 		for y in range(start, end + 1):
-			var type: TileType = Data.Tiles.get_types().pick_random()
-			place_tile(type, Vector2i(x, y))
+			var tile: Tile = generate_tile()
+			add_tile(tile, Vector2i(x, y))
+
+func serialised() -> Dictionary:
+	var data: Dictionary = {}
+	var tiles_data: Dictionary = {}
+	for pos: Vector2i in tiles:
+		var tile: Tile = tiles.get(pos)
+		tiles_data.set(pos, tile.serialised())
+	data.set("tiles", tiles_data)
+	return data
+
+@rpc("authority", "call_remote", "reliable")
+func load_data(data: Dictionary) -> void:
+	clear()
+	var tiles_data: Dictionary = data.get("tiles")
+	for pos: Vector2i in tiles_data:
+		var tile := Tile.deserialised(tiles_data.get(pos))
+		add_tile(tile, pos)

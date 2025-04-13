@@ -27,17 +27,18 @@ func _on_invite_btn_pressed() -> void:
 
 func update_chat() -> void:
 	for child in message_container.get_children():
+		message_container.remove_child(child)
 		child.queue_free()
 	for msg: Dictionary in GameState.chat:
 		var message: ChatMessage = CHAT_MESSAGE.instantiate()
-		match msg["type"]:
+		match msg.get("type"):
 			GameState.MessageType.SERVER:
-				message.content_lbl.set_text("[center]%s[/center]" % msg["content"])
+				message.content_lbl.set_text("[center]%s[/center]" % msg.get("content"))
 				message.timestamp_lbl.hide()
 			_:
-				message.content_lbl.set_text(msg["content"])
-				var time: Dictionary = Time.get_time_dict_from_unix_time(msg["time"])
-				message.timestamp_lbl.set_text("%02d:%02d" % [time["hour"], time["minute"]])
+				message.content_lbl.set_text(msg.get("content"))
+				var time: Dictionary = Time.get_time_dict_from_unix_time(msg.get("time"))
+				message.timestamp_lbl.set_text("%02d:%02d" % [time.get("hour"), time.get("minute")])
 		message_container.add_child(message)
 	# No idea why we need to wait 2 frames, instead of 1, before setting scroll
 	await get_tree().process_frame

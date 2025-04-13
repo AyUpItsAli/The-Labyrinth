@@ -29,7 +29,7 @@ func initialise_options() -> void:
 	display_name_edit.set_text(GameState.player.name)
 	# Lobby type
 	for type: Steam.LobbyType in GameSettings.LOBBY_TYPES:
-		lobby_type_btn.add_item(GameSettings.LOBBY_TYPES[type], type)
+		lobby_type_btn.add_item(GameSettings.LOBBY_TYPES.get(type), type)
 	lobby_type_btn.select(0)
 	# Max players
 	max_players_slider.min_value = GameSettings.MIN_PLAYERS
@@ -102,9 +102,9 @@ func request_friend_lobbies() -> void:
 		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
 		if game_info.is_empty():
 			continue
-		if game_info["id"] != Steam.getAppID():
+		if game_info.get("id") != Steam.getAppID():
 			continue
-		var lobby_id: int = game_info["lobby"]
+		var lobby_id: int = game_info.get("lobby")
 		if lobby_id == 0:
 			continue
 		Steam.requestLobbyData(lobby_id)
