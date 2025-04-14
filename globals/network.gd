@@ -168,8 +168,8 @@ func peer_connected(player_data: Dictionary) -> void:
 
 @rpc("authority", "call_remote", "reliable")
 func confirm_connection(data: Dictionary) -> void:
-	# Update game state using data received from server
-	GameState.update(data)
+	# Load game state using data received from server
+	GameState.load_data(data)
 	Utils.log_success("Connection successful")
 	connection_successful.emit()
 

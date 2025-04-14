@@ -6,7 +6,7 @@ const HOST_COLOUR = "crimson"
 enum MessageType { PLAYER, SERVER }
 
 var player: Player
-var players: Dictionary
+var players: Dictionary[int, Player]
 var chat: Array[Dictionary]
 
 signal players_updated
@@ -40,7 +40,7 @@ func serialised() -> Dictionary:
 	data.set("chat", chat)
 	return data
 
-func update(data: Dictionary) -> void:
+func load_data(data: Dictionary) -> void:
 	Utils.log_info("Updating game state")
 	update_players(data.get("players"))
 	chat = data.get("chat")
@@ -49,9 +49,6 @@ func update(data: Dictionary) -> void:
 # ---------
 # PLAYERS
 # ---------
-
-func get_player(id: int) -> Player:
-	return players[id]
 
 func get_players_sorted() -> Array:
 	var sorted: Array = players.values()
@@ -128,7 +125,7 @@ func register_chat_message(msg: Dictionary) -> void:
 func receive_player_message(content: String) -> void:
 	if not multiplayer.is_server():
 		return
-	var sender: Player = GameState.get_player(multiplayer.get_remote_sender_id())
+	var sender: Player = players.get(multiplayer.get_remote_sender_id())
 	var msg: Dictionary = {}
 	msg.set("type", MessageType.PLAYER)
 	var name_colour: String = HOST_COLOUR if sender.is_host() else "white"
