@@ -51,7 +51,6 @@ func serialised() -> Dictionary:
 	data.set("tiles", tiles_data)
 	return data
 
-@rpc("authority", "call_remote", "reliable")
 func load_data(data: Dictionary) -> void:
 	clear()
 	var tiles_data: Dictionary = data.get("tiles")

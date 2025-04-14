@@ -65,8 +65,9 @@ func _on_leave_btn_pressed() -> void:
 	Network.leave_server()
 
 func _on_start_btn_pressed() -> void:
-	start_game.rpc()
+	load_game.rpc()
 
 @rpc("authority", "call_local", "reliable")
-func start_game() -> void:
+func load_game() -> void:
+	Utils.log_start("Loading game")
 	Loading.load_scene(Loading.Scene.LABYRINTH)
