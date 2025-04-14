@@ -9,7 +9,7 @@ func _ready() -> void:
 		await initialise_game()
 	# Display waiting message
 	Utils.log_start("Waiting for players")
-	Overlay.display_loading_message("Waiting for players")
+	await Overlay.display_loading_message("Waiting for players")
 	# Server waits for clients to load the game
 	# Clients send their acknowledgement to the server and wait for a response
 	if multiplayer.is_server():

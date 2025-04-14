@@ -19,6 +19,7 @@ const INVITE_POPUP = preload("res://globals/overlay/popups/invite_popup.tscn")
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	update_popup_panel()
+	clear_loading_screen()
 
 func _process(_delta: float) -> void:
 	cursor.position = get_viewport().get_mouse_position()
@@ -53,17 +54,21 @@ func display_invite_popup() -> void:
 # LOADING SCREEN
 # ----------------
 
+func clear_loading_screen() -> void:
+	message_lbl.set_text("")
+	progress_bar.hide()
+
 func start_loading() -> void:
 	if loading_screen.visible:
 		return
+	clear_loading_screen()
 	anim_player.play("fade_in")
 	await anim_player.animation_finished
 
 func finish_loading() -> void:
 	if not loading_screen.visible:
 		return
-	message_lbl.set_text("")
-	progress_bar.hide()
+	clear_loading_screen()
 	anim_player.play("fade_out")
 	await anim_player.animation_finished
 
