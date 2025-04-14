@@ -154,9 +154,7 @@ func _on_server_created() -> void:
 	send_server_message("[color=cyan]Server Created[/color]")
 
 func _on_player_connected(new_player: Player) -> void:
-	Utils.log_success("%s connected" % new_player.name)
 	send_server_message("[color=green]%s joined[/color]" % new_player.name)
 
 func _on_player_disconnected(old_player: Player) -> void:
-	Utils.log_closure("%s disconnected" % old_player.name)
 	send_server_message("[color=red]%s left[/color]" % old_player.name)
