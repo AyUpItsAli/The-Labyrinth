@@ -29,11 +29,11 @@ func _on_ack_confirmed(id: String) -> void:
 		"game_initialised": start_game()
 
 func sync_clients() -> void:
-	Utils.log_start("Syncronising clients")
+	Utils.log_start("Synchronising clients")
 	# Collect game data
 	var data: Dictionary = {}
 	data.set("board", board.serialised())
-	# Syncronise game data with clients
+	# Synchronise game data with clients
 	load_data.rpc(data)
 	# Wait for clients to initialise the game
 	Network.query_ack("game_initialised")
