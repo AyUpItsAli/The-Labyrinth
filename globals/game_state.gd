@@ -90,9 +90,11 @@ func register_player(new_player: Player) -> void:
 func register_player_serialised(player_data: Dictionary) -> void:
 	register_player(Player.deserialised(player_data))
 
-func unregister_player(old_player: Player) -> void:
+func unregister_player(id: int) -> Player:
+	# Get player
+	var old_player: Player = players.get(id)
 	# Remove player
-	players.erase(old_player.id)
+	players.erase(id)
 	# Ensure remaining players have the correct index
 	var index: int = 0
 	for plr: Player in get_players_sorted():
@@ -100,8 +102,9 @@ func unregister_player(old_player: Player) -> void:
 		index += 1
 	# Update clients
 	update_players.rpc(get_players_serialised())
-	Utils.log_info("Unregistered player: ID = %s, Name: %s" % [old_player.id, old_player.name])
+	Utils.log_info("Unregistered player: ID = %s, Name: %s" % [id, old_player.name])
 	players_updated.emit()
+	return old_player
 
 # ------
 # CHAT
@@ -154,7 +157,9 @@ func _on_server_created() -> void:
 	send_server_message("[color=cyan]Server Created[/color]")
 
 func _on_player_connected(new_player: Player) -> void:
+	Utils.log_success("%s connected" % new_player.name)
 	send_server_message("[color=green]%s joined[/color]" % new_player.name)
 
 func _on_player_disconnected(old_player: Player) -> void:
+	Utils.log_closure("%s disconnected" % old_player.name)
 	send_server_message("[color=red]%s left[/color]" % old_player.name)

@@ -159,11 +159,11 @@ func _on_connected_to_server() -> void:
 func peer_connected(player_data: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
+	# Register connected player
 	var player := Player.deserialised(player_data)
 	GameState.register_player(player)
 	# Confirm connection for connected player and forward our game data
 	confirm_connection.rpc_id(player.id, GameState.serialised())
-	Utils.log_success("%s connected" % player.name)
 	player_connected.emit(player)
 
 @rpc("authority", "call_remote", "reliable")
@@ -229,9 +229,7 @@ func _on_peer_disconnected(id: int) -> void:
 	# Server-side only
 	if not multiplayer.is_server():
 		return
-	var player: Player = GameState.get_player(id)
-	GameState.unregister_player(player)
-	Utils.log_closure("%s disconnected" % player.name)
+	var player: Player = GameState.unregister_player(id)
 	player_disconnected.emit(player)
 
 # -----------------
