@@ -17,9 +17,21 @@ const INVITE_POPUP = preload("res://globals/overlay/popups/invite_popup.tscn")
 @export var cursor: Node2D
 
 func _ready() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	show_cursor()
 	update_popup_panel()
 	clear_loading_screen()
+
+# -------
+# CURSOR
+# -------
+
+func hide_cursor() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	cursor.hide()
+
+func show_cursor() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	cursor.show()
 
 func _process(_delta: float) -> void:
 	cursor.position = get_viewport().get_mouse_position()

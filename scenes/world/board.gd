@@ -2,9 +2,13 @@ class_name Board extends Node3D
 
 enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 
-@export var tile_container: Node3D
 @export_group("Settings")
-@export_range(3, 20, 1, "suffix:tiles") var size: int = 7
+@export_range(3, 21, 1, "suffix:tiles") var size: int = 7:
+	set(new_size):
+		size = new_size+1 if new_size % 2 == 0 else new_size
+@export_group("Nodes")
+@export var tile_container: Node3D
+@export var camera: Camera
 
 var tiles: Dictionary[Vector2i, Tile]
 
@@ -33,6 +37,7 @@ func add_tile(tile: Tile, pos: Vector2i) -> void:
 	tiles.set(pos, tile)
 
 func generate() -> void:
+	camera.max_distance = (size * Tile.SIZE) / 2.0
 	# TODO: Generate in another thread
 	clear()
 	var end := int(size / 2.0)

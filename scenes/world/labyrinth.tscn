@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://d1okdacpg1uyl"]
+[gd_scene load_steps=9 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
 [ext_resource type="Texture2D" uid="uid://d37qtsur6xgf8" path="res://graphics/hdri/autumn_field_puresky_4k.exr" id="2_0m3lf"]
-[ext_resource type="Script" uid="uid://dibkw4rqc0d22" path="res://scenes/world/free_cam.gd" id="3_mqbfw"]
 [ext_resource type="Script" uid="uid://crrftayphhfnv" path="res://scenes/world/board.gd" id="3_v8ra0"]
+[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="4_axwc4"]
+[ext_resource type="PackedScene" uid="uid://0benhx8uhhqf" path="res://scenes/world/camera.tscn" id="6_p7p6a"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_axwc4"]
 panorama = ExtResource("2_0m3lf")
@@ -29,14 +30,15 @@ transform = Transform3D(-0.819152, -0.496732, 0.286788, 0, 0.5, 0.866025, -0.573
 light_color = Color(1, 0.992157, 0.964706, 1)
 shadow_enabled = true
 
-[node name="Board" type="Node3D" parent="." node_paths=PackedStringArray("tile_container")]
+[node name="Board" type="Node3D" parent="." node_paths=PackedStringArray("tile_container", "camera")]
 script = ExtResource("3_v8ra0")
+size = 4
 tile_container = NodePath("Tiles")
+camera = NodePath("../Camera")
 
 [node name="Tiles" type="Node3D" parent="Board"]
 
-[node name="FreeCam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 60, 60)
-size = 108.0
-script = ExtResource("3_mqbfw")
-metadata/_custom_type_script = "uid://dibkw4rqc0d22"
+[node name="BasicTile" parent="Board/Tiles" instance=ExtResource("4_axwc4")]
+
+[node name="Camera" parent="." instance=ExtResource("6_p7p6a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 12)
