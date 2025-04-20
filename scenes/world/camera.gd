@@ -6,7 +6,7 @@ class_name Camera extends Node3D
 @export_group("Rotation")
 @export var rotate_speed: float = 1
 @export var rotate_weight: float = 0.1
-@export var mouse_sensitivity: float = 0.15
+@export var mouse_sensitivity: float = 0.16
 @export var initial_pitch: float = -40
 @export var min_pitch: float = -90
 @export var max_pitch: float = 0
