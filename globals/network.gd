@@ -11,7 +11,7 @@ signal server_created
 signal connection_successful
 signal player_connected(player: Player)
 signal player_disconnected(player: Player)
-signal ack_confirmed(id: String)
+signal ack_resolved(id: String)
 
 func _ready() -> void:
 	Global.game_closed.connect(_on_game_closed)
@@ -239,34 +239,21 @@ func _on_peer_disconnected(id: int) -> void:
 # -----------------
 
 func get_ack(id: String) -> Dictionary:
-	return acknowledgements.get_or_add(id, {"ids": {}, "queried": false})
+	return acknowledgements.get_or_add(id, {})
 
-## Emits "ack_confirmed" if the given acknowledgement has been queried
-## and all peers have been registered to the ack
-func check_ack(id: String) -> void:
-	var ack: Dictionary = get_ack(id)
-	if ack.get("queried") and ack.get("ids").has_all(multiplayer.get_peers()):
-		Utils.log_info("Confirmed acknowledgement \"%s\" for all players" % id)
-		ack_confirmed.emit(id)
-		acknowledgements.erase(id)
-
-@rpc("any_peer", "call_remote", "reliable")
-## Registers the sender for the given acknowledgement, then checks the ack
+@rpc("any_peer", "call_local", "reliable")
+## Registers the sender for the given acknowledgement. Resolves once all players have been registered.
 func register_ack(id: String) -> void:
 	var ack: Dictionary = get_ack(id)
-	# Add sender's id to set of ids
 	var sender: int = multiplayer.get_remote_sender_id()
-	ack.get("ids").set(sender, null)
+	ack.set(sender, true)
 	Utils.log_info("Recieved acknowledgement \"%s\" from %s" % [id, sender])
-	# Check acknowledgement
-	check_ack(id)
+	# Once all players have been registered, resolve the acknowledgement
+	if ack.has_all(GameState.players.keys()):
+		Utils.log_info("Resolving acknowledgement \"%s\"" % id)
+		acknowledgements.erase(id)
+		ack_resolved.emit(id)
 
-## Registers the sender for an acknowledgement to the server
+## Registers the sender for the given acknowledgement on the server
 func register_server_ack(id: String) -> void:
 	register_ack.rpc_id(1, id)
-
-## Marks an acknowledgement as queried, then checks the ack
-func query_ack(id: String) -> void:
-	Utils.log_info("Querying acknowledgement \"%s\"" % id)
-	get_ack(id).set("queried", true)
-	check_ack(id)

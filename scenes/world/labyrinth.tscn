@@ -18,9 +18,10 @@ background_energy_multiplier = 0.5
 sky = SubResource("Sky_axwc4")
 sky_rotation = Vector3(0, 3.14159, 0)
 
-[node name="Labyrinth" type="Node3D" node_paths=PackedStringArray("board")]
+[node name="Labyrinth" type="Node3D" node_paths=PackedStringArray("board", "camera")]
 script = ExtResource("1_nl04x")
 board = NodePath("Board")
+camera = NodePath("Camera")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_p7p6a")
