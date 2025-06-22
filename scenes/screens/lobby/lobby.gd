@@ -14,7 +14,7 @@ const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 func _ready() -> void:
 	Network.chat_updated.connect(update_chat)
 	Network.players_updated.connect(update_players)
-	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
+	lobby_name_lbl.set_text(Network.get_lobby_data("name", "Untitled Lobby"))
 	invite_btn.set_visible(multiplayer.is_server())
 	start_btn.set_visible(multiplayer.is_server())
 	message_edit.grab_focus()
@@ -32,7 +32,7 @@ func update_chat() -> void:
 	for msg: Dictionary in Network.chat:
 		var message: ChatMessage = CHAT_MESSAGE.instantiate()
 		match msg.get("type"):
-			Network.MessageType.SERVER:
+			Network.MessageType.NETWORK:
 				message.content_lbl.set_text("[center]%s[/center]" % msg.get("content"))
 				message.timestamp_lbl.hide()
 			_:

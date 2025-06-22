@@ -4,7 +4,7 @@ const MAX_CHAT_MESSAGES = 100
 const HOST_COLOUR = "crimson"
 
 enum Channel { DEFAULT, CHAT }
-enum MessageType { PLAYER, SERVER }
+enum MessageType { PLAYER, NETWORK }
 
 var peer: MultiplayerPeer = OfflineMultiplayerPeer.new()
 var lobby_id: int = -1
@@ -48,14 +48,13 @@ func reset() -> void:
 	chat.clear()
 	acknowledgements.clear()
 
-func serialised() -> Dictionary:
+func get_network_data() -> Dictionary:
 	var data: Dictionary = {}
 	data.set("players", get_players_serialised())
 	data.set("chat", chat)
 	return data
 
-func load_data(data: Dictionary) -> void:
-	Utils.log_info("Updating lobby data")
+func load_network_data(data: Dictionary) -> void:
 	update_players(data.get("players"))
 	chat = data.get("chat")
 	chat_updated.emit()
@@ -180,23 +179,23 @@ func send_player_message(content: String) -> void:
 		return
 	receive_player_message.rpc_id(1, content)
 
-func send_server_message(content: String) -> void:
+func send_network_message(content: String) -> void:
 	# Server-side only
 	if not multiplayer.is_server():
 		return
 	var msg: Dictionary = {}
-	msg.set("type", MessageType.SERVER)
+	msg.set("type", MessageType.NETWORK)
 	msg.set("content", content)
 	register_chat_message(msg)
 
 func _on_server_created() -> void:
-	send_server_message("[color=cyan]Server Created[/color]")
+	send_network_message("[color=cyan]Welcome to the lobby[/color]")
 
 func _on_player_connected(player: Player) -> void:
-	send_server_message("[color=green]%s joined[/color]" % player.display_name)
+	send_network_message("[color=green]%s joined[/color]" % player.display_name)
 
 func _on_player_disconnected(player: Player) -> void:
-	send_server_message("[color=red]%s left[/color]" % player.display_name)
+	send_network_message("[color=red]%s left[/color]" % player.display_name)
 
 # ----------------------------
 # CREATING / JOINING LOBBY
@@ -226,7 +225,7 @@ func create_lobby(settings: GameSettings) -> void:
 			Steam.setLobbyData(new_lobby_id, "app_name", Global.app_name)
 			Steam.setLobbyData(new_lobby_id, "app_version", Global.app_version)
 			Steam.setLobbyData(new_lobby_id, "name", settings.lobby_name)
-			Utils.log_info("Lobby created: %s" % new_lobby_id)
+			Utils.log_success("Lobby created: %s" % new_lobby_id)
 	)
 
 func join_lobby(id: int) -> void:
@@ -283,7 +282,7 @@ func _on_lobby_joined(id: int, _perms: int, _locked: bool, response: int) -> voi
 		Overlay.finish_loading()
 		return
 	lobby_id = id
-	Utils.log_info("Joined lobby: %s" % lobby_id)
+	Utils.log_success("Joined lobby: %s" % lobby_id)
 	create_peer()
 	if multiplayer.is_server():
 		register_player(Global.player)
@@ -322,15 +321,15 @@ func peer_connected(player_data: Dictionary) -> void:
 	# Register connected player
 	var player := Player.deserialised(player_data)
 	register_player(player)
-	# Confirm connection for connected player and forward our game data
-	confirm_connection.rpc_id(player.id, self.serialised())
+	# Forward network data to connected player
+	confirm_connection.rpc_id(player.id, get_network_data())
 	Utils.log_success("%s connected" % player.display_name)
 	player_connected.emit(player)
 
 @rpc("authority", "call_remote", "reliable")
 func confirm_connection(data: Dictionary) -> void:
-	# Load lobby data received from server
-	load_data(data)
+	# Load network data received from server
+	load_network_data(data)
 	Utils.log_success("Connection successful")
 	connection_successful.emit()
 
