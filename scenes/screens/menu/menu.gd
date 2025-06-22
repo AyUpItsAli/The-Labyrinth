@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func initialise_options() -> void:
 	# Display name
-	display_name_edit.set_text(GameState.player.name)
+	display_name_edit.set_text(Global.player.display_name)
 	# Lobby type
 	for type: Steam.LobbyType in GameSettings.LOBBY_TYPES:
 		lobby_type_btn.add_item(GameSettings.LOBBY_TYPES.get(type), type)
@@ -47,7 +47,7 @@ func set_player_name() -> bool:
 	if display_name_edit.text.is_empty():
 		Overlay.display_error("Display name is required")
 		return false
-	GameState.player.name = display_name_edit.text
+	Global.player.display_name = display_name_edit.text
 	return true
 
 func _on_host_btn_pressed() -> void:
@@ -62,7 +62,7 @@ func _on_host_lobby_btn_pressed() -> void:
 	if not set_player_name():
 		return
 	var settings := GameSettings.new()
-	settings.lobby_name = GameState.player.name if lobby_name_edit.text.is_empty() else lobby_name_edit.text
+	settings.lobby_name = Global.player.display_name if lobby_name_edit.text.is_empty() else lobby_name_edit.text
 	settings.lobby_type = lobby_type_btn.get_selected_id() as Steam.LobbyType
 	settings.max_players = int(max_players_slider.value)
 	Network.create_lobby(settings)

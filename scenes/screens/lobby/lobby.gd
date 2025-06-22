@@ -12,8 +12,8 @@ const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 @export var start_btn: Button
 
 func _ready() -> void:
-	GameState.chat_updated.connect(update_chat)
-	GameState.players_updated.connect(update_players)
+	Network.chat_updated.connect(update_chat)
+	Network.players_updated.connect(update_players)
 	lobby_name_lbl.set_text("Lobby: %s" % Network.get_lobby_data("name", "???"))
 	invite_btn.set_visible(multiplayer.is_server())
 	start_btn.set_visible(multiplayer.is_server())
@@ -29,10 +29,10 @@ func update_chat() -> void:
 	for child in message_container.get_children():
 		message_container.remove_child(child)
 		child.queue_free()
-	for msg: Dictionary in GameState.chat:
+	for msg: Dictionary in Network.chat:
 		var message: ChatMessage = CHAT_MESSAGE.instantiate()
 		match msg.get("type"):
-			GameState.MessageType.SERVER:
+			Network.MessageType.SERVER:
 				message.content_lbl.set_text("[center]%s[/center]" % msg.get("content"))
 				message.timestamp_lbl.hide()
 			_:
@@ -48,17 +48,17 @@ func update_chat() -> void:
 
 func _on_message_edit_text_submitted(content: String) -> void:
 	message_edit.clear()
-	GameState.send_player_message(content)
+	Network.send_player_message(content)
 
 func update_players() -> void:
 	# Update lobby title with new player count
-	var member_count: int = GameState.players.size()
+	var member_count: int = Network.players.size()
 	var max_members: int = Steam.getLobbyMemberLimit(Network.lobby_id)
 	member_count_lbl.set_text("%s/%s" % [member_count, max_members])
 	# Update player list
 	player_list.clear()
-	for player: Player in GameState.get_players_sorted():
-		var i: int = player_list.add_item(player.name, player.icon, false)
+	for player: Player in Network.get_players_sorted():
+		var i: int = player_list.add_item(player.display_name, player.icon, false)
 		player_list.set_item_tooltip_enabled(i, false)
 
 func _on_leave_btn_pressed() -> void:

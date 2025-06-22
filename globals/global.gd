@@ -1,12 +1,13 @@
 extends Node
 
+# Application
 var app_name: String
 var app_version: String
 
+# Steam
 var steam_initialised: bool
-var is_owned: bool
-var steam_id: int
-var steam_username: String
+var is_subscribed: bool
+var player: Player
 
 signal game_closed
 
@@ -24,16 +25,19 @@ func initialise_steam() -> void:
 		var reason: String = str(response.get("verbal")) if response else "No init response"
 		Overlay.display_error("Failed to initialise Steam: %s" % reason, true)
 		return
-	
 	steam_initialised = true
-	is_owned = Steam.isSubscribed()
-	
-	if not is_owned:
+	is_subscribed = Steam.isSubscribed()
+	if not is_subscribed:
 		Overlay.display_error("Failed to initialise Steam: You do not own this application", true)
 		return
-	
-	steam_id = Steam.getSteamID()
-	steam_username = Steam.getPersonaName()
+	reset_player()
+
+func reset_player() -> void:
+	player = Player.new()
+	player.steam_id = Steam.getSteamID()
+	player.steam_name = Steam.getPersonaName()
+	player.display_name = player.steam_name
+	player.load_icon()
 
 func _process(_delta: float) -> void:
 	if steam_initialised:
