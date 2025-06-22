@@ -33,7 +33,6 @@ shadow_enabled = true
 
 [node name="Board" type="Node3D" parent="." node_paths=PackedStringArray("tile_container", "camera")]
 script = ExtResource("3_v8ra0")
-size = 4
 tile_container = NodePath("Tiles")
 camera = NodePath("../Camera")
 

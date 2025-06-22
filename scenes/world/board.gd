@@ -29,9 +29,8 @@ func clear() -> void:
 func generate_tile() -> Tile:
 	var type: TileType = Data.Tiles.get_types().pick_random()
 	var tile: Tile = type.scene.instantiate()
-	tile.type = type
-	tile.shape = tile.shapes.keys().pick_random()
-	tile.rotations = randi_range(0, Tile.MAX_ROTATIONS)
+	tile.shape = type.shapes.keys().pick_random()
+	tile.rotations = randi_range(0, 3)
 	return tile
 
 func add_tile(tile: Tile, pos: Vector2i) -> void:
@@ -99,7 +98,6 @@ func display_piece() -> void:
 		return
 	var type: TileType = Data.Tiles.get_type("basic")
 	piece = type.scene.instantiate()
-	piece.type = type
 	piece.shape = Tile.Shape.CORNER
 	piece.rotations = 0
 	piece.position = board_to_world_pos(pos)

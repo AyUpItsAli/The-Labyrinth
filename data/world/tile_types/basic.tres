@@ -1,10 +1,19 @@
-[gd_resource type="Resource" script_class="TileType" load_steps=3 format=3 uid="uid://ba6mc0tmsups0"]
+[gd_resource type="Resource" script_class="TileType" load_steps=6 format=3 uid="uid://ba6mc0tmsups0"]
 
 [ext_resource type="Script" uid="uid://duug7sq1ta1v5" path="res://objects/world/tile_type.gd" id="1_8iy7a"]
-[ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="1_duqjl"]
+[ext_resource type="PackedScene" uid="uid://hb82o7b8ojjs" path="res://scenes/world/tiles/basic/shapes/basic_corner.tscn" id="2_umqa6"]
+[ext_resource type="PackedScene" uid="uid://f0sj2be0pl3h" path="res://scenes/world/tiles/basic/shapes/basic_straight.tscn" id="3_xjx3s"]
+[ext_resource type="PackedScene" uid="uid://bfj3ng0co6cws" path="res://scenes/world/tiles/basic/shapes/basic_junction.tscn" id="4_ut5mu"]
+[ext_resource type="PackedScene" uid="uid://cwnp8llqnfoo2" path="res://scenes/world/tiles/basic/shapes/basic_cross.tscn" id="5_ye3fq"]
 
 [resource]
 script = ExtResource("1_8iy7a")
 id = "basic"
-scene = ExtResource("1_duqjl")
+scene_uid = "uid://bnl87t7y8df7p"
+shapes = Dictionary[int, PackedScene]({
+3: ExtResource("2_umqa6"),
+5: ExtResource("3_xjx3s"),
+7: ExtResource("4_ut5mu"),
+15: ExtResource("5_ye3fq")
+})
 metadata/_custom_type_script = "uid://duug7sq1ta1v5"
