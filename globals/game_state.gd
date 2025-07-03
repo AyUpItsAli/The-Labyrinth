@@ -4,9 +4,8 @@ var turn_order: Array[Player]
 var active_player: Player
 var turn_index: int:
 	set(new_index):
-		turn_index = min(max(new_index, 0), turn_order.size())
-		if turn_index == turn_order.size():
-			# This would be the "Environment's turn" so no active player
+		turn_index = max(new_index, 0) % (turn_order.size()+1)
+		if is_environments_turn():
 			active_player = null
 		else:
 			active_player = turn_order.get(turn_index)
@@ -42,3 +41,6 @@ func is_my_turn() -> bool:
 	if not active_player:
 		return false
 	return active_player.id == Global.player.id
+
+func is_environments_turn() -> bool:
+	return turn_index == turn_order.size()
