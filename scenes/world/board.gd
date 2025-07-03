@@ -21,9 +21,6 @@ static func board_to_world_pos(pos: Vector2i) -> Vector3:
 static func world_to_board_pos(pos: Vector3) -> Vector2i:
 	return Vector2i(round(pos.x / Tile.SIZE), round(pos.z / Tile.SIZE))
 
-func get_mouse_board_pos() -> Vector2i:
-	return world_to_board_pos(camera.get_mouse_pos())
-
 # ------
 # TILES
 # ------
@@ -107,7 +104,7 @@ func update_free_tile() -> void:
 	if not free_tile:
 		Utils.log_error("Free Tile is null!")
 		return
-	var target_pos: Vector2i = get_mouse_board_pos()
+	var target_pos: Vector2i = camera.get_mouse_board_pos()
 	if valid_edge_pos(target_pos):
 		if target_pos != free_tile.pos:
 			free_tile.pos = target_pos
