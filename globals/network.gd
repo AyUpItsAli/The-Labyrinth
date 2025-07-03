@@ -33,11 +33,9 @@ func _ready() -> void:
 	connection_successful.connect(_on_connection_successful)
 	player_connected.connect(_on_player_connected)
 	player_disconnected.connect(_on_player_disconnected)
-	reset()
 
 func reset() -> void:
-	# Player
-	Global.reset_player()
+	# Peer
 	peer.close()
 	peer = OfflineMultiplayerPeer.new()
 	multiplayer.set_multiplayer_peer(peer)
@@ -48,13 +46,13 @@ func reset() -> void:
 	chat.clear()
 	acknowledgements.clear()
 
-func get_network_data() -> Dictionary:
+func serialised() -> Dictionary:
 	var data: Dictionary = {}
 	data.set("players", get_players_serialised())
 	data.set("chat", chat)
 	return data
 
-func load_network_data(data: Dictionary) -> void:
+func load_data(data: Dictionary) -> void:
 	update_players(data.get("players"))
 	chat = data.get("chat")
 	chat_updated.emit()
@@ -322,14 +320,14 @@ func peer_connected(player_data: Dictionary) -> void:
 	var player := Player.deserialised(player_data)
 	register_player(player)
 	# Forward network data to connected player
-	confirm_connection.rpc_id(player.id, get_network_data())
+	confirm_connection.rpc_id(player.id, serialised())
 	Utils.log_success("%s connected" % player.display_name)
 	player_connected.emit(player)
 
 @rpc("authority", "call_remote", "reliable")
 func confirm_connection(data: Dictionary) -> void:
 	# Load network data received from server
-	load_network_data(data)
+	load_data(data)
 	Utils.log_success("Connection successful")
 	connection_successful.emit()
 
@@ -375,7 +373,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		close_connection()
 
 func close_connection() -> void:
-	reset()
+	Global.reset()
 	Utils.log_closure("Connection closed")
 	Loading.load_scene(Loading.Scene.MENU)
 

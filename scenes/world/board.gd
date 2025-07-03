@@ -94,6 +94,8 @@ func display_piece() -> void:
 			return
 		tile_container.remove_child(piece)
 		piece.queue_free()
+	if not GameState.is_my_turn():
+		return
 	if not valid_pos(pos):
 		return
 	var type: TileType = Data.Tiles.get_type("basic")

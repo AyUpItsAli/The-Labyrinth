@@ -16,6 +16,8 @@ func _ready() -> void:
 
 func initialise_game() -> void:
 	Utils.log_start("Initialising game")
+	await Overlay.display_loading_message("Initialising the game")
+	GameState.initialise_game()
 	await Overlay.display_loading_message("Generating the board")
 	board.generate()
 	Utils.log_success("Initialisation complete")
@@ -29,6 +31,7 @@ func sync_clients() -> void:
 	Utils.log_start("Synchronising clients")
 	# Collect game data
 	var data: Dictionary = {}
+	data.set("game_state", GameState.serialised())
 	data.set("board", board.serialised())
 	data.set("camera_max_distance", camera.max_distance)
 	# Synchronise game data with clients
@@ -40,6 +43,7 @@ func sync_clients() -> void:
 func load_data(data: Dictionary) -> void:
 	Utils.log_start("Loading game data")
 	# Initialise game with the given data
+	GameState.load_data(data.get("game_state"))
 	board.load_data(data.get("board"))
 	camera.max_distance = data.get("camera_max_distance")
 	Utils.log_success("Game loaded")

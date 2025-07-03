@@ -18,26 +18,30 @@ func _init() -> void:
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 	initialise_steam()
+	if steam_initialised:
+		reset()
 
 func initialise_steam() -> void:
 	var response: Dictionary = Steam.get_steam_init_result()
 	if not response or response.get("status") != 0:
 		var reason: String = str(response.get("verbal")) if response else "No init response"
-		Overlay.display_error("Failed to initialise Steam: %s" % reason, true)
+		Overlay.display_error("Error initialising Steam: %s" % reason, true)
 		return
 	steam_initialised = true
 	is_subscribed = Steam.isSubscribed()
 	if not is_subscribed:
-		Overlay.display_error("Failed to initialise Steam: You do not own this application", true)
-		return
-	reset_player()
+		Overlay.display_error("Error initialising Steam: You do not own this application", true)
 
-func reset_player() -> void:
+func reset() -> void:
+	# Player
 	player = Player.new()
 	player.steam_id = Steam.getSteamID()
 	player.steam_name = Steam.getPersonaName()
 	player.display_name = player.steam_name
 	player.load_icon()
+	# Network and GameState
+	Network.reset()
+	GameState.reset()
 
 func _process(_delta: float) -> void:
 	if steam_initialised:

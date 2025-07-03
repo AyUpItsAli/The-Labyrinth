@@ -1,1 +1,44 @@
 extends Node
+
+var turn_order: Array[Player]
+var active_player: Player
+var turn_index: int:
+	set(new_index):
+		turn_index = min(max(new_index, 0), turn_order.size())
+		if turn_index == turn_order.size():
+			# This would be the "Environment's turn" so no active player
+			active_player = null
+		else:
+			active_player = turn_order.get(turn_index)
+
+func reset() -> void:
+	turn_order.clear()
+	turn_index = 0
+
+func initialise_game() -> void:
+	turn_order = Network.players.values()
+	turn_order.shuffle()
+	turn_index = 0
+
+func serialised() -> Dictionary:
+	var data: Dictionary = {}
+	# Turn order
+	var turn_order_serialised: Array[int]
+	for player: Player in turn_order:
+		turn_order_serialised.append(player.id)
+	data.set("turn_order", turn_order_serialised)
+	data.set("turn_index", turn_index)
+	return data
+
+func load_data(data: Dictionary) -> void:
+	# Turn order
+	var turn_order_serialised: Array[int] = data.get("turn_order")
+	turn_order.clear()
+	for id: int in turn_order_serialised:
+		turn_order.append(Network.players.get(id))
+	turn_index = data.get("turn_index")
+
+func is_my_turn() -> bool:
+	if not active_player:
+		return false
+	return active_player.id == Global.player.id
