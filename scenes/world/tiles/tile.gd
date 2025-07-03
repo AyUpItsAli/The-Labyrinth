@@ -28,10 +28,10 @@ var pos: Vector2i:
 		position = Board.board_to_world_pos(pos)
 
 func _ready() -> void:
-	instantiate_graphics()
+	update_graphics()
 
 # Instantiates the graphics corresponding to the tile's shape
-func instantiate_graphics() -> void:
+func update_graphics() -> void:
 	# Clear graphics parent
 	for child: Node in graphics_parent.get_children():
 		graphics_parent.remove_child(child)
@@ -41,7 +41,7 @@ func instantiate_graphics() -> void:
 		return
 	var graphics: Node3D = type.shapes.get(shape).instantiate()
 	graphics_parent.add_child(graphics)
-	graphics_parent.rotation_degrees.y = 90 * rotations
+	graphics_parent.rotation_degrees.y = -90 * rotations
 
 func can_move(direction: Board.Direction) -> bool:
 	# Perform a bitwise rotation left on the shape value for each tile rotation

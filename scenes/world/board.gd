@@ -113,6 +113,15 @@ func update_free_tile() -> void:
 	elif free_tile.is_inside_tree():
 		tile_container.remove_child(free_tile)
 
+func rotate_free_tile() -> void:
+	if not free_tile:
+		Utils.log_error("Free Tile is null!")
+		return
+	if not free_tile.is_inside_tree():
+		return
+	free_tile.rotations += 1
+	free_tile.update_graphics()
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not GameState.is_my_turn():
 		return
@@ -120,3 +129,5 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion:
 		update_free_tile()
+	elif event.is_action_pressed("rotate_tile"):
+		rotate_free_tile()
