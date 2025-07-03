@@ -13,30 +13,12 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 var tiles: Dictionary[Vector2i, Tile]
 var free_tile: Tile
 
-func serialised() -> Dictionary:
-	var data: Dictionary = {}
-	var tiles_data: Dictionary = {}
-	for pos: Vector2i in tiles:
-		var tile: Tile = tiles.get(pos)
-		tiles_data.set(pos, tile.serialised())
-	data.set("tiles", tiles_data)
-	data.set("free_tile", free_tile.serialised())
-	return data
-
-func load_data(data: Dictionary) -> void:
-	clear()
-	var tiles_data: Dictionary = data.get("tiles")
-	for pos: Vector2i in tiles_data:
-		var tile := Tile.deserialised(tiles_data.get(pos))
-		add_tile(tile, pos)
-	free_tile = Tile.deserialised(data.get("free_tile"))
-
 ## Converts 2D board position to 3D world position local to the board
-func board_to_world_pos(pos: Vector2i) -> Vector3:
+static func board_to_world_pos(pos: Vector2i) -> Vector3:
 	return Vector3(pos.x * Tile.SIZE, 0, pos.y * Tile.SIZE)
 
 ## Converts 3D world position local to the board to 2D board position
-func world_to_board_pos(pos: Vector3) -> Vector2i:
+static func world_to_board_pos(pos: Vector3) -> Vector2i:
 	return Vector2i(round(pos.x / Tile.SIZE), round(pos.z / Tile.SIZE))
 
 func get_mouse_board_pos() -> Vector2i:
@@ -52,8 +34,12 @@ func clear() -> void:
 		tile.queue_free()
 	tiles.clear()
 
-func generate_tile() -> Tile:
-	var type: TileType = Data.Tiles.get_types().pick_random()
+func generate_tile(tile_type: String = "") -> Tile:
+	var type: TileType
+	if tile_type.is_empty():
+		type = Data.Tiles.get_types().pick_random()
+	else:
+		type = Data.Tiles.get_type(tile_type)
 	var tile: Tile = type.scene.instantiate()
 	tile.shape = type.shapes.keys().pick_random()
 	tile.rotations = randi_range(0, 3)
@@ -61,14 +47,13 @@ func generate_tile() -> Tile:
 
 func add_tile(tile: Tile, pos: Vector2i) -> void:
 	tile.pos = pos
-	tile.position = board_to_world_pos(pos)
 	tile.name = "Tile (%s,%s)" % [pos.x, pos.y]
 	tile_container.add_child(tile)
 	tiles.set(pos, tile)
 
 func generate() -> void:
-	camera.max_distance = ((size / 2.0) + 1) * Tile.SIZE
 	# TODO: Generate in another thread
+	# Tiles
 	clear()
 	var end := int(size / 2.0)
 	var start: int = -end
@@ -77,11 +62,36 @@ func generate() -> void:
 			var tile: Tile = generate_tile()
 			add_tile(tile, Vector2i(x, y))
 	# Free Tile
-	var type: TileType = Data.Tiles.get_type("basic")
-	free_tile = type.scene.instantiate()
+	free_tile = generate_tile("basic")
 	free_tile.name = "Free Tile"
-	free_tile.shape = type.shapes.keys().pick_random()
-	free_tile.rotations = randi_range(0, 3)
+	# Camera limits
+	camera.max_distance = ((size / 2.0) + 1) * Tile.SIZE
+
+# --------------
+# SERIALISATION
+# --------------
+
+func serialised() -> Dictionary:
+	var data: Dictionary = {}
+	# Tiles
+	var tiles_data: Dictionary = {}
+	for pos: Vector2i in tiles:
+		var tile: Tile = tiles.get(pos)
+		tiles_data.set(pos, tile.serialised())
+	data.set("tiles", tiles_data)
+	# Free Tile
+	data.set("free_tile", free_tile.serialised())
+	return data
+
+func load_data(data: Dictionary) -> void:
+	# Tiles
+	clear()
+	var tiles_data: Dictionary = data.get("tiles")
+	for pos: Vector2i in tiles_data:
+		var tile := Tile.deserialised(tiles_data.get(pos))
+		add_tile(tile, pos)
+	# Free Tile
+	free_tile = Tile.deserialised(data.get("free_tile"))
 
 # ----------
 # FREE TILE
@@ -101,7 +111,6 @@ func update_free_tile() -> void:
 	if valid_edge_pos(target_pos):
 		if target_pos != free_tile.pos:
 			free_tile.pos = target_pos
-			free_tile.position = board_to_world_pos(target_pos)
 		if not free_tile.is_inside_tree():
 			tile_container.add_child(free_tile)
 	elif free_tile.is_inside_tree():

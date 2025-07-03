@@ -22,7 +22,10 @@ var shape: Shape = Shape.CORNER
 var rotations: int:
 	set(new_value):
 		rotations = new_value % 4
-var pos: Vector2i
+var pos: Vector2i:
+	set(new_pos):
+		pos = new_pos
+		position = Board.board_to_world_pos(pos)
 
 func _ready() -> void:
 	instantiate_graphics()
