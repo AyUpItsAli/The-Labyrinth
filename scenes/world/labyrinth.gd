@@ -53,4 +53,5 @@ func load_data(data: Dictionary) -> void:
 @rpc("authority", "call_local", "reliable")
 func start_game() -> void:
 	Utils.log_start("Starting game")
+	GameState.start_game()
 	Overlay.finish_loading()

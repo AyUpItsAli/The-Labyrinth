@@ -22,10 +22,7 @@ var shape: Shape = Shape.CORNER
 var rotations: int:
 	set(new_value):
 		rotations = new_value % 4
-var pos: Vector2i:
-	set(new_pos):
-		pos = new_pos
-		name = "Tile (%s,%s)" % [pos.x, pos.y]
+var pos: Vector2i
 
 func _ready() -> void:
 	instantiate_graphics()

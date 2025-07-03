@@ -11,6 +11,25 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 @export var camera: Camera
 
 var tiles: Dictionary[Vector2i, Tile]
+var free_tile: Tile
+
+func serialised() -> Dictionary:
+	var data: Dictionary = {}
+	var tiles_data: Dictionary = {}
+	for pos: Vector2i in tiles:
+		var tile: Tile = tiles.get(pos)
+		tiles_data.set(pos, tile.serialised())
+	data.set("tiles", tiles_data)
+	data.set("free_tile", free_tile.serialised())
+	return data
+
+func load_data(data: Dictionary) -> void:
+	clear()
+	var tiles_data: Dictionary = data.get("tiles")
+	for pos: Vector2i in tiles_data:
+		var tile := Tile.deserialised(tiles_data.get(pos))
+		add_tile(tile, pos)
+	free_tile = Tile.deserialised(data.get("free_tile"))
 
 ## Converts 2D board position to 3D world position local to the board
 func board_to_world_pos(pos: Vector2i) -> Vector3:
@@ -19,6 +38,13 @@ func board_to_world_pos(pos: Vector2i) -> Vector3:
 ## Converts 3D world position local to the board to 2D board position
 func world_to_board_pos(pos: Vector3) -> Vector2i:
 	return Vector2i(round(pos.x / Tile.SIZE), round(pos.z / Tile.SIZE))
+
+func get_mouse_board_pos() -> Vector2i:
+	return world_to_board_pos(camera.get_mouse_pos())
+
+# ------
+# TILES
+# ------
 
 func clear() -> void:
 	for tile: Tile in tile_container.get_children():
@@ -36,6 +62,7 @@ func generate_tile() -> Tile:
 func add_tile(tile: Tile, pos: Vector2i) -> void:
 	tile.pos = pos
 	tile.position = board_to_world_pos(pos)
+	tile.name = "Tile (%s,%s)" % [pos.x, pos.y]
 	tile_container.add_child(tile)
 	tiles.set(pos, tile)
 
@@ -49,62 +76,41 @@ func generate() -> void:
 		for y in range(start, end + 1):
 			var tile: Tile = generate_tile()
 			add_tile(tile, Vector2i(x, y))
+	# Free Tile
+	var type: TileType = Data.Tiles.get_type("basic")
+	free_tile = type.scene.instantiate()
+	free_tile.name = "Free Tile"
+	free_tile.shape = type.shapes.keys().pick_random()
+	free_tile.rotations = randi_range(0, 3)
 
-func serialised() -> Dictionary:
-	var data: Dictionary = {}
-	var tiles_data: Dictionary = {}
-	for pos: Vector2i in tiles:
-		var tile: Tile = tiles.get(pos)
-		tiles_data.set(pos, tile.serialised())
-	data.set("tiles", tiles_data)
-	return data
+# ----------
+# FREE TILE
+# ----------
 
-func load_data(data: Dictionary) -> void:
-	clear()
-	var tiles_data: Dictionary = data.get("tiles")
-	for pos: Vector2i in tiles_data:
-		var tile := Tile.deserialised(tiles_data.get(pos))
-		add_tile(tile, pos)
-
-func get_mouse_world_pos() -> Vector3:
-	if not camera:
-		return Vector3.ZERO
-	var viewport_pos: Vector2 = get_viewport().get_mouse_position()
-	var from: Vector3 = camera.camera.project_ray_origin(viewport_pos)
-	var to: Vector3 = camera.camera.project_position(viewport_pos, 1000)
-	var result: Variant = Plane.PLANE_XZ.intersects_segment(from, to)
-	return Vector3.ZERO if result == null else result
-
-func get_mouse_board_pos() -> Vector2i:
-	return world_to_board_pos(get_mouse_world_pos())
-
-var piece_pos: Vector2i
-var piece: Tile
-
-func valid_pos(pos: Vector2i) -> bool:
+func valid_edge_pos(pos: Vector2i) -> bool:
 	var x: int = abs(pos.x)
 	var y: int = abs(pos.y)
 	var edge := int(size / 2.0) + 1
 	return (x == edge and y < edge) or (y == edge and x < edge)
 
-func display_piece() -> void:
-	var pos: Vector2i = get_mouse_board_pos()
-	if piece:
-		if pos == piece.pos:
-			return
-		tile_container.remove_child(piece)
-		piece.queue_free()
-	if not GameState.is_my_turn():
+func update_free_tile() -> void:
+	if not free_tile:
+		Utils.log_error("Free Tile is null!")
 		return
-	if not valid_pos(pos):
-		return
-	var type: TileType = Data.Tiles.get_type("basic")
-	piece = type.scene.instantiate()
-	piece.shape = Tile.Shape.CORNER
-	piece.rotations = 0
-	piece.position = board_to_world_pos(pos)
-	tile_container.add_child(piece)
+	var target_pos: Vector2i = get_mouse_board_pos()
+	if valid_edge_pos(target_pos):
+		if target_pos != free_tile.pos:
+			free_tile.pos = target_pos
+			free_tile.position = board_to_world_pos(target_pos)
+		if not free_tile.is_inside_tree():
+			tile_container.add_child(free_tile)
+	elif free_tile.is_inside_tree():
+		tile_container.remove_child(free_tile)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not GameState.is_my_turn():
+		return
+	if not GameState.turn_phase == GameState.TurnPhase.MOVE_MAZE:
+		return
 	if event is InputEventMouseMotion:
-		display_piece()
+		update_free_tile()

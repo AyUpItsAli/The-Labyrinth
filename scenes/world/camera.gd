@@ -59,3 +59,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		Overlay.hide_cursor()
 	elif event.is_action_released("rotate"):
 		Overlay.show_cursor()
+
+func get_mouse_pos() -> Vector3:
+	var viewport_pos: Vector2 = get_viewport().get_mouse_position()
+	var from: Vector3 = camera.project_ray_origin(viewport_pos)
+	var to: Vector3 = camera.project_position(viewport_pos, 1000)
+	var result: Variant = Plane.PLANE_XZ.intersects_segment(from, to)
+	return Vector3.ZERO if result == null else result
