@@ -131,3 +131,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		update_free_tile()
 	elif event.is_action_pressed("rotate_tile"):
 		rotate_free_tile()
+	elif event.is_action_pressed("select"):
+		move_maze()
+
+func move_maze() -> void:
+	if not free_tile.is_inside_tree():
+		return
+	# Get move direction
+	var direction: Direction = Direction.NORTH
+	var edge := int(size / 2.0) + 1
+	if free_tile.pos.y == -edge:
+		direction = Direction.SOUTH
+	elif free_tile.pos.x == -edge:
+		direction = Direction.EAST
+	elif free_tile.pos.x == edge:
+		direction = Direction.WEST
+	print(Direction.find_key(direction))
