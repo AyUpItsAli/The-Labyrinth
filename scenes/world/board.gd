@@ -21,6 +21,9 @@ static func board_to_world_pos(pos: Vector2i) -> Vector3:
 static func world_to_board_pos(pos: Vector3) -> Vector2i:
 	return Vector2i(round(pos.x / Tile.SIZE), round(pos.z / Tile.SIZE))
 
+func _ready() -> void:
+	camera.max_distance = ((size / 2.0) + 1) * Tile.SIZE
+
 # ------
 # TILES
 # ------
@@ -61,8 +64,6 @@ func generate() -> void:
 	# Free Tile
 	free_tile = generate_tile("basic")
 	free_tile.name = "Free Tile"
-	# Camera limits
-	camera.max_distance = ((size / 2.0) + 1) * Tile.SIZE
 
 # --------------
 # SERIALISATION

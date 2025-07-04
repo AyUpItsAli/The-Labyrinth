@@ -33,7 +33,6 @@ func sync_clients() -> void:
 	var data: Dictionary = {}
 	data.set("game_state", GameState.serialised())
 	data.set("board", board.serialised())
-	data.set("camera_max_distance", camera.max_distance)
 	# Synchronise game data with clients
 	load_data.rpc(data)
 	# Wait for all players to initialise the game
@@ -45,7 +44,6 @@ func load_data(data: Dictionary) -> void:
 	# Initialise game with the given data
 	GameState.load_data(data.get("game_state"))
 	board.load_data(data.get("board"))
-	camera.max_distance = data.get("camera_max_distance")
 	Utils.log_success("Game loaded")
 	# Tell the server we have initialised the game
 	Network.register_server_ack("game_initialised")
