@@ -43,12 +43,6 @@ func update_graphics() -> void:
 	graphics_parent.add_child(graphics)
 	graphics_parent.rotation_degrees.y = -90 * rotations
 
-func can_move(direction: Board.Direction) -> bool:
-	# Perform a bitwise rotation left on the shape value for each tile rotation
-	var shape_rotated: int = Utils.rotate_left(shape, rotations, 4)
-	# Return whether the shape value contains the direction value
-	return shape_rotated & direction
-
 func serialised() -> Dictionary:
 	var data: Dictionary = {}
 	data.set("type", type.id)
@@ -62,3 +56,15 @@ static func deserialised(data: Dictionary) -> Tile:
 	tile.shape = data.get("shape")
 	tile.rotations = data.get("rotations")
 	return tile
+
+func copy() -> Tile:
+	var tile: Tile = type.scene.instantiate()
+	tile.shape = shape
+	tile.rotations = rotations
+	return tile
+
+func can_move(direction: Board.Direction) -> bool:
+	# Perform a bitwise rotation left on the shape value for each tile rotation
+	var shape_rotated: int = Utils.rotate_left(shape, rotations, 4)
+	# Return whether the shape value contains the direction value
+	return shape_rotated & direction

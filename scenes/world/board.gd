@@ -10,8 +10,12 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 @export var tile_container: Node3D
 @export var camera: Camera
 
+var edge: int
 var tiles: Dictionary[Vector2i, Tile]
-var free_tile: Tile
+var free_tile: Tile:
+	set(new_tile):
+		free_tile = new_tile
+		free_tile.name = "Free Tile"
 
 ## Converts 2D board position to 3D world position local to the board
 static func board_to_world_pos(pos: Vector2i) -> Vector3:
@@ -21,7 +25,15 @@ static func board_to_world_pos(pos: Vector2i) -> Vector3:
 static func world_to_board_pos(pos: Vector3) -> Vector2i:
 	return Vector2i(round(pos.x / Tile.SIZE), round(pos.z / Tile.SIZE))
 
+static func get_direction_offset(direction: Direction) -> Vector2i:
+	match direction:
+		Direction.NORTH: return Vector2i.UP
+		Direction.SOUTH: return Vector2i.DOWN
+		Direction.EAST: return Vector2i.RIGHT
+		_: return Vector2i.LEFT
+
 func _ready() -> void:
+	edge = int(size / 2.0) + 1
 	camera.max_distance = ((size / 2.0) + 1) * Tile.SIZE
 
 # ------
@@ -45,11 +57,21 @@ func generate_tile(tile_type: String = "") -> Tile:
 	tile.rotations = randi_range(0, 3)
 	return tile
 
-func add_tile(tile: Tile, pos: Vector2i) -> void:
+func update_tile(tile: Tile, pos: Vector2i) -> void:
+	if tiles.values().has(tile):
+		tiles.erase(tile.pos)
 	tile.pos = pos
 	tile.name = "Tile (%s,%s)" % [pos.x, pos.y]
-	tile_container.add_child(tile)
 	tiles.set(pos, tile)
+
+func add_tile(tile: Tile, pos: Vector2i) -> void:
+	update_tile(tile, pos)
+	tile_container.add_child(tile)
+
+func remove_tile(tile: Tile) -> void:
+	tiles.erase(tile.pos)
+	tile_container.remove_child(tile)
+	tile.queue_free()
 
 func generate() -> void:
 	# TODO: Generate in another thread
@@ -63,7 +85,6 @@ func generate() -> void:
 			add_tile(tile, Vector2i(x, y))
 	# Free Tile
 	free_tile = generate_tile("basic")
-	free_tile.name = "Free Tile"
 
 # --------------
 # SERIALISATION
@@ -98,13 +119,9 @@ func load_data(data: Dictionary) -> void:
 func valid_edge_pos(pos: Vector2i) -> bool:
 	var x: int = abs(pos.x)
 	var y: int = abs(pos.y)
-	var edge := int(size / 2.0) + 1
 	return (x == edge and y < edge) or (y == edge and x < edge)
 
 func update_free_tile() -> void:
-	if not free_tile:
-		Utils.log_error("Free Tile is null!")
-		return
 	var target_pos: Vector2i = camera.get_mouse_board_pos()
 	if valid_edge_pos(target_pos):
 		if target_pos != free_tile.pos:
@@ -115,9 +132,6 @@ func update_free_tile() -> void:
 		tile_container.remove_child(free_tile)
 
 func rotate_free_tile() -> void:
-	if not free_tile:
-		Utils.log_error("Free Tile is null!")
-		return
 	if not free_tile.is_inside_tree():
 		return
 	free_tile.rotations += 1
@@ -138,13 +152,63 @@ func _unhandled_input(event: InputEvent) -> void:
 func move_maze() -> void:
 	if not free_tile.is_inside_tree():
 		return
-	# Get move direction
+	# Set turn phase to idle
+	GameState.turn_phase = GameState.TurnPhase.IDLE
+	# Remove the free tile from view
+	tile_container.remove_child(free_tile)
+	# Add a new tile, which is a copy of the free tile
+	var new_tile: Tile = free_tile.copy()
+	add_tile(new_tile, free_tile.pos)
+	# Get the target tiles to move and the move direction
+	var target_tiles: Array[Tile]
 	var direction: Direction = Direction.NORTH
-	var edge := int(size / 2.0) + 1
-	if free_tile.pos.y == -edge:
-		direction = Direction.SOUTH
-	elif free_tile.pos.x == -edge:
-		direction = Direction.EAST
-	elif free_tile.pos.x == edge:
-		direction = Direction.WEST
-	print(Direction.find_key(direction))
+	if abs(free_tile.pos.y) == edge:
+		target_tiles = tiles.values().filter(
+			func(tile: Tile) -> bool:
+				return tile.pos.x == free_tile.pos.x
+		)
+		if free_tile.pos.y < 0:
+			direction = Direction.SOUTH
+			target_tiles.sort_custom(
+				func(a: Tile, b: Tile) -> bool:
+					return a.pos.y > b.pos.y
+			)
+		else:
+			target_tiles.sort_custom(
+				func(a: Tile, b: Tile) -> bool:
+					return a.pos.y < b.pos.y
+			)
+	else:
+		target_tiles = tiles.values().filter(
+			func(tile: Tile) -> bool:
+				return tile.pos.y == free_tile.pos.y
+		)
+		if free_tile.pos.x < 0:
+			direction = Direction.EAST
+			target_tiles.sort_custom(
+				func(a: Tile, b: Tile) -> bool:
+					return a.pos.x > b.pos.x
+			)
+		else:
+			direction = Direction.WEST
+			target_tiles.sort_custom(
+				func(a: Tile, b: Tile) -> bool:
+					return a.pos.x < b.pos.x
+			)
+	# Move the target tiles
+	var tween: Tween = create_tween().set_parallel(true)
+	for tile: Tile in target_tiles:
+		var new_pos: Vector2i = tile.pos + get_direction_offset(direction)
+		tween.tween_property(tile, "position", board_to_world_pos(new_pos), 2)
+	await tween.finished
+	# Remove first tile
+	var removed: Tile = target_tiles.pop_front()
+	remove_tile(removed)
+	# Update remaining tiles in order
+	for tile: Tile in target_tiles:
+		var new_pos: Vector2i = world_to_board_pos(tile.position)
+		update_tile(tile, new_pos)
+	# Set free tile to the removed tile
+	free_tile = removed.copy()
+	# TODO: Should move to next phase...
+	GameState.turn_phase = GameState.TurnPhase.MOVE_MAZE

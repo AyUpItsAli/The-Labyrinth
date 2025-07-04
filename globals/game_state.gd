@@ -1,6 +1,6 @@
 extends Node
 
-enum TurnPhase { MOVE_MAZE, MOVE_PLAYER }
+enum TurnPhase { IDLE, MOVE_MAZE, MOVE_PLAYER }
 
 var turn_order: Array[Player]
 var turn_index: int:
@@ -16,7 +16,7 @@ var turn_phase: TurnPhase
 func reset() -> void:
 	turn_order.clear()
 	turn_index = 0
-	turn_phase = TurnPhase.MOVE_MAZE
+	turn_phase = TurnPhase.IDLE
 
 func serialised() -> Dictionary:
 	var data: Dictionary = {}
