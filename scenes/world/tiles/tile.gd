@@ -25,6 +25,7 @@ var rotations: int:
 var pos: Vector2i:
 	set(new_pos):
 		pos = new_pos
+		name = "Tile (%s,%s)" % [pos.x, pos.y]
 		position = Board.board_to_world_pos(pos)
 
 func _ready() -> void:

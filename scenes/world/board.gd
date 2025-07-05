@@ -12,10 +12,7 @@ enum Direction { NORTH = 1, EAST = 2, SOUTH = 4, WEST = 8 }
 
 var edge: int
 var tiles: Dictionary[Vector2i, Tile]
-var free_tile: Tile:
-	set(new_tile):
-		free_tile = new_tile
-		free_tile.name = "Free Tile"
+var free_tile: Tile
 
 ## Converts 2D board position to 3D world position local to the board
 static func board_to_world_pos(pos: Vector2i) -> Vector3:
@@ -59,16 +56,8 @@ func generate_tile(tile_type: String = "") -> Tile:
 	tile.rotations = randi_range(0, 3)
 	return tile
 
-func update_tile(tile: Tile, pos: Vector2i) -> void:
-	if tiles.values().has(tile):
-		tiles.erase(tile.pos)
-	tile.pos = pos
-	tile.name = "Tile (%s,%s)" % [pos.x, pos.y]
-	tiles.set(pos, tile)
-
-# TODO: Only one arg
-func add_tile(tile: Tile, pos: Vector2i) -> void:
-	update_tile(tile, pos)
+func add_tile(tile: Tile) -> void:
+	tiles.set(tile.pos, tile)
 	tile_container.add_child(tile)
 
 func remove_tile(tile: Tile) -> void:
@@ -85,7 +74,8 @@ func generate() -> void:
 	for x in range(start, end + 1):
 		for y in range(start, end + 1):
 			var tile: Tile = generate_tile()
-			add_tile(tile, Vector2i(x, y))
+			tile.pos = Vector2i(x, y)
+			add_tile(tile)
 	# Free Tile
 	free_tile = generate_tile("basic")
 
@@ -96,11 +86,10 @@ func generate() -> void:
 func serialised() -> Dictionary:
 	var data: Dictionary = {}
 	# Tiles
-	var tiles_data: Dictionary = {}
-	for pos: Vector2i in tiles:
-		var tile: Tile = tiles.get(pos)
-		tiles_data.set(pos, tile.serialised())
-	data.set("tiles", tiles_data)
+	var tiles_serialised: Array[Dictionary]
+	for tile: Tile in tiles.values():
+		tiles_serialised.append(tile.serialised())
+	data.set("tiles", tiles_serialised)
 	# Free Tile
 	data.set("free_tile", free_tile.serialised())
 	return data
@@ -108,10 +97,9 @@ func serialised() -> Dictionary:
 func load_data(data: Dictionary) -> void:
 	# Tiles
 	clear()
-	var tiles_data: Dictionary = data.get("tiles")
-	for pos: Vector2i in tiles_data:
-		var tile := Tile.deserialised(tiles_data.get(pos))
-		add_tile(tile, pos)
+	var tiles_serialised: Array[Dictionary] = data.get("tiles")
+	for tile: Dictionary in tiles_serialised:
+		add_tile(Tile.deserialised(tile))
 	# Free Tile
 	free_tile = Tile.deserialised(data.get("free_tile"))
 
@@ -170,7 +158,7 @@ func move_tiles(data: Dictionary) -> void:
 		sender = Global.player.id
 	# Deserialise the new tile and add it to the board
 	var new_tile := Tile.deserialised(data)
-	add_tile(new_tile, new_tile.pos)
+	add_tile(new_tile)
 	# Determine move direction
 	var direction: Direction = Direction.NORTH
 	if new_tile.pos.y == -edge:
@@ -217,8 +205,12 @@ func move_tiles(data: Dictionary) -> void:
 	remove_tile(removed)
 	# Update the remaining tiles in order
 	for tile: Tile in target_tiles:
-		var new_pos: Vector2i = world_to_board_pos(tile.position)
-		update_tile(tile, new_pos)
+		# Remove old entry
+		tiles.erase(tile.pos)
+		# Update board pos
+		tile.pos = world_to_board_pos(tile.position)
+		# Add new entry
+		tiles.set(tile.pos, tile)
 	# Set the free tile to a copy of the removed tile
 	free_tile = removed.copy()
 	# Send acknowledgement back to the sender
