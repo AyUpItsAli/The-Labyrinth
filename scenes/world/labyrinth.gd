@@ -12,7 +12,7 @@ func _ready() -> void:
 	Utils.log_start("Waiting for players")
 	await Overlay.display_loading_message("Waiting for players")
 	# Wait for all players to load the scene
-	Network.register_server_ack("labyrinth_loaded")
+	Network.send_ack(1, "labyrinth_loaded")
 
 func initialise_game() -> void:
 	Utils.log_start("Initialising game")
@@ -36,7 +36,7 @@ func sync_clients() -> void:
 	# Synchronise game data with clients
 	load_data.rpc(data)
 	# Wait for all players to initialise the game
-	Network.register_server_ack("game_initialised")
+	Network.send_ack(1, "game_initialised")
 
 @rpc("authority", "call_remote", "reliable")
 func load_data(data: Dictionary) -> void:
@@ -46,7 +46,7 @@ func load_data(data: Dictionary) -> void:
 	board.load_data(data.get("board"))
 	Utils.log_success("Game loaded")
 	# Tell the server we have initialised the game
-	Network.register_server_ack("game_initialised")
+	Network.send_ack(1, "game_initialised")
 
 @rpc("authority", "call_local", "reliable")
 func start_game() -> void:

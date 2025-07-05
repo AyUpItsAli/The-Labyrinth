@@ -48,6 +48,8 @@ func serialised() -> Dictionary:
 	data.set("type", type.id)
 	data.set("shape", shape)
 	data.set("rotations", rotations)
+	data.set("x", pos.x)
+	data.set("y", pos.y)
 	return data
 
 static func deserialised(data: Dictionary) -> Tile:
@@ -55,12 +57,14 @@ static func deserialised(data: Dictionary) -> Tile:
 	var tile: Tile = tile_type.scene.instantiate()
 	tile.shape = data.get("shape")
 	tile.rotations = data.get("rotations")
+	tile.pos = Vector2i(data.get("x"), data.get("y"))
 	return tile
 
 func copy() -> Tile:
 	var tile: Tile = type.scene.instantiate()
 	tile.shape = shape
 	tile.rotations = rotations
+	tile.pos = pos
 	return tile
 
 func can_move(direction: Board.Direction) -> bool:

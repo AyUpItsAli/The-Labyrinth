@@ -157,15 +157,18 @@ func register_chat_message(msg: Dictionary) -> void:
 		chat.pop_front()
 	chat_updated.emit()
 
-@rpc("any_peer", "call_local", "reliable", Network.Channel.CHAT)
+@rpc("any_peer", "call_remote", "reliable", Network.Channel.CHAT)
 func receive_player_message(content: String) -> void:
 	if not multiplayer.is_server():
 		return
-	var sender: Player = players.get(multiplayer.get_remote_sender_id())
+	var sender: int = multiplayer.get_remote_sender_id()
+	if sender == 0:
+		sender = Global.player.id
+	var player: Player = players.get(sender)
 	var msg: Dictionary = {}
 	msg.set("type", MessageType.PLAYER)
-	var name_colour: String = HOST_COLOUR if sender.is_host() else "white"
-	msg.set("content", "[color=%s]%s:[/color] %s" % [name_colour, sender.display_name, content])
+	var name_colour: String = HOST_COLOUR if player.is_host() else "white"
+	msg.set("content", "[color=%s]%s:[/color] %s" % [name_colour, player.display_name, content])
 	register_chat_message(msg)
 
 func send_player_message(content: String) -> void:
@@ -175,7 +178,10 @@ func send_player_message(content: String) -> void:
 	if Network.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
 		Overlay.display_error("Error sending chat message: You are not currently connected to a server")
 		return
-	receive_player_message.rpc_id(1, content)
+	if multiplayer.is_server():
+		receive_player_message(content)
+	else:
+		receive_player_message.rpc_id(1, content)
 
 func send_network_message(content: String) -> void:
 	# Server-side only
@@ -392,11 +398,13 @@ func _on_peer_disconnected(id: int) -> void:
 func get_ack(id: String) -> Dictionary:
 	return acknowledgements.get_or_add(id, {})
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("any_peer", "call_remote", "reliable")
 ## Registers the sender for the given acknowledgement. Resolves once all players have been registered.
 func register_ack(id: String) -> void:
 	var ack: Dictionary = get_ack(id)
 	var sender: int = multiplayer.get_remote_sender_id()
+	if sender == 0:
+		sender = Global.player.id
 	ack.set(sender, true)
 	Utils.log_info("Recieved acknowledgement \"%s\" from %s" % [id, sender])
 	# Once all players have been registered, resolve the acknowledgement
@@ -405,6 +413,8 @@ func register_ack(id: String) -> void:
 		acknowledgements.erase(id)
 		ack_resolved.emit(id)
 
-## Registers the sender for the given acknowledgement on the server
-func register_server_ack(id: String) -> void:
-	register_ack.rpc_id(1, id)
+func send_ack(player_id: int, id: String) -> void:
+	if player_id == Global.player.id:
+		register_ack(id)
+	else:
+		register_ack.rpc_id(player_id, id)
