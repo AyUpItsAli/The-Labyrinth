@@ -65,6 +65,7 @@ func _on_leave_btn_pressed() -> void:
 	Network.leave_server()
 
 func _on_start_btn_pressed() -> void:
+	# TODO: Ready up system
 	load_game.rpc()
 
 @rpc("authority", "call_local", "reliable")

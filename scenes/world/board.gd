@@ -131,7 +131,7 @@ func rotate_free_tile() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not GameState.is_my_turn():
 		return
-	if not GameState.turn_phase == GameState.TurnPhase.MOVE_MAZE:
+	if not GameState.is_phase(GameState.TurnPhase.MOVE_MAZE):
 		return
 	if event is InputEventMouseMotion:
 		update_free_tile()
@@ -143,8 +143,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func move_maze() -> void:
 	if not free_tile.is_inside_tree():
 		return
-	# Set turn phase to idle
-	GameState.turn_phase = GameState.TurnPhase.IDLE
+	# Pause our turn
+	GameState.set_paused(true)
 	# Remove the free tile from view
 	tile_container.remove_child(free_tile)
 	# Move tiles
@@ -154,8 +154,6 @@ func move_maze() -> void:
 func move_tiles(data: Dictionary) -> void:
 	# Get the sender, for later
 	var sender: int = multiplayer.get_remote_sender_id()
-	if sender == 0:
-		sender = Global.player.id
 	# Deserialise the new tile and add it to the board
 	var new_tile := Tile.deserialised(data)
 	add_tile(new_tile)
@@ -214,12 +212,8 @@ func move_tiles(data: Dictionary) -> void:
 	# Set the free tile to a copy of the removed tile
 	free_tile = removed.copy()
 	# Send acknowledgement back to the sender
-	Network.send_ack(sender, "tiles_moved")
+	Network.send_ack("move_maze_completed", sender)
 
 func _on_ack_resolved(id: String) -> void:
 	match id:
-		"tiles_moved": post_move_tiles()
-
-func post_move_tiles() -> void:
-	# TODO: Move to next phase...
-	GameState.turn_phase = GameState.TurnPhase.MOVE_MAZE
+		"move_maze_completed": GameState.next_phase.rpc()
