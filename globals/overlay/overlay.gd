@@ -20,6 +20,7 @@ func _ready() -> void:
 	show_cursor()
 	update_popup_panel()
 	clear_loading_screen()
+	loading_screen.show()
 
 # -------
 # CURSOR
