@@ -33,7 +33,9 @@ func update_chat() -> void:
 				message.timestamp_lbl.hide()
 			_:
 				message.content_lbl.set_text(msg.get("content"))
-				var time: Dictionary = Time.get_time_dict_from_unix_time(msg.get("time"))
+				var bias: int = Time.get_time_zone_from_system().get("bias")
+				var unix_time: int = msg.get("time") + (bias * 60)
+				var time: Dictionary = Time.get_time_dict_from_unix_time(unix_time)
 				message.timestamp_lbl.set_text("%02d:%02d" % [time.get("hour"), time.get("minute")])
 		message_container.add_child(message)
 	# No idea why we need to wait 2 frames, instead of 1, before setting scroll

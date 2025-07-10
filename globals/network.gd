@@ -58,18 +58,10 @@ func load_data(data: Dictionary) -> void:
 	chat = data.get("chat")
 	chat_updated.emit()
 
-# -----
-# USER
-# -----
-
 func get_connection_status() -> MultiplayerPeer.ConnectionStatus:
 	if peer is OfflineMultiplayerPeer:
 		return MultiplayerPeer.ConnectionStatus.CONNECTION_DISCONNECTED
 	return peer.get_connection_status()
-
-# ------
-# LOBBY
-# ------
 
 func get_lobby_data_by_id(id: int, key: String, default: String = "") -> String:
 	var data: String = Steam.getLobbyData(id, key)
