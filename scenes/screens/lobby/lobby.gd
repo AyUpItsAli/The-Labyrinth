@@ -16,14 +16,10 @@ func _ready() -> void:
 	Network.players_updated.connect(update_players)
 	lobby_name_lbl.set_text(Network.get_lobby_data("name", "Untitled Lobby"))
 	invite_btn.set_visible(multiplayer.is_server())
-	start_btn.set_visible(multiplayer.is_server())
 	message_edit.grab_focus()
 	update_chat()
 	update_players()
 	Overlay.finish_loading()
-
-func _on_invite_btn_pressed() -> void:
-	Overlay.display_invite_popup()
 
 func update_chat() -> void:
 	for child in message_container.get_children():
@@ -46,10 +42,6 @@ func update_chat() -> void:
 	# Scroll to end
 	chat_container.set_v_scroll(Vector2i.MAX.x)
 
-func _on_message_edit_text_submitted(content: String) -> void:
-	message_edit.clear()
-	Network.send_player_message(content)
-
 func update_players() -> void:
 	# Update lobby title with new player count
 	var member_count: int = Network.players.size()
@@ -59,16 +51,32 @@ func update_players() -> void:
 	player_list.clear()
 	for player: Player in Network.get_players_sorted():
 		var i: int = player_list.add_item(player.display_name, player.icon, false)
+		player_list.set_item_disabled(i, not player.ready)
 		player_list.set_item_tooltip_enabled(i, false)
+	# Update start button
+	if multiplayer.is_server():
+		start_btn.set_disabled(not Network.players_ready())
+	else:
+		start_btn.set_text("Unready" if Global.player.ready else "Ready")
 
-func _on_leave_btn_pressed() -> void:
-	Network.leave_server()
+func _on_invite_btn_pressed() -> void:
+	Overlay.display_invite_popup()
+
+func _on_message_edit_text_submitted(content: String) -> void:
+	message_edit.clear()
+	Network.send_player_message(content)
 
 func _on_start_btn_pressed() -> void:
-	# TODO: Ready up system
-	load_game.rpc()
+	if multiplayer.is_server():
+		load_game.rpc()
+	else:
+		Network.set_player_ready.rpc(Global.player.id, not Global.player.ready)
 
 @rpc("authority", "call_local", "reliable")
 func load_game() -> void:
+	start_btn.set_disabled(true)
 	Utils.log_start("Loading game")
 	Loading.load_scene(Loading.Scene.LABYRINTH)
+
+func _on_leave_btn_pressed() -> void:
+	Network.leave_server()

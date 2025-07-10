@@ -11,6 +11,7 @@ var icon: ImageTexture
 var display_name: String
 var id: int # Player/Peer id (host id = 1)
 var index: int # Register order (host index = 0)
+var ready: bool
 
 func load_icon() -> void:
 	icon = await get_icon(steam_id)
@@ -28,6 +29,7 @@ func serialised() -> Dictionary:
 	data.set("display_name", display_name)
 	data.set("id", id)
 	data.set("index", index)
+	data.set("ready", ready)
 	return data
 
 static func deserialised(data: Dictionary) -> Player:
@@ -38,6 +40,7 @@ static func deserialised(data: Dictionary) -> Player:
 	player.display_name = data.get("display_name")
 	player.id = data.get("id")
 	player.index = data.get("index")
+	player.ready = data.get("ready")
 	return player
 
 ## Creates a player icon, given the size and bytes

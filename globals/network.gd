@@ -1,5 +1,6 @@
 extends Node
 
+const MIN_PLAYERS = 2
 const MAX_CHAT_MESSAGES = 100
 const HOST_COLOUR = "crimson"
 
@@ -97,6 +98,14 @@ func get_players_serialised() -> Array[Dictionary]:
 		data.append(player.serialised())
 	return data
 
+func players_ready() -> bool:
+	if Network.players.size() < MIN_PLAYERS:
+		return false
+	for player: Player in players.values():
+		if not player.ready:
+			return false
+	return true
+
 @rpc("authority", "call_remote", "reliable")
 func update_players(data: Array[Dictionary]) -> void:
 	Utils.log_info("Updating players")
@@ -109,6 +118,8 @@ func update_players(data: Array[Dictionary]) -> void:
 	players_updated.emit()
 
 func register_player(player: Player) -> void:
+	if player.is_host():
+		player.ready = true
 	if multiplayer.is_server():
 		# Server-side setup for new players
 		player.index = players.size()
@@ -138,6 +149,12 @@ func unregister_player(id: int) -> Player:
 	Utils.log_info("Unregistered player: ID = %s, Name: %s" % [id, removed.display_name])
 	players_updated.emit()
 	return removed
+
+@rpc("any_peer", "call_local", "reliable")
+func set_player_ready(id: int, player_ready: bool) -> void:
+	var player: Player = players.get(id)
+	player.ready = player_ready
+	players_updated.emit()
 
 # -----
 # CHAT
