@@ -7,7 +7,7 @@ var app_version: String
 # Steam
 var steam_initialised: bool
 var is_subscribed: bool
-var player: Player
+var player := Player.new()
 
 signal game_closed
 
