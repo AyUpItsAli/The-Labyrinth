@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://clsek8x8xnirr" path="res://scenes/screens/lobby/lobby.gd" id="1_3ath0"]
 [ext_resource type="PackedScene" uid="uid://b6f0m28ov66hv" path="res://scenes/ui/banner/banner.tscn" id="2_caboo"]
-[ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="3_mt7cr"]
+[ext_resource type="PackedScene" uid="uid://dq3wbkyvn4p3w" path="res://scenes/ui/chat/chat.tscn" id="3_ohwp0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_v4fvi"]
 font_size = 36
@@ -12,7 +12,7 @@ font_size = 32
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dujtv"]
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "invite_btn", "member_count_lbl", "chat_container", "message_container", "message_edit", "player_list", "start_btn")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("lobby_name_lbl", "invite_btn", "member_count_lbl", "message_edit", "player_list", "start_btn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,13 +23,11 @@ script = ExtResource("1_3ath0")
 lobby_name_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/LobbyNameLbl")
 invite_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/InviteBtn")
 member_count_lbl = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/PanelContainer/MemberCountLbl")
-chat_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer")
-message_container = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer/MessageContainer")
 message_edit = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/MessageEdit")
 player_list = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/PlayerList")
 start_btn = NodePath("Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer/StartBtn")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,12 +37,7 @@ grow_vertical = 2
 focus_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
@@ -99,34 +92,9 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Chat" type="Panel" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
-custom_minimum_size = Vector2(500, 400)
+[node name="Chat" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left" node_paths=PackedStringArray("message_edit") instance=ExtResource("3_ohwp0")]
 layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ChatContainer" type="ScrollContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer"]
-layout_mode = 2
-
-[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="ChatMessage" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/Chat/MarginContainer/ChatContainer/MessageContainer" instance=ExtResource("3_mt7cr")]
-layout_mode = 2
+message_edit = NodePath("../MessageEdit")
 
 [node name="MessageEdit" type="LineEdit" parent="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left"]
 layout_mode = 2
@@ -177,6 +145,5 @@ theme_override_font_sizes/font_size = 28
 text = "Leave"
 
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/HBoxContainer/InviteBtn" to="." method="_on_invite_btn_pressed"]
-[connection signal="text_submitted" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Left/MessageEdit" to="." method="_on_message_edit_text_submitted"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/CenterContainer/VBoxContainer/Lobby/Right/HBoxContainer/LeaveBtn" to="." method="_on_leave_btn_pressed"]

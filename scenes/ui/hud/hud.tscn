@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://fvm6t6kjkrd1"]
+[gd_scene load_steps=13 format=3 uid="uid://fvm6t6kjkrd1"]
 
 [ext_resource type="Texture2D" uid="uid://65rxntibt3li" path="res://scenes/ui/ui.png" id="1_bngdn"]
 [ext_resource type="ButtonGroup" uid="uid://bpl54mv7qm5v1" path="res://scenes/ui/hud/hud_button_group.tres" id="1_qao66"]
 [ext_resource type="Texture2D" uid="uid://dyxs1bdtksm2n" path="res://icon.svg" id="3_as3gr"]
+[ext_resource type="PackedScene" uid="uid://dq3wbkyvn4p3w" path="res://scenes/ui/chat/chat.tscn" id="4_ax4tw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_qao66"]
 font_size = 72
@@ -27,11 +28,11 @@ region = Rect2(896, 32, 32, 32)
 atlas = ExtResource("1_bngdn")
 region = Rect2(896, 480, 32, 32)
 
-[sub_resource type="LabelSettings" id="LabelSettings_2wu1p"]
-font_size = 32
-
 [sub_resource type="LabelSettings" id="LabelSettings_ax4tw"]
 font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_2wu1p"]
+font_size = 32
 
 [node name="HUD" type="CanvasLayer"]
 
@@ -136,16 +137,22 @@ texture_normal = SubResource("AtlasTexture_ax4tw")
 texture_pressed = SubResource("AtlasTexture_2wu1p")
 stretch_mode = 5
 
-[node name="Chat" type="PanelContainer" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
-custom_minimum_size = Vector2(400, 500)
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/Chat"]
+[node name="Chat" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/VBoxContainer" node_paths=PackedStringArray("message_edit") instance=ExtResource("4_ax4tw")]
+custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
-text = "Chat"
-label_settings = SubResource("LabelSettings_2wu1p")
-horizontal_alignment = 1
+message_edit = NodePath("../MessageEdit")
+
+[node name="MessageEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+placeholder_text = "Enter message"
+keep_editing_on_text_submit = true
+context_menu_enabled = false
+drag_and_drop_selection_enabled = false
 
 [node name="Bottom" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
