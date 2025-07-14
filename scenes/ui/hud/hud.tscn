@@ -1,0 +1,212 @@
+[gd_scene load_steps=12 format=3 uid="uid://fvm6t6kjkrd1"]
+
+[ext_resource type="Texture2D" uid="uid://65rxntibt3li" path="res://scenes/ui/ui.png" id="1_bngdn"]
+[ext_resource type="ButtonGroup" uid="uid://bpl54mv7qm5v1" path="res://scenes/ui/hud/hud_button_group.tres" id="1_qao66"]
+[ext_resource type="Texture2D" uid="uid://dyxs1bdtksm2n" path="res://icon.svg" id="3_as3gr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qao66"]
+font_size = 72
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qao66"]
+atlas = ExtResource("1_bngdn")
+region = Rect2(928, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_as3gr"]
+atlas = ExtResource("1_bngdn")
+region = Rect2(928, 480, 32, 32)
+
+[sub_resource type="LabelSettings" id="LabelSettings_as3gr"]
+font_size = 32
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ax4tw"]
+atlas = ExtResource("1_bngdn")
+region = Rect2(896, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2wu1p"]
+atlas = ExtResource("1_bngdn")
+region = Rect2(896, 480, 32, 32)
+
+[sub_resource type="LabelSettings" id="LabelSettings_2wu1p"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_ax4tw"]
+font_size = 48
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Your Turn"
+label_settings = SubResource("LabelSettings_qao66")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Top" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Top"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Top/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Top/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SettingsBtn" type="TextureButton" parent="MarginContainer/VBoxContainer/Top/PanelContainer/MarginContainer/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("1_qao66")
+texture_normal = SubResource("AtlasTexture_qao66")
+texture_pressed = SubResource("AtlasTexture_as3gr")
+stretch_mode = 5
+
+[node name="Middle" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Middle"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Middle/PlayerList"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Middle/PlayerList/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Middle/PlayerList/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Middle/PlayerList/PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("3_as3gr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Middle/PlayerList/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Middle/PlayerList/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player 2"
+label_settings = SubResource("LabelSettings_as3gr")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Middle"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 10
+
+[node name="ChatBtn" type="TextureButton" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_ax4tw")
+texture_pressed = SubResource("AtlasTexture_2wu1p")
+stretch_mode = 5
+
+[node name="Chat" type="PanelContainer" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/Chat"]
+layout_mode = 2
+text = "Chat"
+label_settings = SubResource("LabelSettings_2wu1p")
+horizontal_alignment = 1
+
+[node name="Bottom" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+texture = ExtResource("3_as3gr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Your name"
+label_settings = SubResource("LabelSettings_ax4tw")
+
+[node name="ActionsPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Bottom/ActionsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Bottom/ActionsPanel/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Bottom/ActionsPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Items and Actions"
+label_settings = SubResource("LabelSettings_2wu1p")
+horizontal_alignment = 1
+
+[node name="EndTurnBtn" type="Button" parent="MarginContainer/VBoxContainer/Bottom/ActionsPanel/MarginContainer/HBoxContainer"]
+modulate = Color(0.254687, 0.713521, 1, 1)
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "End
+Turn"

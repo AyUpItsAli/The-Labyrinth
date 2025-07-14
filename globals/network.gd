@@ -1,6 +1,6 @@
 extends Node
 
-const MIN_PLAYERS = 2
+const MIN_PLAYERS = 1 # TODO: Actual value should be 2
 const MAX_CHAT_MESSAGES = 100
 const HOST_COLOUR = "crimson"
 

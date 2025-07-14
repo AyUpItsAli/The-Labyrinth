@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://d1okdacpg1uyl"]
+[gd_scene load_steps=10 format=3 uid="uid://d1okdacpg1uyl"]
 
 [ext_resource type="Script" uid="uid://dro57e44yw1bb" path="res://scenes/world/labyrinth.gd" id="1_nl04x"]
 [ext_resource type="Texture2D" uid="uid://d37qtsur6xgf8" path="res://graphics/hdri/autumn_field_puresky_4k.exr" id="2_0m3lf"]
+[ext_resource type="PackedScene" uid="uid://fvm6t6kjkrd1" path="res://scenes/ui/hud/hud.tscn" id="2_axwc4"]
 [ext_resource type="Script" uid="uid://crrftayphhfnv" path="res://scenes/world/board.gd" id="3_v8ra0"]
 [ext_resource type="PackedScene" uid="uid://bnl87t7y8df7p" path="res://scenes/world/tiles/basic/basic_tile.tscn" id="4_axwc4"]
 [ext_resource type="PackedScene" uid="uid://0benhx8uhhqf" path="res://scenes/world/camera.tscn" id="6_p7p6a"]
@@ -22,6 +23,8 @@ sky_rotation = Vector3(0, 3.14159, 0)
 script = ExtResource("1_nl04x")
 board = NodePath("Board")
 camera = NodePath("Camera")
+
+[node name="HUD" parent="." instance=ExtResource("2_axwc4")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_p7p6a")
