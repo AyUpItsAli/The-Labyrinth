@@ -30,15 +30,17 @@ atlas = ExtResource("1_bngdn")
 region = Rect2(896, 480, 32, 32)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ax4tw"]
-font_size = 48
+font_size = 40
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wu1p"]
 font_size = 32
 
-[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("chat_btn", "chat", "end_turn_btn")]
+[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("chat_btn", "chat", "player_icon", "display_name_lbl", "end_turn_btn")]
 script = ExtResource("1_2wu1p")
 chat_btn = NodePath("MarginContainer/VBoxContainer/Middle/HBoxContainer/ChatBtn")
 chat = NodePath("MarginContainer/VBoxContainer/Middle/HBoxContainer/Chat")
+player_icon = NodePath("MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer/PlayerIcon")
+display_name_lbl = NodePath("MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer/VBoxContainer/DisplayNameLbl")
 end_turn_btn = NodePath("MarginContainer/VBoxContainer/Bottom/ActionsPanel/MarginContainer/HBoxContainer/EndTurnBtn")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -180,7 +182,7 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer"]
+[node name="PlayerIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 texture = ExtResource("3_as3gr")
@@ -190,9 +192,9 @@ stretch_mode = 5
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="DisplayNameLbl" type="Label" parent="MarginContainer/VBoxContainer/Bottom/PlayerPanel/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Your name"
+text = "Display name"
 label_settings = SubResource("LabelSettings_ax4tw")
 
 [node name="ActionsPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/Bottom"]
