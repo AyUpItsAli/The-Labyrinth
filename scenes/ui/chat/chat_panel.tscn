@@ -4,9 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="2_c352u"]
 
 [node name="ChatPanel" type="PanelContainer" node_paths=PackedStringArray("scroll_container", "message_container")]
-custom_minimum_size = Vector2(500, 400)
 offset_right = 500.0
-offset_bottom = 452.0
+offset_bottom = 400.0
 script = ExtResource("1_j7b2c")
 scroll_container = NodePath("MarginContainer/ScrollContainer")
 message_container = NodePath("MarginContainer/ScrollContainer/MessageContainer")
