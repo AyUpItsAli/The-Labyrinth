@@ -17,6 +17,8 @@ var active_player: Player
 var turn_paused: bool
 var turn_phase: TurnPhase
 
+signal phase_changed
+
 func _ready() -> void:
 	Network.ack_resolved.connect(_on_ack_resolved)
 
@@ -79,6 +81,7 @@ func start_turn() -> void:
 @rpc("authority", "call_remote", "reliable")
 func set_paused(paused: bool) -> void:
 	turn_paused = paused
+	phase_changed.emit()
 
 @rpc("any_peer", "call_local", "reliable")
 func next_turn() -> void:
@@ -93,11 +96,4 @@ func next_phase() -> void:
 	turn_phase = (turn_phase+1) as TurnPhase
 	var sender: int = multiplayer.get_remote_sender_id()
 	Network.send_ack("phase_updated", sender)
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not GameState.is_my_turn():
-		return
-	if not GameState.is_phase(GameState.TurnPhase.END):
-		return
-	if event.is_action_pressed("select"):
-		next_turn.rpc()
+	phase_changed.emit()
