@@ -1,4 +1,4 @@
-class_name Chat extends PanelContainer
+class_name ChatPanel extends PanelContainer
 
 const CHAT_MESSAGE = preload("res://scenes/ui/chat/chat_message.tscn")
 

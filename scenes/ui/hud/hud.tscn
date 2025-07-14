@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://65rxntibt3li" path="res://scenes/ui/ui.png" id="1_bngdn"]
 [ext_resource type="ButtonGroup" uid="uid://bpl54mv7qm5v1" path="res://scenes/ui/hud/hud_button_group.tres" id="1_qao66"]
 [ext_resource type="Texture2D" uid="uid://dyxs1bdtksm2n" path="res://icon.svg" id="3_as3gr"]
-[ext_resource type="PackedScene" uid="uid://dq3wbkyvn4p3w" path="res://scenes/ui/chat/chat.tscn" id="4_ax4tw"]
+[ext_resource type="PackedScene" uid="uid://dq3wbkyvn4p3w" path="res://scenes/ui/chat/chat_panel.tscn" id="4_ax4tw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_qao66"]
 font_size = 72
@@ -137,16 +137,17 @@ texture_normal = SubResource("AtlasTexture_ax4tw")
 texture_pressed = SubResource("AtlasTexture_2wu1p")
 stretch_mode = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
+[node name="Chat" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_constants/separation = 10
 
-[node name="Chat" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/VBoxContainer" node_paths=PackedStringArray("message_edit") instance=ExtResource("4_ax4tw")]
+[node name="ChatPanel" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/Chat" node_paths=PackedStringArray("message_edit") instance=ExtResource("4_ax4tw")]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
 message_edit = NodePath("../MessageEdit")
 
-[node name="MessageEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/VBoxContainer"]
+[node name="MessageEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Middle/HBoxContainer/Chat"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Enter message"

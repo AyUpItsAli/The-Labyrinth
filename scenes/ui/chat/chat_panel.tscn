@@ -1,13 +1,13 @@
 [gd_scene load_steps=3 format=3 uid="uid://dq3wbkyvn4p3w"]
 
-[ext_resource type="Script" uid="uid://iactg486i8sr" path="res://scenes/ui/chat/chat.gd" id="1_dgt2r"]
-[ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="1_nw63w"]
+[ext_resource type="Script" uid="uid://iactg486i8sr" path="res://scenes/ui/chat/chat_panel.gd" id="1_j7b2c"]
+[ext_resource type="PackedScene" uid="uid://d0642d7fl5gft" path="res://scenes/ui/chat/chat_message.tscn" id="2_c352u"]
 
-[node name="Chat" type="PanelContainer" node_paths=PackedStringArray("scroll_container", "message_container")]
+[node name="ChatPanel" type="PanelContainer" node_paths=PackedStringArray("scroll_container", "message_container")]
 custom_minimum_size = Vector2(500, 400)
 offset_right = 500.0
 offset_bottom = 452.0
-script = ExtResource("1_dgt2r")
+script = ExtResource("1_j7b2c")
 scroll_container = NodePath("MarginContainer/ScrollContainer")
 message_container = NodePath("MarginContainer/ScrollContainer/MessageContainer")
 
@@ -26,5 +26,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="ChatMessage" parent="MarginContainer/ScrollContainer/MessageContainer" instance=ExtResource("1_nw63w")]
+[node name="ChatMessage" parent="MarginContainer/ScrollContainer/MessageContainer" instance=ExtResource("2_c352u")]
 layout_mode = 2
