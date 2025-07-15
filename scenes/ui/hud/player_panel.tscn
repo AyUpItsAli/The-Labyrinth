@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=3 uid="uid://n3q7nti7x3if"]
+[gd_scene load_steps=3 format=3 uid="uid://n3q7nti7x3if"]
 
-[ext_resource type="Texture2D" uid="uid://dyxs1bdtksm2n" path="res://icon.svg" id="1_has07"]
 [ext_resource type="Script" uid="uid://cnx681c4upos7" path="res://scenes/ui/hud/player_panel.gd" id="1_sxtl5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_as3gr"]
@@ -27,7 +26,6 @@ theme_override_constants/separation = 10
 [node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-texture = ExtResource("1_has07")
 expand_mode = 1
 stretch_mode = 5
 
