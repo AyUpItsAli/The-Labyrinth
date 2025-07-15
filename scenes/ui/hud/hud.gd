@@ -1,4 +1,4 @@
-extends CanvasLayer
+class_name HUD extends CanvasLayer
 
 const PLAYER_PANEL = preload("res://scenes/ui/hud/player_panel.tscn")
 
@@ -15,6 +15,8 @@ const PLAYER_PANEL = preload("res://scenes/ui/hud/player_panel.tscn")
 
 func _ready() -> void:
 	GameState.phase_changed.connect(update_actions)
+
+func update() -> void:
 	update_player_list()
 	update_chat()
 	update_player_panel()
@@ -70,7 +72,7 @@ func update_player_panel() -> void:
 # --------
 
 func update_actions() -> void:
-	end_turn_btn.disabled = not GameState.is_phase(GameState.TurnPhase.END)
+	end_turn_btn.disabled = not (GameState.is_my_turn() and GameState.is_phase(GameState.TurnPhase.END))
 
 func _on_end_turn_btn_pressed() -> void:
 	GameState.next_turn.rpc()

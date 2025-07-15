@@ -1,5 +1,6 @@
 extends Node3D
 
+@export var hud: HUD
 @export var board: Board
 @export var camera: Camera
 
@@ -20,6 +21,7 @@ func initialise_game() -> void:
 	GameState.initialise()
 	await Overlay.display_loading_message("Generating the board")
 	board.generate()
+	hud.update()
 	Utils.log_success("Initialisation complete")
 
 func _on_ack_resolved(id: String) -> void:
@@ -44,6 +46,7 @@ func load_data(data: Dictionary) -> void:
 	# Initialise game with the given data
 	GameState.load_data(data.get("game_state"))
 	board.load_data(data.get("board"))
+	hud.update()
 	Utils.log_success("Game loaded")
 	# Finish loading and send ack to server
 	await Overlay.finish_loading()
