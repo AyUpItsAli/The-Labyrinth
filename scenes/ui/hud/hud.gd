@@ -1,5 +1,9 @@
 extends CanvasLayer
 
+const PLAYER_PANEL = preload("res://scenes/ui/hud/player_panel.tscn")
+
+@export_group("Player List")
+@export var player_list: Container
 @export_group("Chat")
 @export var chat_btn: BaseButton
 @export var chat: Container
@@ -11,9 +15,37 @@ extends CanvasLayer
 
 func _ready() -> void:
 	GameState.phase_changed.connect(update_actions)
+	update_player_list()
 	update_chat()
 	update_player_panel()
 	update_actions()
+
+# ------------
+# PLAYER LIST
+# ------------
+
+func update_player_list() -> void:
+	# Clear player list
+	for child in player_list.get_children():
+		player_list.remove_child(child)
+		child.queue_free()
+	# Get players in the correct order based on the current turn order
+	var players: Array[Player]
+	var prepend: bool
+	for player: Player in GameState.turn_order:
+		if player.id == Global.player.id:
+			prepend = true
+			continue
+		if prepend:
+			players.push_front(player)
+		else:
+			players.push_back(player)
+	# Add player panels
+	for player: Player in players:
+		var panel: PlayerPanel = PLAYER_PANEL.instantiate()
+		panel.icon.set_texture(player.icon)
+		panel.name_lbl.set_text(player.display_name)
+		player_list.add_child(panel)
 
 # -----
 # CHAT
